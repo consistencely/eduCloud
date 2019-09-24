@@ -1,0 +1,27 @@
+educloud:
+  config:
+    ip-address: http://127.0.0.1
+    eureka-port: 8761
+
+#eureka配置
+eureka:
+  client:
+    # Eureka服务器的地址
+    service-url:
+      defaultZone: ${educloud.config.ip-address}:${server.port}/eureka/
+    # 是否向注册中心注册自己，缺省：true
+    # 一般情况下，Eureka服务端是不需要再注册自己的
+    register-with-eureka: false
+    # 是否从Eureka获取注册信息，缺省：true
+    # 一般情况下，Eureka服务端是不需要的
+    fetch-registry: false
+  instance:
+    # 服务名，默认取 spring.application.name 配置值，如果没有则为 unknown
+    appname: eureka
+
+server:
+  port: ${educloud.config.eureka-port} # 应用端口，Eureka服务端默认为：8761
+spring:
+  application:
+    name: eureka # 应用名称，将会显示在Eureka界面的应用名称列
+
