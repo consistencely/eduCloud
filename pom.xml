@@ -6,7 +6,7 @@
 
     <groupId>com.xuegao</groupId>
     <artifactId>EduCloud</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>EduCloud</name>
@@ -14,7 +14,9 @@
     <modules>
         <module>educloud-eureka</module>
         <module>educloud-gateway</module>
+        <module>educloud-common</module>
         <module>educloud-user</module>
+        <module>educloud-system</module>
     </modules>
 
     <properties>
@@ -38,6 +40,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!--fastjson-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.54</version>
         </dependency>
     </dependencies>
 

@@ -22,9 +22,9 @@ spring:
   application:
     name: gatway # 应用名称，将会显示在Eureka界面的应用名称列
 
-zuul:
-  #自定义路由
-  routes:
+#zuul:
+#  #自定义路由
+#  routes:
 #    user:
 #      path: /user/**
 #      serviceId: educloud-user

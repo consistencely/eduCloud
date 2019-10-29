@@ -5,10 +5,11 @@
 	<parent>
 		<groupId>com.xuegao</groupId>
 		<artifactId>EduCloud</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>educloud-user</artifactId>
 	<description>用户服务</description>
+	<version>0.0.1-SNAPSHOT</version>
 
 
 	<dependencies>

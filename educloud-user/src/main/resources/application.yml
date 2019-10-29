@@ -18,7 +18,7 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
 
 server:
-  port: 8001
+  port: 8002
 
 
 

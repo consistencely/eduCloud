@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuegao.dao.SubjectDao" >
+
+
+    <delete id="delSubjectGradeByGrade" parameterType="int">
+        DELETE FROM educloud_subject_grade WHERE grade_id = #{gradeId}
+    </delete>
+
+    <insert id="saveSubjectGrade">
+        INSERT educloud_subject_grade(subject_id, grade_id)
+        <foreach collection="subjectIds" item="subject" open="VALUES" separator=",">
+            (#{subject},#{grade})
+        </foreach>
+    </insert>
+
+</mapper>
