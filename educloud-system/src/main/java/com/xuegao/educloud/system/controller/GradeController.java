@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.params.Result;
 import com.xuegao.educloud.system.entities.Grade;
+import com.xuegao.educloud.system.params.vo.GradeWithSubjectVO;
 import com.xuegao.educloud.system.service.IGradeService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Auther: LIM
@@ -60,6 +63,12 @@ public class GradeController {
         grade.setSort(param.getSort());
         boolean success = gradeService.saveOrUpdate(grade);
         return success ? Result.success() : Result.fail("保存失败");
+    }
+
+    @GetMapping("/gradeWithSubject")
+    public Result gradeWithSubject(){
+        List<GradeWithSubjectVO> gradeWithSubject = gradeService.getGradesWithSubject();
+        return Result.success(gradeWithSubject);
     }
 
 

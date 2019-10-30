@@ -43,4 +43,14 @@ public class SubjectService extends ServiceImpl<SubjectDao,Subject> implements I
         }
     }
 
+    /**
+     * 学段所有学科
+     *
+     * @param gradeId 学段ID
+     * @return
+     */
+    @Override
+    public List<Subject> getSubjectsByGrade(Integer gradeId) {
+        return baseMapper.getSubjectsByGrade(gradeId);
+    }
 }

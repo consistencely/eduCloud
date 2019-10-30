@@ -16,16 +16,15 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
 
 server:
-  port: 8300 # 应用端口，Eureka服务端默认为：8761
+  port: 8300
 
 spring:
   application:
-    name: gatway # 应用名称，将会显示在Eureka界面的应用名称列
+    name: gatway
 
 #zuul:
 #  #自定义路由
 #  routes:
-#    user:
-#      path: /user/**
-#      serviceId: educloud-user
+#    system: /system/**
+
 

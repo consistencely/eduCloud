@@ -11,4 +11,10 @@ public interface SubjectDao extends BaseMapper<Subject> {
 
     void saveSubjectGrade(@Param("grade") Integer grade, @Param("subjectIds") List<Integer> subjectIds);
 
+    /**
+     * 获取学段所有学科
+     * @param gradeId
+     * @return
+     */
+    List<Subject> getSubjectsByGrade(Integer gradeId);
 }

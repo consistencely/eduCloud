@@ -21,7 +21,6 @@ server:
   port: 8001
 
 
-
 spring:
   # mysql配置
   datasource:
@@ -61,6 +60,10 @@ mybatis-plus:
       logic-delete-value: 1
       # 逻辑未删除值(默认为 0)
       logic-not-delete-value: 0
+
+logging:
+  level:
+    com.xuegao.educloud.system.dao: debug
 
 
 

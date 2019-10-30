@@ -13,4 +13,10 @@ public interface ISubjectService extends IService<Subject> {
 
     void saveSubjectGrade(SubjectGradeDTO subjectGradeDTO);
 
+    /**
+     * 学段所有学科
+     * @param gradeId 学段ID
+     * @return
+     */
+    List<Subject> getSubjectsByGrade(Integer gradeId);
 }

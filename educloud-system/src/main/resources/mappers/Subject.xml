@@ -14,4 +14,12 @@
         </foreach>
     </insert>
 
+    <!--获取学段所有学科-->
+    <select id="getSubjectsByGrade" resultType="Subject">
+        SELECT `subject`.id, `subject`.name
+        FROM educloud_subject subject,educloud_subject_grade sg
+        WHERE `subject`.id = sg.subject_id AND sg.grade_id = #{gradeId}
+        ORDER BY `subject`.sort DESC, `subject`.id
+    </select>
+
 </mapper>
