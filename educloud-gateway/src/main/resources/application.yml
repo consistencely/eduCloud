@@ -22,9 +22,10 @@ spring:
   application:
     name: gatway
 
-#zuul:
-#  #自定义路由
-#  routes:
-#    system: /system/**
+zuul:
+  #自定义路由
+  routes:
+    system: /sys/**
+    user: /user/**
 
 
