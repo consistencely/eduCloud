@@ -1,5 +1,6 @@
 package com.xuegao.educloud.system.server.controller;
 
+import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.common.params.Result;
 import com.xuegao.educloud.system.client.entities.Kpoint;
 import com.xuegao.educloud.system.server.service.IKpointService;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @Auther: LIM
@@ -29,9 +31,9 @@ public class KpointController {
      * @return
      */
     @GetMapping("/getKpoint")
-    public Result getKpoint(@RequestParam("gradeId") int gradeId, @RequestParam(value = "subjectId") int subjectId){
+    public R<List<Kpoint>> getKpoint(@RequestParam("gradeId") int gradeId, @RequestParam(value = "subjectId") int subjectId){
         List<Kpoint> kpoints = kpointService.getKpointByGradeSubject(gradeId,subjectId);
-        return Result.success(kpoints);
+        return R.ok(kpoints);
     }
 
     /**
@@ -40,13 +42,13 @@ public class KpointController {
      * @return
      */
     @PostMapping("/addKpoint")
-    public Result addKpoint(@RequestBody Kpoint param){
+    public R<Kpoint> addKpoint(@RequestBody Kpoint param){
 
         if(param.getGradeId() == null || param.getGradeId() <= 0){
-            return Result.fail("请选择专业节点");
+            return R.fail("请选择专业节点");
         }
         if(param.getSubjectId() == null || param.getSubjectId() <= 0){
-            return Result.fail("请选择专业节点");
+            return R.fail("请选择专业节点");
         }
 
         Kpoint kpoint = new Kpoint();
@@ -58,7 +60,7 @@ public class KpointController {
 
         boolean success = kpointService.save(kpoint);
 
-        return success ? Result.success(kpoint) : Result.fail("新建失败");
+        return success ? R.ok(kpoint) : R.fail("新建失败");
 
     }
 
@@ -67,12 +69,12 @@ public class KpointController {
      * @return
      */
     @PostMapping("/updateKpoint")
-    public Result updateKpoint(@RequestBody Kpoint param){
+    public R<Kpoint> updateKpoint(@RequestBody Kpoint param){
         if(param.getId() == null || param.getId() <= 0){
-            return Result.fail("id不正确,修改失败");
+            return R.fail("id不正确,修改失败");
         }
         if(StringUtils.isEmpty(param.getName())){
-            return Result.fail("请输入考点名称");
+            return R.fail("请输入考点名称");
         }
 
         Kpoint kpoint = new Kpoint();
@@ -80,7 +82,7 @@ public class KpointController {
         kpoint.setName(param.getName());
 
         boolean success = kpointService.updateById(kpoint);
-        return success ? Result.success(kpoint) : Result.fail("修改失败");
+        return success ? R.ok(kpoint) : R.fail("修改失败");
     }
 
 
@@ -89,8 +91,8 @@ public class KpointController {
      * @return
      */
     @PostMapping("/delKpoint")
-    public Result delKpoint(@RequestBody int[] ids){
+    public R delKpoint(@RequestBody int[] ids){
         boolean success = kpointService.removeByIds(Arrays.asList(ids));
-        return success ? Result.success() : Result.fail("删除失败");
+        return success ? R.ok() : R.fail("删除失败");
     }
 }

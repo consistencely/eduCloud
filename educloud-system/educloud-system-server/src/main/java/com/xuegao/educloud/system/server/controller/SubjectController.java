@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.params.R;
-import com.xuegao.educloud.common.params.Result;
+import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.system.client.entities.Subject;
 import com.xuegao.educloud.system.client.params.dto.SubjectGradeDTO;
 import com.xuegao.educloud.system.server.service.ISubjectService;
@@ -34,10 +34,10 @@ public class SubjectController {
      * @return
      */
     @PostMapping("/subjectPage/{curr}")
-    public Result getSubjectPage(@PathVariable("curr") int current){
+    public R<IPage<Subject>> getSubjectPage(@PathVariable("curr") int current){
         Page<Subject> page = new Page<Subject>().setCurrent(current);
         IPage<Subject> subjectPage = subjectService.getSubjectPage(page);
-        return Result.success(subjectPage);
+        return R.ok(subjectPage);
 
     }
 
@@ -46,9 +46,9 @@ public class SubjectController {
      * @return
      */
     @PostMapping("/del/{id}")
-    public Result delSubject(@PathVariable("id") int id){
+    public R delSubject(@PathVariable("id") int id){
         boolean success = subjectService.removeById(id);
-        return success ? Result.success() : Result.fail("删除失败");
+        return success ? R.ok() : R.fail("删除失败");
     }
 
     /**
@@ -56,16 +56,16 @@ public class SubjectController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public Result saveSubject(@RequestBody Subject param){
+    public R saveSubject(@RequestBody Subject param){
         if(StringUtils.isEmpty(param.getName())){
-            return Result.fail("请输入学科名称");
+            return R.fail("请输入学科名称");
         }
         Subject subject = new Subject();
         subject.setId(param.getId());
         subject.setName(param.getName());
         subject.setSort(param.getSort());
         boolean success = subjectService.saveOrUpdate(subject);
-        return success ? Result.success() : Result.fail("保存失败");
+        return success ? R.ok() : R.fail("保存失败");
     }
 
     /**
@@ -73,7 +73,7 @@ public class SubjectController {
      * @return
      */
     @GetMapping("/all")
-    public R getAllSubject(){
+    public R<List<Subject>> getAllSubject(){
         List<Subject> list = subjectService.getAllSubject();
         return R.ok(list);
     }
@@ -83,12 +83,12 @@ public class SubjectController {
      * @return
      */
     @PostMapping("/saveSubjectGrade")
-    public Result saveSubjectGrade(@RequestBody SubjectGradeDTO subjectGradeDTO){
+    public R saveSubjectGrade(@RequestBody SubjectGradeDTO subjectGradeDTO){
         if(subjectGradeDTO.getGradeId() == null ){
-            return Result.fail("保存失败，请重试！");
+            return R.fail("保存失败，请重试！");
         }
         subjectService.saveSubjectGrade(subjectGradeDTO);
-        return Result.success();
+        return R.ok();
     }
 
 }

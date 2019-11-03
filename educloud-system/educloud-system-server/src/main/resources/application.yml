@@ -2,7 +2,7 @@ educloud:
   config:
     ip-address: http://127.0.0.1
     eureka-port: 8761
-    db-ip: 192.168.31.58
+    db-ip: 127.0.0.1
 
 
 #eureka配置

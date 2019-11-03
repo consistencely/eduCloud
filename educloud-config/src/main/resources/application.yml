@@ -16,18 +16,20 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
 
 server:
-  port: 8300
+  port: 8500
 
 spring:
   application:
-    name: gatway
+    name: config
+  profiles:
+    active: native
+  # 配置中心
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config/
 
-zuul:
-  sensitive-headers:
-  #自定义路由
-  routes:
-    system: /sys/**
-    user: /user/**
 
 
 
