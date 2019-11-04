@@ -13,6 +13,7 @@
 
     <modules>
         <module>educloud-eureka</module>
+        <module>educloud-config</module>
         <module>educloud-gateway</module>
         <module>educloud-common</module>
         <module>educloud-user</module>

@@ -3,6 +3,9 @@ educloud:
     ip-address: http://127.0.0.1
     eureka-port: 8761
 
+server:
+  port: ${educloud.config.eureka-port} # 应用端口，Eureka服务端默认为：8761
+
 #eureka配置
 eureka:
   client:
@@ -19,8 +22,6 @@ eureka:
     # 服务名，默认取 spring.application.name 配置值，如果没有则为 unknown
     appname: eureka
 
-server:
-  port: ${educloud.config.eureka-port} # 应用端口，Eureka服务端默认为：8761
 spring:
   application:
     name: eureka # 应用名称，将会显示在Eureka界面的应用名称列

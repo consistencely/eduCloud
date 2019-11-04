@@ -1,0 +1,26 @@
+server:
+  port: 8300
+
+spring:
+  application:
+    name: gatway
+  profiles:
+    active: dev
+  #配置中心
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config
+      profile: ${spring.profiles.active}
+
+#网关配置
+zuul:
+  sensitive-headers:
+  #自定义路由
+  routes:
+    system: /sys/**
+    user: /user/**
+
+
+

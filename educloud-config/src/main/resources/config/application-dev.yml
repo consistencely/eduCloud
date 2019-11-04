@@ -1,35 +1,11 @@
-educloud:
-  config:
-    ip-address: http://127.0.0.1
-    eureka-port: 8761
-    db-ip: 127.0.0.1
-
-
 #eureka配置
 eureka:
   client:
-    # Eureka服务器的地址
     service-url:
-      defaultZone: ${educloud.config.ip-address}:${educloud.config.eureka-port}/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/
   instance:
-    # 客户端在注册时使用自己的IP而不是主机名，缺省：false
     prefer-ip-address: true
-    # 实例ID
     instance-id: ${spring.application.name}:${server.port}
-
-server:
-  port: 8001
-
-
-spring:
-  # mysql配置
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${educloud.config.db-ip}:3306/educloud_system?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: xuegao
-    password: xuegao
-  application:
-    name: system # 应用名称，将会显示在Eureka界面的应用名称列
 
 # mybatis-plus配置
 mybatis-plus:
@@ -61,6 +37,5 @@ mybatis-plus:
       # 逻辑未删除值(默认为 0)
       logic-not-delete-value: 0
 
-logging:
-  level:
-    com.xuegao.educloud.system.server.dao: debug
+
+
