@@ -20,6 +20,12 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.xuegao</groupId>
+			<artifactId>educloud-user-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<!--配置中心客户端-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

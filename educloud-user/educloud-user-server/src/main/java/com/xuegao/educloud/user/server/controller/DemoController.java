@@ -2,6 +2,7 @@ package com.xuegao.educloud.user.server.controller;
 
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.system.client.feign.SystemClient;
+import com.xuegao.educloud.user.client.entities.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +25,14 @@ public class DemoController {
 
     @GetMapping("msg")
     public R demo(HttpServletRequest request, HttpServletResponse response){
-        response.setStatus(6006);
-        return R.fail("错误信息");
+        return R.ok("错误信息");
     }
 
+    @GetMapping("msg2")
+    public R dem2o(HttpServletRequest request, HttpServletResponse response){
+        Role role = new Role().setId(1).setName("删除权限");
+        return R.ok(role);
+    }
 
     @GetMapping("demo/subject")
     public R demoSubejct(){

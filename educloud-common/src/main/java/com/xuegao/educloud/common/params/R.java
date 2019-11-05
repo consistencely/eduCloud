@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 响应信息主体
  *
  * @param <T>
- * @author lengleng
+ * @author LIM
  */
 @ToString
 @NoArgsConstructor
@@ -54,11 +54,11 @@ public class R<T> implements Serializable {
 	private T data;
 
 	public static <T> R<T> ok() {
-		return restResult(null, CommonConstants.SUCCESS, null, true);
+		return restResult(null, CommonConstants.SUCCESS, "SUCCESS", true);
 	}
 
 	public static <T> R<T> ok(T data) {
-		return restResult(data, CommonConstants.SUCCESS, null, true);
+		return restResult(data, CommonConstants.SUCCESS, "SUCCESS", true);
 	}
 
 	public static <T> R<T> ok(T data, String msg) {

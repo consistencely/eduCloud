@@ -13,7 +13,7 @@ mybatis-plus:
   # classpath:/mapper/*Mapper.xml
   mapper-locations: classpath*:/mappers/**/*.xml
   # 实体扫描，多个package用逗号或者分号分隔
-  type-aliases-package: com.xuegao.educloud.system.client.entities,com.xuegao.educloud.system.client.params
+  type-aliases-package: com.xuegao.educloud.${spring.application.name}.client.entities,com.xuegao.educloud.${spring.application.name}.client.params
   configuration:
     # 驼峰下划线转换
     map-underscore-to-camel-case: true

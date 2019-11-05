@@ -45,7 +45,7 @@ public class JacksonConfig {
 			builder.modules(new EduJavaTimeModule());
 			builder.serializationInclusion(JsonInclude.Include.NON_NULL);
 			builder.failOnUnknownProperties(false);
-			builder.propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+			//builder.propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE); // 下拉线分割
 		};
 	}
 
