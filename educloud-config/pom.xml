@@ -7,31 +7,21 @@
 		<artifactId>EduCloud</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>educloud-gateway</artifactId>
-	<description>服务网关</description>
-	<version>0.0.1-SNAPSHOT</version>
 
+	<artifactId>educloud-config</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>educloud-config</name>
+	<description>统一配置中心</description>
 
 	<dependencies>
-
-		<!--配置中心客户端-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
+			<artifactId>spring-cloud-config-server</artifactId>
 		</dependency>
-
-		<!--注册中心客户端-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-
-		<!--网关服务端-->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-		</dependency>
-
 	</dependencies>
 
 

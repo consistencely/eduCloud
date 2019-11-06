@@ -1,0 +1,19 @@
+server:
+  port: 8002
+
+spring:
+  application:
+    name: user
+  profiles:
+    active: dev
+  #配置中心
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config
+      profile: ${spring.profiles.active}
+
+logging:
+  level:
+    com.xuegao.educloud.system.server.dao: ${educloud.sql-log-level}

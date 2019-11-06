@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.xuegao</groupId>
-		<artifactId>EduCloud</artifactId>
+		<artifactId>educloud-system</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>educloud-gateway</artifactId>
-	<description>服务网关</description>
+	<artifactId>educloud-system-server</artifactId>
+	<description>系统配置服务-服务端</description>
 	<version>0.0.1-SNAPSHOT</version>
 
-
 	<dependencies>
+
+		<dependency>
+			<groupId>com.xuegao</groupId>
+			<artifactId>educloud-system-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<!--配置中心客户端-->
 		<dependency>
@@ -20,20 +25,25 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 
-		<!--注册中心客户端-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<!--网关服务端-->
+
+		<!--hutool-->
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>${hutool.version}</version>
 		</dependency>
 
 	</dependencies>
-
 
 	<build>
 		<plugins>

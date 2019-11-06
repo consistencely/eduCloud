@@ -7,28 +7,24 @@
 		<artifactId>EduCloud</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>educloud-user</artifactId>
-	<description>用户服务</description>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
 
-	<modules>
-		<module>educloud-user-client</module>
-		<module>educloud-user-server</module>
-	</modules>
+	<artifactId>educloud-common</artifactId>
+	<name>educloud-common</name>
+	<description>教育云公共模块</description>
+	<version>0.0.1-SNAPSHOT</version>
+
 
 	<dependencies>
 		<dependency>
-			<groupId>com.xuegao</groupId>
-			<artifactId>educloud-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!--mybatis-plus-->
+		<!--hutool-->
 		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>${mybatis.plus.version}</version>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>${hutool.version}</version>
 		</dependency>
 	</dependencies>
 
