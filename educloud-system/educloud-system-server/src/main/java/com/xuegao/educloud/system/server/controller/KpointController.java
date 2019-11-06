@@ -1,7 +1,6 @@
 package com.xuegao.educloud.system.server.controller;
 
 import com.xuegao.educloud.common.params.R;
-import com.xuegao.educloud.common.params.Result;
 import com.xuegao.educloud.system.client.entities.Kpoint;
 import com.xuegao.educloud.system.server.service.IKpointService;
 import org.apache.commons.lang.StringUtils;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @Auther: LIM
