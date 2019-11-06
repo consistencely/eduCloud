@@ -7,4 +7,6 @@ spring:
     username: xuegao
     password: xuegao
 
-
+logging:
+  level:
+    com.xuegao.educloud.user.server.dao: ${educloud.sql-log-level}

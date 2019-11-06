@@ -1,5 +1,6 @@
 package com.xuegao.educloud.user.client.entities;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -51,6 +52,7 @@ public class Role {
      * 逻辑删除字段
      */
     @TableLogic
+    @TableField(select = false)
     private Byte isDel;
 
     /**

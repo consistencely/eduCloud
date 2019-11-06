@@ -16,10 +16,6 @@
 
 package com.xuegao.educloud.common.constants;
 
-/**
- * @author lengleng
- * @date 2019/2/1
- */
 public interface CommonConstants {
 	/**
 	 * 删除
@@ -33,10 +29,10 @@ public interface CommonConstants {
 	/**
 	 * 成功标记
 	 */
-	Integer SUCCESS = 200;
+	int SUCCESS = 200;
 	/**
 	 * 失败标记
 	 */
-	Integer FAIL = 500;
+	int FAIL = 500;
 
 }
