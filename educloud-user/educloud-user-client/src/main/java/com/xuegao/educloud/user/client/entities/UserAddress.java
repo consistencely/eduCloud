@@ -11,41 +11,49 @@ import java.util.Date;
 
 /**
  * @Auther: LIM
- * @Date: 2019/11/5 14:14
- * @Description: 角色实体类
+ * @Date: 2019/11/8 10:41
+ * @Description:
  */
 @Data
 @Accessors(chain = true)
-@TableName("educloud_role")
-public class Role {
+@TableName("educloud_user_address")
+public class UserAddress {
 
+    /**
+     * 地址ID
+     */
     @TableId
-    private Integer roleId;
+    private Long addressId;
 
     /**
-     * 角色名称
+     * 用户ID
      */
-    private String roleName;
+    private Long userId;
 
     /**
-     * 角色描述
+     * 省
      */
-    private String description;
+    private String province;
 
     /**
-     * 有效类型（1：永久有效，2：到期失效，3：区间有效）
+     * 市
      */
-    private Byte validType;
+    private String city;
 
     /**
-     * 有效期开始时间
+     * 县
      */
-    private Date validStart;
+    private String county;
 
     /**
-     * 有效期结束时间
+     * 详细地址
      */
-    private Date validEnd;
+    private String addrDetail;
+
+    /**
+     * 联系电话
+     */
+    private String tel;
 
     /**
      * 是否删除（0：未删除，1：已删除）
@@ -64,6 +72,4 @@ public class Role {
      * 创建时间
      */
     private Date createTime;
-
-
 }

@@ -52,7 +52,7 @@ public class RoleController {
      */
     @PostMapping("/{id}")
     public R saveOrUpdate(@RequestBody RoleDTO roleDTO){
-        if(StrUtil.isEmpty(roleDTO.getName())){
+        if(StrUtil.isEmpty(roleDTO.getRoleName())){
             return R.fail("请输入角色名称");
         }
         //TODO

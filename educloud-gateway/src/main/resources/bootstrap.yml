@@ -14,13 +14,7 @@ spring:
         service-id: config
       profile: ${spring.profiles.active}
 
-#网关配置
-zuul:
-  sensitive-headers:
-  #自定义路由
-  routes:
-    system: /sys/**
-    user: /user/**
+
 
 
 

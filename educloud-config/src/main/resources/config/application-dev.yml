@@ -41,5 +41,25 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 
+# feign 配置
+feign:
+  hystrix:
+    enabled: true
+
+# hystrix 配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+#请求处理的超时时间
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+
+
 
 

@@ -26,7 +26,7 @@ public class RoleService extends ServiceImpl<RoleDao,Role> implements IRoleServi
      */
     @Override
     public IPage<Role> getRolePage(Page<Role> page) {
-        LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery().select(Role::getId, Role::getName, Role::getDescription);
+        LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery().select(Role::getRoleId, Role::getRoleName, Role::getDescription);
         return this.page(page,wrapper);
     }
 }
