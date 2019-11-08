@@ -29,7 +29,7 @@ public class DemoController {
 
     @GetMapping("msg2")
     public R dem2o(){
-        Role role = new Role().setId(1).setName("删除权限");
+        Role role = new Role().setRoleId(1).setRoleName("删除权限");
         return R.ok(role);
     }
 

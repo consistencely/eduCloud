@@ -14,12 +14,12 @@ import java.util.Date;
 @Accessors(chain = true)
 public class RoleDTO {
 
-     private Integer id;
+     private Integer roleId;
 
     /**
      * 角色名称
      */
-    private String name;
+    private String roleName;
 
     /**
      * 角色描述
