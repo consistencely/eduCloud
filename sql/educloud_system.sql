@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2019-11-01 17:55:49
+Date: 2019-11-11 18:00:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,9 +32,9 @@ CREATE TABLE `educloud_grade` (
 -- ----------------------------
 -- Records of educloud_grade
 -- ----------------------------
-INSERT INTO `educloud_grade` VALUES ('1', '高一', '1', '0', '2019-10-30 11:14:30', '2019-10-30 11:14:30');
 INSERT INTO `educloud_grade` VALUES ('2', '高二', '2', '0', '2019-10-30 11:14:38', '2019-10-30 11:14:38');
-INSERT INTO `educloud_grade` VALUES ('3', '高三', '3', '0', '2019-10-30 11:14:43', '2019-10-30 11:14:43');
+INSERT INTO `educloud_grade` VALUES ('101', '高一', '1', '0', '2019-11-11 16:23:07', '2019-10-30 11:14:30');
+INSERT INTO `educloud_grade` VALUES ('105', '高三', '3', '0', '2019-11-11 16:23:10', '2019-10-30 11:14:43');
 
 -- ----------------------------
 -- Table structure for `educloud_kpoint`

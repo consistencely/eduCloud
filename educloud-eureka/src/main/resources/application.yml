@@ -1,6 +1,6 @@
 educloud:
   config:
-    ip-address: http://111.230.93.169
+    ip-address: http://127.0.0.1
     eureka-port: 8761
 
 server:

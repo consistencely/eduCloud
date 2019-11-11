@@ -43,12 +43,17 @@ public class UserInfoDTO {
     /**
      * 角色ID数组
      */
-    private int[] roleIds;
+    private Integer[] roleIds;
 
     /**
      * 年级ID数组
      */
-    private int[] gradeIds;
+    private Integer[] gradeIds;
+
+    /**
+     * 过期时间
+     */
+    private Date expireTime;
 
     /**
      * 生源ID
@@ -94,4 +99,9 @@ public class UserInfoDTO {
      * 就读学校
      */
     private String school;
+
+    /**
+     * 用户ID数组
+     */
+    private Long[] userIds;
 }

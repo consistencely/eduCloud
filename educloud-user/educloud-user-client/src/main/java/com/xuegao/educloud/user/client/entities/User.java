@@ -60,7 +60,7 @@ public class User {
     private Integer organizationId;
 
     /**
-     * 注册来源（1：PC端，2：移动端，3：管理员后台创建）
+     * 注册来源（1：PC端，2：移动端，3：手机浏览器，4：管理员后台创建）
      */
     private Byte registerFrom;
 
@@ -78,6 +78,16 @@ public class User {
      * 账号状态（0：注销，1：正常，2：冻结）
      */
     private Byte status;
+
+    /**
+     * 随机字符串
+     */
+    private String uuid;
+
+    /**
+     * 过期时间
+     */
+    private Date expireTime;
 
     /**
      * 注册时间

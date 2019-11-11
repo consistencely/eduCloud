@@ -1,8 +1,16 @@
 package com.xuegao.educloud.common;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import org.junit.Test;
+import org.springframework.util.DigestUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Auther: LIM
@@ -13,13 +21,10 @@ public class JavaTest {
 
     @Test
     public void test(){
-        String format = "XG_{}{}";
-        String phone = "13160675318";
-        String phoneSub = StrUtil.sub(phone,phone.length() - 4,phone.length());
-
-        String str =  StrUtil.format(format,RandomUtil.randomString(8),phoneSub);
-        System.out.println(str);
-
+        List<Integer> list = Arrays.asList(1,2,3);
+//        Integer[] integers = ArrayUtil.toArray(list, Integer.class);
+        Integer[] integers = Convert.toIntArray(list);
+        System.out.println(integers);
 
     }
 }
