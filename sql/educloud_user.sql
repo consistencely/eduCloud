@@ -2,15 +2,15 @@
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50638
+Source Server Version : 50719
 Source Host           : localhost:3306
 Source Database       : educloud_user
 
 Target Server Type    : MYSQL
-Target Server Version : 50638
+Target Server Version : 50719
 File Encoding         : 65001
 
-Date: 2019-11-11 18:01:04
+Date: 2019-11-11 23:33:06
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,20 +23,17 @@ CREATE TABLE `educloud_role` (
   `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '角色ID',
   `role_name` varchar(32) NOT NULL COMMENT '角色名称',
   `description` varchar(128) DEFAULT NULL COMMENT '描述',
-  `valid_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '有效类型（1：永久有效，2：到期失效，3：区间有效）',
-  `valid_start` date DEFAULT NULL COMMENT '有效期开始时间',
-  `valid_end` date DEFAULT NULL COMMENT '有效期结束时间',
-  `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除（0：未删除，1：已删除）',
+  `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除（0：未删除，1：已删除）',
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of educloud_role
 -- ----------------------------
-INSERT INTO `educloud_role` VALUES ('101', '管理员', '管理员', '1', null, null, '0', '2019-11-11 16:22:39', '2019-11-06 10:28:09');
-INSERT INTO `educloud_role` VALUES ('102', '学生', '学生', '1', null, null, '0', '2019-11-11 16:22:41', '2019-11-06 10:28:15');
+INSERT INTO `educloud_role` VALUES ('101', '管理员', '管理员', '0', '2019-11-11 16:22:39', '2019-11-06 10:28:09');
+INSERT INTO `educloud_role` VALUES ('102', '学生', '学生', '0', '2019-11-11 16:22:41', '2019-11-06 10:28:15');
 
 -- ----------------------------
 -- Table structure for `educloud_user`
