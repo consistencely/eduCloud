@@ -2,9 +2,13 @@ package com.xuegao.educloud.user.server.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.user.client.entities.UserAddress;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
+import com.xuegao.educloud.user.client.params.dto.UserQuery;
+import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.BaseTest;
 import com.xuegao.educloud.user.server.service.IUserAddressService;
 import com.xuegao.educloud.user.server.service.IUserService;
@@ -74,5 +78,24 @@ public class UserServiceTest extends BaseTest {
         userInfoDTO.setOrganizationId(88);
         userInfoDTO.setGradeIds(new Integer[]{101,105});
         userService.batchUpdate(userInfoDTO);
+    }
+
+    @Test
+    public void testPage() {
+        int[] arr = new int[]{1,2};
+        int curr = 1;
+        UserQuery userQuery = new UserQuery()
+                .setNickname("567")
+                .setPhone("131")
+//                .setGradeIds(arr)
+//                .setOrganIds(arr)
+//                .setRoleIds(arr)
+                .setStatusCodes(arr)
+                .setRegisterSort(1)
+                ;
+        Page<UserVO> page = new Page<UserVO>().setCurrent(curr);
+        IPage<UserVO> userPage = userService.getUserPage(page,userQuery);
+        printOut(userPage);
+
     }
 }

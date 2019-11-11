@@ -50,7 +50,7 @@ public class KpointController {
         }
 
         Kpoint kpoint = new Kpoint();
-        kpoint.setName("新创建考点");
+        kpoint.setKpointName("新创建考点");
         kpoint.setGradeId(param.getGradeId());
         kpoint.setSubjectId(param.getSubjectId());
         kpoint.setLevel(param.getLevel());
@@ -66,18 +66,18 @@ public class KpointController {
      * 修改考点
      * @return
      */
-    @PostMapping("/updateKpoint")
+    @PutMapping("")
     public R<Kpoint> updateKpoint(@RequestBody Kpoint param){
-        if(param.getId() == null || param.getId() <= 0){
+        if(param.getKpointId() == null || param.getKpointId() <= 0){
             return R.fail("id不正确,修改失败");
         }
-        if(StringUtils.isEmpty(param.getName())){
+        if(StringUtils.isEmpty(param.getKpointName())){
             return R.fail("请输入考点名称");
         }
 
         Kpoint kpoint = new Kpoint();
-        kpoint.setId(param.getId());
-        kpoint.setName(param.getName());
+        kpoint.setKpointId(param.getKpointId());
+        kpoint.setKpointName(param.getKpointName());
 
         boolean success = kpointService.updateById(kpoint);
         return success ? R.ok(kpoint) : R.fail("修改失败");
@@ -88,7 +88,7 @@ public class KpointController {
      * 删除考点
      * @return
      */
-    @PostMapping("/delKpoint")
+    @DeleteMapping("")
     public R delKpoint(@RequestBody int[] ids){
         boolean success = kpointService.removeByIds(Arrays.asList(ids));
         return success ? R.ok() : R.fail("删除失败");

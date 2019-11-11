@@ -1,5 +1,6 @@
 package com.xuegao.educloud.system.client.entities;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -17,7 +18,7 @@ import java.util.Date;
 public class Kpoint {
 
     @TableId
-    private Integer id;
+    private Integer kpointId;
 
     /**
      * 父级ID
@@ -27,7 +28,7 @@ public class Kpoint {
     /**
      * 考点名称
      */
-    private String name;
+    private String kpointName;
 
     /**
      * 学段ID
@@ -49,6 +50,7 @@ public class Kpoint {
      * 逻辑删除字段
      */
     @TableLogic
+    @TableField(select = false)
     private Byte isDel;
 
     /**

@@ -25,13 +25,13 @@ public class SubjectService extends ServiceImpl<SubjectDao,Subject> implements I
     @Override
     public IPage<Subject> getSubjectPage(Page<Subject> page) {
         LambdaQueryWrapper<Subject> wrapper = Wrappers.<Subject>lambdaQuery()
-                .orderByDesc(Subject::getSort)
+                .orderByAsc(Subject::getSort)
                 .orderByAsc(Subject::getCreateTime);
         return this.page(page,wrapper);
     }
 
+    //TODO 事务
     @Override
-    @Transactional
     public void saveSubjectGrade(SubjectGradeDTO subjectGradeDTO) {
         Integer grade = subjectGradeDTO.getGradeId();
         //先删除后添加
@@ -61,7 +61,7 @@ public class SubjectService extends ServiceImpl<SubjectDao,Subject> implements I
      */
     @Override
     public List<Subject> getAllSubject() {
-        LambdaQueryWrapper<Subject> wrapper = Wrappers.<Subject>lambdaQuery().orderByDesc(Subject::getSort);
+        LambdaQueryWrapper<Subject> wrapper = Wrappers.<Subject>lambdaQuery().orderByAsc(Subject::getSort);
         return this.list(wrapper);
     }
 }

@@ -27,7 +27,7 @@ public class GradeService extends ServiceImpl<GradeDao,Grade> implements IGradeS
     @Override
     public IPage<Grade> getGradePage(Page<Grade> page) {
         LambdaQueryWrapper<Grade> wrapper = Wrappers.<Grade>lambdaQuery()
-                .orderByDesc(Grade::getSort)
+                .orderByAsc(Grade::getSort)
                 .orderByAsc(Grade::getCreateTime);
         return this.page(page,wrapper);
     }
@@ -35,7 +35,7 @@ public class GradeService extends ServiceImpl<GradeDao,Grade> implements IGradeS
     @Override
     public List<Grade> getGrades() {
         LambdaQueryWrapper<Grade> wrapper = Wrappers.<Grade>lambdaQuery()
-                .orderByDesc(Grade::getSort)
+                .orderByAsc(Grade::getSort)
                 .orderByAsc(Grade::getCreateTime);
 
         return this.list(wrapper);
@@ -45,8 +45,8 @@ public class GradeService extends ServiceImpl<GradeDao,Grade> implements IGradeS
     public List<GradeWithSubjectVO> getGradesWithSubject() {
         List<Grade> grades = this.getGrades();
         List<GradeWithSubjectVO> list = grades.stream().map(grade -> {
-            GradeWithSubjectVO vo = new GradeWithSubjectVO(grade.getId(), grade.getName());
-            List<Subject> subjects = subjectService.getSubjectsByGrade(grade.getId());
+            GradeWithSubjectVO vo = new GradeWithSubjectVO(grade.getGradeId(), grade.getGradeName());
+            List<Subject> subjects = subjectService.getSubjectsByGrade(grade.getGradeId());
             vo.setSubjects(subjects);
             return vo;
         }).collect(Collectors.toList());

@@ -33,7 +33,7 @@ public class SubjectController {
      * @param current
      * @return
      */
-    @PostMapping("/subjectPage/{curr}")
+    @GetMapping("/page/{curr}")
     public R<IPage<Subject>> getSubjectPage(@PathVariable("curr") int current){
         Page<Subject> page = new Page<Subject>().setCurrent(current);
         IPage<Subject> subjectPage = subjectService.getSubjectPage(page);
@@ -45,7 +45,7 @@ public class SubjectController {
      * 删除学科
      * @return
      */
-    @PostMapping("/del/{id}")
+    @DeleteMapping("/{id}")
     public R delSubject(@PathVariable("id") int id){
         boolean success = subjectService.removeById(id);
         return success ? R.ok() : R.fail("删除失败");
@@ -55,14 +55,14 @@ public class SubjectController {
      * 新增/修改学科
      * @return
      */
-    @PostMapping("/saveOrUpdate")
+    @PostMapping("")
     public R saveSubject(@RequestBody Subject param){
-        if(StringUtils.isEmpty(param.getName())){
+        if(StringUtils.isEmpty(param.getSubjectName())){
             return R.fail("请输入学科名称");
         }
         Subject subject = new Subject();
-        subject.setId(param.getId());
-        subject.setName(param.getName());
+        subject.setSubjectId(param.getSubjectId());
+        subject.setSubjectName(param.getSubjectName());
         subject.setSort(param.getSort());
         boolean success = subjectService.saveOrUpdate(subject);
         return success ? R.ok() : R.fail("保存失败");

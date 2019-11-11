@@ -29,4 +29,6 @@ public interface UserDao extends BaseMapper<User> {
     Integer batchUpdateOrgan(@Param("organizationId") int organizationId, @Param("userIds") Long[] userIds);
 
     IPage<UserVO> getUserPage(Page<UserVO> page, @Param("userQuery") UserQuery userQuery);
+
+    List<UserVO> getUserGradesRoles(@Param("userId") List<Long> userIds);
 }

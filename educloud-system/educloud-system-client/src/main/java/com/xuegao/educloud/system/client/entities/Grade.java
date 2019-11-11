@@ -1,5 +1,6 @@
 package com.xuegao.educloud.system.client.entities;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,16 +20,17 @@ import java.util.Date;
 public class Grade {
 
     @TableId
-    private Integer id;
+    private Integer gradeId;
 
     /** 学科名称 */
-    private String name;
+    private String gradeName;
 
-    /** 排序（倒序）*/
+    /** 排序*/
     private Integer sort;
 
     /** 0：正常，1：删除 */
     @TableLogic
+    @TableField(select = false)
     private Byte isDel;
 
     /** 修改时间 */

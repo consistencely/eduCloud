@@ -305,30 +305,6 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
      */
     @Override
     public IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery) {
-        IPage<UserVO> userPage = baseMapper.getUserPage(page, userQuery);
-        if(userPage != null && ArrayUtil.isNotEmpty(userPage.getRecords())){
-            List<UserVO> userList = userPage.getRecords();
-            List<Long> userIds = userList.stream().map(UserVO::getUserId).collect(Collectors.toList());
-
-            /**
-             * TODO
-             SELECT `user`.user_id,tmp_grade.gradeName, tmp_role.roleName  FROM educloud_user user
-             LEFT JOIN (
-             SELECT userGrade.user_id,GROUP_CONCAT(grade.`name` SEPARATOR '、') gradeName
-             FROM educloud_user_grade userGrade,educloud_system.educloud_grade grade
-             WHERE userGrade.grade_id = grade.id
-             GROUP BY userGrade.user_id
-             ) tmp_grade ON `user`.user_id = tmp_grade.user_id
-             LEFT JOIN (
-             SELECT userRole.user_id, GROUP_CONCAT(role.role_name SEPARATOR '、') roleName
-             FROM educloud_user_role userRole,educloud_role role
-             WHERE userRole.role_id = role.role_id
-             GROUP BY userRole.user_id
-             ) tmp_role ON `user`.user_id = tmp_role.user_id
-             WHERE `user`.user_id IN (1,2)
-             */
-
-        }
-        return userPage;
+        return baseMapper.getUserPage(page, userQuery);
     }
 }
