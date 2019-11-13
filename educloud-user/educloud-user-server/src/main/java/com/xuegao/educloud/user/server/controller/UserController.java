@@ -220,7 +220,7 @@ public class UserController {
 
 
     @GetMapping("/users/page/{curr}")
-    public R<IPage> userInfoPage(@PathVariable("curr") int curr, @RequestParam("query") UserQuery userQuery ){
+    public R<IPage> userInfoPage(@PathVariable("curr") int curr, @ModelAttribute UserQuery userQuery ){
         Page<UserVO> page = new Page<UserVO>().setCurrent(curr);
         IPage<UserVO> userPage = userService.getUserPage(page,userQuery);
         return R.ok(userPage);

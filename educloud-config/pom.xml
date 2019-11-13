@@ -23,6 +23,7 @@
 
 
 	<build>
+		<finalName>educloud-config-${spring.active}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -1,9 +1,4 @@
-## 全局配置
-#spring:
-#  profiles:
-#    # dev：开发环境，test：测试环境，prod：线上环境
-#    #通过maven激活 如：mvn install -P test
-#    active: @spring.active@
+profiles: dev
 
 server:
   port: 8761 # 应用端口，Eureka服务端默认为：8761
@@ -27,3 +22,4 @@ eureka:
 spring:
   application:
     name: eureka # 应用名称，将会显示在Eureka界面的应用名称列
+

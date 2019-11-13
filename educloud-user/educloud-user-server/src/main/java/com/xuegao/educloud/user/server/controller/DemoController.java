@@ -27,7 +27,7 @@ public class DemoController {
     }
 
     @GetMapping("msg2/{curr}")
-    public R dem2o(@PathVariable("curr") int curr,@RequestParam("name") String name){
+    public R dem2o(@PathVariable("curr") int curr,@ModelAttribute("name") String name){
         return R.ok(name);
     }
 
