@@ -14,6 +14,3 @@ spring:
         service-id: config
       profile: ${spring.profiles.active}
 
-#logging:
-#  level:
-#    com.xuegao.educloud.system.server.dao: ${educloud.sql-log-level}

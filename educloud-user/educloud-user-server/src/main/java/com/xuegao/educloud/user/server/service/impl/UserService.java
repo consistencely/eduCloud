@@ -67,12 +67,14 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
                 .setPhone(phone)
                 .setPassword(this.encryptPwd(userInfoDTO.getPassword() + uuid))
                 .setSourceId(userInfoDTO.getSourceId())
-                .setOrganizationId(userInfoDTO.getOrganizationId())
+                .setCampusId(userInfoDTO.getCampusId())
                 .setBirthday(userInfoDTO.getBirthday())
                 .setSchool(userInfoDTO.getSchool())
                 .setRegisterFrom(UserConstants.REGISTER_FROM_ADMIN)
                 .setUuid(uuid)
-                .setExpireTime(userInfoDTO.getExpireTime())
+                .setValidType(userInfoDTO.getValidType())
+                .setValidStart(userInfoDTO.getValidStart())
+                .setValidEnd(userInfoDTO.getValidEnd())
                 .setRegisterTime(new Date());
         baseMapper.insert(user);
 
@@ -117,9 +119,11 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
                 .setPhone(phone)
                 .setNickname(nickname)
                 .setSourceId(userInfoDTO.getSourceId())
-                .setOrganizationId(userInfoDTO.getOrganizationId())
+                .setCampusId(userInfoDTO.getCampusId())
                 .setBirthday(userInfoDTO.getBirthday())
-                .setExpireTime(userInfoDTO.getExpireTime())
+                .setValidType(userInfoDTO.getValidType())
+                .setValidStart(userInfoDTO.getValidStart())
+                .setValidEnd(userInfoDTO.getValidEnd())
                 .setSchool(userInfoDTO.getSchool());
 
         baseMapper.updateById(user);
@@ -281,6 +285,7 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     public void batchUpdate(UserInfoDTO userInfo) {
         Long[] userIds = userInfo.getUserIds();
         if(ArrayUtil.isNotEmpty(userIds)){
+            //修改年级
             if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
 
                 baseMapper.batchClearUserGrade(userIds);
@@ -289,8 +294,9 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
                     baseMapper.saveUserGrade(userId, userInfo.getGradeIds());
                 });
             }
-            if(userInfo.getOrganizationId() != null){
-                baseMapper.batchUpdateOrgan(userInfo.getOrganizationId(), userIds);
+            //修改校区
+            if(userInfo.getCampusId() != null){
+                baseMapper.batchUpdateOrgan(userInfo.getCampusId(), userIds);
             }
         }
 

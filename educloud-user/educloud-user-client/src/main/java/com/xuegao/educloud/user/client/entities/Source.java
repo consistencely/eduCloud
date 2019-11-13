@@ -11,26 +11,59 @@ import java.util.Date;
 
 /**
  * @Auther: LIM
- * @Date: 2019/11/5 14:14
- * @Description: 角色实体类
+ * @Date: 2019/11/12 15:47
+ * @Description: 生源实体类
  */
 @Data
 @Accessors(chain = true)
-@TableName("educloud_role")
-public class Role {
+@TableName("educloud_source")
+public class Source {
 
+    /**
+     * 生源ID
+     */
     @TableId
-    private Integer roleId;
+    private Integer sourceId;
 
     /**
-     * 角色名称
+     * 生源名称
      */
-    private String roleName;
+    private String sourceName;
 
     /**
-     * 角色描述
+     * 报名方式
      */
-    private String description;
+    private String applyWay;
+
+    /**
+     * 负责人/推荐人
+     */
+    private String person;
+
+    /**
+     * 省
+     */
+    private String province;
+
+    /**
+     * 市
+     */
+    private String city;
+
+    /**
+     * 县
+     */
+    private String county;
+
+    /**
+     * 详细地址
+     */
+    private String addrDetail;
+
+    /**
+     * 联系电话
+     */
+    private String tel;
 
     /**
      * 是否删除（0：未删除，1：已删除）

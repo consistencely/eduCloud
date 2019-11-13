@@ -50,10 +50,6 @@ public class UserInfoDTO {
      */
     private Integer[] gradeIds;
 
-    /**
-     * 过期时间
-     */
-    private Date expireTime;
 
     /**
      * 生源ID
@@ -61,9 +57,24 @@ public class UserInfoDTO {
     private Integer sourceId;
 
     /**
-     * 机构ID
+     * 校区ID
      */
-    private Integer organizationId;
+    private Integer campusId;
+
+    /**
+     * 有效类型（1：永久有效，2：过期失效，3：区间有效）
+     */
+    private Byte validType;
+
+    /**
+     * 有效期开始时间
+     */
+    private Date validStart;
+
+    /**
+     * 有效期结束时间
+     */
+    private Date validEnd;
 
     /**
      * 省

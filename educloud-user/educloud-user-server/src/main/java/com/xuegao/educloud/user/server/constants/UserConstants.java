@@ -50,4 +50,19 @@ public interface UserConstants {
      * 账号状态-冻结
      */
     byte USER_STATUS_LOCK = 2;
+
+    /**
+     * 用户有效类型 - 永久有效
+     */
+    byte VALID_TYPE_PERPETUAL = 1;
+
+    /**
+     * 用户有效类型 - 过期失效
+     */
+    byte VALID_TYPE_OVERDUE = 2;
+
+    /**
+     * 用户有效类型 - 区间有效
+     */
+    byte VALID_TYPE_SCOPE = 3;
 }

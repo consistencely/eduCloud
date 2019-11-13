@@ -38,9 +38,9 @@ public class UserQuery {
     private int[] roleIds;
 
     /**
-     * 机构
+     * 校区
      */
-    private int[] organIds;
+    private int[] campusIds;
 
     /**
      * 状态

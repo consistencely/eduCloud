@@ -26,7 +26,7 @@ public interface UserDao extends BaseMapper<User> {
 
     Integer batchClearUserGrade(@Param("userIds") Long[] userIds);
 
-    Integer batchUpdateOrgan(@Param("organizationId") int organizationId, @Param("userIds") Long[] userIds);
+    Integer batchUpdateOrgan(@Param("campusId") int campusId, @Param("userIds") Long[] userIds);
 
     IPage<UserVO> getUserPage(Page<UserVO> page, @Param("userQuery") UserQuery userQuery);
 

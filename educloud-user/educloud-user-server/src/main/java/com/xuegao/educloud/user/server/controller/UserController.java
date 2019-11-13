@@ -115,9 +115,31 @@ public class UserController {
         if(ArrayUtil.isEmpty(userInfoDTO.getGradeIds())){
             return R.fail("请选择年级");
         }
-        if(userInfoDTO.getOrganizationId() == null){
-            return R.fail("请选择所属机构");
+        if(userInfoDTO.getCampusId() == null){
+            return R.fail("请选择所属校区");
         }
+
+        if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_PERPETUAL){
+            userInfoDTO.setValidStart(null).setValidEnd(null);
+        }else if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_OVERDUE){
+            userInfoDTO.setValidStart(null);
+            if(userInfoDTO.getValidEnd() == null){
+                return R.fail("请选择过期时间");
+            }
+        }else if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_SCOPE){
+            if(userInfoDTO.getValidStart() == null){
+                return R.fail("请选择有效期开始时间");
+            }
+            if(userInfoDTO.getValidEnd() == null){
+                return R.fail("请选择有效期过期时间");
+            }
+            if(!userInfoDTO.getValidStart().before(userInfoDTO.getValidEnd())){
+                return R.fail("请选择正确有效时间");
+            }
+        }else{
+            return R.fail("请选择正确的有效类型");
+        }
+
         return R.ok();
     }
 

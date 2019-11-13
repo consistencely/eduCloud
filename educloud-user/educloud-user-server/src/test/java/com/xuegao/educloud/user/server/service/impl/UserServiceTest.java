@@ -39,7 +39,7 @@ public class UserServiceTest extends BaseTest {
                 .setRoleIds(new Integer[]{101})
                 .setGradeIds(new Integer[]{44,55})
                 .setSourceId(6)
-                .setOrganizationId(101)
+                .setCampusId(101)
 //                .setProvince("广东省")
 //                .setCity("广州市")
 //                .setCounty("天河区")
@@ -75,7 +75,7 @@ public class UserServiceTest extends BaseTest {
 
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         userInfoDTO.setUserIds(ArrayUtil.toArray(userIds,Long.class));
-        userInfoDTO.setOrganizationId(88);
+        userInfoDTO.setCampusId(88);
         userInfoDTO.setGradeIds(new Integer[]{101,105});
         userService.batchUpdate(userInfoDTO);
     }

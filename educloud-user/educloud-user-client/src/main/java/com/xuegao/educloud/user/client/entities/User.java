@@ -55,9 +55,9 @@ public class User {
     private Integer sourceId;
 
     /**
-     * 机构ID
+     * 校区ID
      */
-    private Integer organizationId;
+    private Integer campusId;
 
     /**
      * 注册来源（1：PC端，2：移动端，3：手机浏览器，4：管理员后台创建）
@@ -75,6 +75,21 @@ public class User {
     private String school;
 
     /**
+     * 有效类型（1：永久有效，2：过期失效，3：区间有效）
+     */
+    private Byte validType;
+
+    /**
+     * 有效期开始时间
+     */
+    private Date validStart;
+
+    /**
+     * 有效期结束时间
+     */
+    private Date validEnd;
+
+    /**
      * 账号状态（0：注销，1：正常，2：冻结）
      */
     private Byte status;
@@ -84,10 +99,6 @@ public class User {
      */
     private String uuid;
 
-    /**
-     * 过期时间
-     */
-    private Date expireTime;
 
     /**
      * 注册时间
