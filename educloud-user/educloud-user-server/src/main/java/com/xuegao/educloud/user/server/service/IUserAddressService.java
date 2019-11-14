@@ -18,4 +18,6 @@ public interface IUserAddressService extends IService<UserAddress> {
      * @return
      */
     UserAddress getOneByUserId(long userId);
+
+    void saveOrUpdateAddr(UserAddress userAddress);
 }

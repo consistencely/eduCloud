@@ -14,7 +14,7 @@ public interface UserConstants {
     /**
      * 默认头像地址
      */
-    String DEFAULT_AVATAR = "https://avatar.csdnimg.cn/4/0/3/3_qq_39507276_1552281384.jpg";
+    String DEFAULT_AVATAR = "https://avatar.csdnimg.cn/4/0/3/3_qq_39507276_1552281384.jpg"; //todo
 
     /**
      * 注册来源-PC端

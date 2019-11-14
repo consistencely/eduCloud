@@ -85,4 +85,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery);
+
+    /**
+     * 修改密码
+     * @param user
+     * @return
+     */
+    boolean updatePwd(User user);
 }

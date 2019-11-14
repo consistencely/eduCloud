@@ -6,6 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.error.ErrorCode;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
@@ -53,7 +54,7 @@ public class UserController {
         }
         boolean exist = userService.isPhoneExist(userInfoDTO.getPhone());
         if(exist){
-            return R.fail("手机号码已存在");
+            return R.fail(ErrorCode.Error_40001,"手机号码已存在");
         }
 
         userService.saveUser(userInfoDTO);
@@ -87,7 +88,7 @@ public class UserController {
             return R.fail("该用户已注销");
         }
         User phone_user = userService.getUserByPhone(userInfoDTO.getPhone());
-        if(phone_user != null || !phone_user.getUserId().equals(userId)){
+        if(phone_user != null && !phone_user.getUserId().equals(userId)){
              return R.fail("手机号码已存在");
         }
         userService.updateUser(userInfoDTO);
@@ -100,13 +101,13 @@ public class UserController {
      * @return
      */
     private R verifyUserParam(UserInfoDTO userInfoDTO){
-        if(Validator.isMobile(userInfoDTO.getPhone())){
-            return R.fail("手机格式错误");
+        if(!Validator.isMobile(userInfoDTO.getPhone())){
+            return R.fail(ErrorCode.Error_40001,"手机格式错误");
         }
         //校验密码
         if(StrUtil.isEmpty(userInfoDTO.getPassword())
-                || Pattern.matches(UserConstants.PATTERN_PWD, userInfoDTO.getPassword())){
-            return R.fail("密码格式不正确");
+                || !Pattern.matches(UserConstants.PATTERN_PWD, userInfoDTO.getPassword())){
+            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
         }
 
         if(ArrayUtil.isEmpty(userInfoDTO.getRoleIds())){
@@ -148,13 +149,26 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/userInfo/{userId}")
+    @GetMapping("/user/{userId}")
     public R<UserInfoDTO> getUserInfo(@PathVariable("userId") long userId){
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         if(userInfo == null){
             return R.fail("用户不存在");
         }
         return R.ok(userInfo);
+    }
+
+    /**
+     * 修改密码
+     * @param userId 用户ID
+     * @param newPwd 新密码
+     * @return
+     */
+    @PutMapping("/user/password/{userId}")
+    public R updatePwd(@PathVariable("userId") long userId,@RequestParam("pwd") String newPwd){
+        User user = new User().setUserId(userId).setPassword(newPwd);
+        boolean success = userService.updatePwd(user);
+        return success ? R.ok() : R.fail("修改密码失败");
     }
 
     /**

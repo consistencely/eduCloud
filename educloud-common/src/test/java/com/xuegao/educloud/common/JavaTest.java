@@ -11,6 +11,7 @@ import org.springframework.util.DigestUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Auther: LIM
@@ -21,10 +22,10 @@ public class JavaTest {
 
     @Test
     public void test(){
-        List<Integer> list = Arrays.asList(1,2,3);
-//        Integer[] integers = ArrayUtil.toArray(list, Integer.class);
-        Integer[] integers = Convert.toIntArray(list);
-        System.out.println(integers);
+//        String uuid = UUID.randomUUID().toString();
+        String uuid = cn.hutool.core.lang.UUID.randomUUID().toString(true);
+        System.out.println(uuid);
+        System.out.println(uuid.length());
 
     }
 }

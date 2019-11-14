@@ -52,6 +52,24 @@ public class UserServiceTest extends BaseTest {
     }
 
     @Test
+    public void update() throws Exception {
+        long userId = 66;
+
+        UserAddress userAddress = userAddressService.getOneByUserId(userId);
+        if (userAddress == null) {
+            userAddress = new UserAddress().setUserId(userId);
+
+        }
+
+        userAddress.setProvince("广东省")
+                .setCity(null)
+                .setCounty(null)
+                .setAddrDetail(null)
+                .setTel("666");
+        userAddressService.saveOrUpdateAddr(userAddress);
+    }
+
+    @Test
     public void getAddress() throws Exception {
         long userId = 1L;
         LambdaQueryWrapper<UserAddress> wrapper = Wrappers.<UserAddress>lambdaQuery().eq(UserAddress::getUserId, userId).last("LIMIT 1");
