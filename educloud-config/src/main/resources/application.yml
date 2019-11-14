@@ -1,32 +1,13 @@
-
-server:
-  port: 8888
-
-#eureka配置
-eureka:
-  client:
-    # Eureka服务器的地址
-    service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
-  instance:
-    # 客户端在注册时使用自己的IP而不是主机名，缺省：false
-    prefer-ip-address: true
-    # 实例ID
-    instance-id: ${spring.application.name}:${server.port}
-
+# 全局配置
 spring:
-  application:
-    name: config
   profiles:
-    active: native
-  # 配置中心
-  cloud:
-    config:
-      server:
-        native:
-          search-locations:
-          - classpath:/config/dev/
-          - classpath:/config/test/
+    # dev：开发环境，test：测试环境，prod：线上环境
+    #通过maven激活 如：mvn install -P test
+    active: @spring.active@
+
+
+
+
 
 
 

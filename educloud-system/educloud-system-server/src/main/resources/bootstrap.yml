@@ -3,7 +3,7 @@ spring:
   application:
     name: system
   profiles:
-    active: dev
+    active: @spring.active@
   #配置中心
   cloud:
     config:

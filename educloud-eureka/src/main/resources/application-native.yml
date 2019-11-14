@@ -1,4 +1,3 @@
-profiles: dev
 
 server:
   port: 8761 # 应用端口，Eureka服务端默认为：8761
@@ -8,7 +7,7 @@ eureka:
   client:
     # Eureka服务器的地址
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: http://127.0.0.1:${server.port}/eureka/
     # 是否向注册中心注册自己，缺省：true
     # 一般情况下，Eureka服务端是不需要再注册自己的
     register-with-eureka: false

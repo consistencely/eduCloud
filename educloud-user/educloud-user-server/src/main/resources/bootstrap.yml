@@ -4,7 +4,7 @@ spring:
   application:
     name: user
   profiles:
-    active: dev
+    active: @spring.active@
   #配置中心
   cloud:
     config:
