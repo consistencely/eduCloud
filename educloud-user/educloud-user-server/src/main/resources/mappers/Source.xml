@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuegao.educloud.user.server.dao.SourceDao">
+
+    <select id="getSourcePage" parameterType="Source" resultType="SourceDTO">
+        SELECT educloud_source.source_id,educloud_source.source_name,educloud_source.apply_way,
+        educloud_source.person,educloud_source.tel,educloud_source.province,
+        educloud_source.city,educloud_source.county,educloud_source.addr_detail,IFNULL(users.countNum,0) countNum
+        FROM educloud_source
+        LEFT JOIN
+        (SELECT count(source_id) countNum, source_id FROM educloud_user GROUP BY source_id) users
+        ON educloud_source.source_id = users.source_id
+        WHERE is_del = 0
+        <if test="source.sourceName != null">
+            AND source_name LIKE '%${source.sourceName}%'
+        </if>
+        ORDER BY source_id DESC
+    </select>
+</mapper>

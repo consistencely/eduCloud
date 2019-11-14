@@ -313,4 +313,11 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     public IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery) {
         return baseMapper.getUserPage(page, userQuery);
     }
+
+    @Override
+    public User getUserBySourceId(Integer sourceId) {
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.<User>lambdaQuery()
+                .eq(User::getSourceId,sourceId);
+        return baseMapper.selectOne(queryWrapper);
+    }
 }

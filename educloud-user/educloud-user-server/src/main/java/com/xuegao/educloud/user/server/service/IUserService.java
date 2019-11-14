@@ -85,4 +85,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery);
+
+    /**
+     * 查询已配置生源地的用户
+     * @param sourceId
+     * @return
+     */
+    User getUserBySourceId(Integer sourceId);
 }
