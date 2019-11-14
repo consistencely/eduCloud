@@ -44,16 +44,6 @@ public class UserVO {
      */
     private String grade;
 
-    /**
-     * 注册时间
-     */
-    private Date registerTime;
-
-    /**
-     * 账号状态（0：注销，1：正常，2：冻结）
-     */
-    private Byte status;
-
 
 
 }

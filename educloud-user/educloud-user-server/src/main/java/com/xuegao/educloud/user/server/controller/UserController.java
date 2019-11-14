@@ -8,12 +8,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.error.ErrorCode;
 import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.system.client.entities.Grade;
+import com.xuegao.educloud.system.client.feign.SystemClient;
+import com.xuegao.educloud.user.client.entities.Campus;
 import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
+import com.xuegao.educloud.user.server.service.ICampusService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +43,10 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private ICampusService campusService;
+    @Autowired
+    private SystemClient systemClient;
 
     /**
      * 新增用户
@@ -160,14 +168,28 @@ public class UserController {
 
     /**
      * 修改密码
-     * @param userId 用户ID
-     * @param newPwd 新密码
      * @return
      */
-    @PutMapping("/user/password/{userId}")
-    public R updatePwd(@PathVariable("userId") long userId,@RequestParam("pwd") String newPwd){
-        User user = new User().setUserId(userId).setPassword(newPwd);
-        boolean success = userService.updatePwd(user);
+    @PutMapping("/user/password")
+    public R updatePwd(@RequestBody User user){
+
+        Long userId = user.getUserId();
+        String newPwd = user.getPassword();
+
+        //校验密码
+        if(StrUtil.isEmpty(newPwd)
+                || !Pattern.matches(UserConstants.PATTERN_PWD, newPwd)){
+            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
+        }
+        User db_user = userService.getById(userId);
+        if(db_user == null){
+            return R.fail("用户不存在");
+        }
+        if(db_user.getStatus() == UserConstants.USER_STATUS_DEL){
+            return R.fail("用户已注销");
+        }
+
+        boolean success = userService.updatePwd(userId,db_user.getUuid(),newPwd);
         return success ? R.ok() : R.fail("修改密码失败");
     }
 
@@ -197,7 +219,7 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销记录，操作失败");
+            return R.fail("包含已注销用户，操作失败");
         }
         userService.batchUpdateStatus(statusCode, userIds);
         return R.ok();
@@ -213,6 +235,7 @@ public class UserController {
         if(ArrayUtil.isEmpty(userInfo.getUserIds())){
             return R.fail("请选择用户");
         }
+
         List<User> users = (List<User>) userService.listByIds(Arrays.asList(userInfo.getUserIds()));
         boolean hasDel = false;
         for (User user : users) {
@@ -222,9 +245,21 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销记录，操作失败");
+            return R.fail("包含已注销用户，操作失败");
         }
-        //TODO 校验年级，机构
+
+        if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
+            List<Grade> grades = systemClient.getGradeByIds(userInfo.getGradeIds()).getData();
+            if(ArrayUtil.isEmpty(grades) || grades.size() != userInfo.getGradeIds().length){
+                return R.fail("内含不合法年级");
+            }
+        }
+        if(userInfo.getCampusId() != null){
+            Campus campus = campusService.getById(userInfo.getCampusId());
+            if(campus == null){
+                return R.fail("校区不存在");
+            }
+        }
 
         userService.batchUpdate(userInfo);
 
@@ -233,6 +268,12 @@ public class UserController {
     }
 
 
+    /**
+     * 分页查询用户列表
+     * @param curr
+     * @param userQuery
+     * @return
+     */
     @GetMapping("/users/page/{curr}")
     public R<IPage> userInfoPage(@PathVariable("curr") int curr, @ModelAttribute UserQuery userQuery ){
         Page<UserVO> page = new Page<UserVO>().setCurrent(curr);

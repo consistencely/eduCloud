@@ -1,5 +1,6 @@
 package com.xuegao.educloud.system.server.controller;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.params.R;
@@ -10,6 +11,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,7 +21,6 @@ import java.util.List;
  * @Description:
  */
 @RestController
-@RequestMapping("/grade")
 public class GradeController {
 
     @Autowired
@@ -30,7 +32,7 @@ public class GradeController {
      * @param current 页数
      * @return
      */
-    @GetMapping("/page/{curr}")
+    @GetMapping("/grade/page/{curr}")
     public R getGradePage(@PathVariable("curr") int current){
         Page<Grade> page = new Page<Grade>().setCurrent(current);
         IPage<Grade> gradePage = gradeService.getGradePage(page);
@@ -42,7 +44,7 @@ public class GradeController {
      * 删除学段
      * @return
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/grade/{id}")
     public R delGrade(@PathVariable("id") int id){
         boolean success = gradeService.removeById(id);
         return success ? R.ok() : R.fail("删除失败");
@@ -52,7 +54,7 @@ public class GradeController {
      * 新增/修改学段
      * @return
      */
-    @PostMapping("")
+    @PostMapping("/grade")
     public R saveGrade(@RequestBody Grade param){
         if(StringUtils.isEmpty(param.getGradeName())){
             return R.fail("请输入学段名称");
@@ -72,4 +74,12 @@ public class GradeController {
     }
 
 
+    @GetMapping("/grades/ids")
+    public R<List<Grade>> getGradeByIds(@RequestParam("ids") Integer[] ids){
+        if(ids.length == 0){
+            return R.fail("id数组为空");
+        }
+        List<Grade> grades = (List<Grade>) gradeService.listByIds(Arrays.asList(ids));
+        return R.ok(grades);
+    }
 }

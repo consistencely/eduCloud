@@ -86,10 +86,12 @@ public interface IUserService extends IService<User> {
      */
     IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery);
 
+
     /**
      * 修改密码
-     * @param user
+     * @param userId
+     * @param newPwd
      * @return
      */
-    boolean updatePwd(User user);
+    boolean updatePwd(long userId, String newPwd, String uuid);
 }

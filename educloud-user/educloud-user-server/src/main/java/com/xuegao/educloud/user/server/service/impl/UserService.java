@@ -126,7 +126,7 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
                 .set(User::getValidStart, userInfoDTO.getValidStart())
                 .set(User::getValidEnd, userInfoDTO.getValidEnd())
                 .set(User::getSchool, userInfoDTO.getSchool());
-        baseMapper.update(null,updateWrapper);
+        baseMapper.update(null, updateWrapper);
 
         //记录用户角色
         baseMapper.clearUserRole(userId);
@@ -255,7 +255,8 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
                 .setCity(userAddress.getCity())
                 .setCounty(userAddress.getCounty())
                 .setAddrDetail(userAddress.getAddrDetail())
-                .setTel(userAddress.getTel());
+                .setTel(userAddress.getTel())
+                .setPassword(null);
 
         return userInfo;
     }
@@ -284,18 +285,18 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     @Override
     public void batchUpdate(UserInfoDTO userInfo) {
         Long[] userIds = userInfo.getUserIds();
-        if(ArrayUtil.isNotEmpty(userIds)){
+        if (ArrayUtil.isNotEmpty(userIds)) {
             //修改年级
-            if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
+            if (ArrayUtil.isNotEmpty(userInfo.getGradeIds())) {
 
                 baseMapper.batchClearUserGrade(userIds);
 
-                Arrays.stream(userIds).forEach(userId->{
+                Arrays.stream(userIds).forEach(userId -> {
                     baseMapper.saveUserGrade(userId, userInfo.getGradeIds());
                 });
             }
             //修改校区
-            if(userInfo.getCampusId() != null){
+            if (userInfo.getCampusId() != null) {
                 baseMapper.batchUpdateOrgan(userInfo.getCampusId(), userIds);
             }
         }
@@ -317,11 +318,17 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     /**
      * 修改密码
      *
-     * @param user
+     * @param userId
+     * @param newPwd
      * @return
      */
     @Override
-    public boolean updatePwd(User user) {
-        return false;
+    public boolean updatePwd(long userId, String newPwd, String uuid) {
+
+        String pwd = StrUtil.isEmpty(uuid) ? this.encryptPwd(newPwd) : this.encryptPwd(newPwd + uuid);
+
+        User user = new User().setUserId(userId).setPassword(pwd);
+
+        return updateById(user);
     }
 }

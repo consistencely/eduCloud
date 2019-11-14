@@ -57,9 +57,9 @@
         LEFT JOIN educloud_user_grade userGrade ON userGrade.user_id = `user`.user_id
         LEFT JOIN educloud_user_role userRole ON userRole.user_id = `user`.user_id
         LEFT JOIN (
-        SELECT userGrade.user_id,GROUP_CONCAT(grade.`name` ORDER BY grade.sort ASC SEPARATOR '、') gradeName
+        SELECT userGrade.user_id,GROUP_CONCAT(grade.grade_name ORDER BY grade.sort ASC SEPARATOR '、') gradeName
         FROM educloud_user_grade userGrade,educloud_system.educloud_grade grade
-        WHERE userGrade.grade_id = grade.id
+        WHERE userGrade.grade_id = grade.grade_id
         GROUP BY userGrade.user_id
         ) tmp_grade ON `user`.user_id = tmp_grade.user_id
         LEFT JOIN (

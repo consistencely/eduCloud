@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.system.client.entities.Grade;
+import com.xuegao.educloud.system.client.feign.SystemClient;
 import com.xuegao.educloud.user.client.entities.UserAddress;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
@@ -29,6 +32,8 @@ public class UserServiceTest extends BaseTest {
     private IUserService userService;
     @Autowired
     private IUserAddressService userAddressService;
+    @Autowired
+    private SystemClient systemClient;
 
     @Test
     public void saveUser() throws Exception {
@@ -114,6 +119,15 @@ public class UserServiceTest extends BaseTest {
         Page<UserVO> page = new Page<UserVO>().setCurrent(curr);
         IPage<UserVO> userPage = userService.getUserPage(page,userQuery);
         printOut(userPage);
+
+    }
+
+    @Test
+    public void sys() {
+        Integer[] ids = new Integer[]{};
+        R<List<Grade>> result = systemClient.getGradeByIds(ids);
+        List<Grade> list = result.getData();
+        printOut(list);
 
     }
 }
