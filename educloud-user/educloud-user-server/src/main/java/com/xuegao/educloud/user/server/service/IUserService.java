@@ -91,5 +91,5 @@ public interface IUserService extends IService<User> {
      * @param sourceId
      * @return
      */
-    User getUserBySourceId(Integer sourceId);
+    List<User> getUserBySourceId(Integer sourceId);
 }

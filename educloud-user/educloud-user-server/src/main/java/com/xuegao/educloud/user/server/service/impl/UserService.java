@@ -315,9 +315,10 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     }
 
     @Override
-    public User getUserBySourceId(Integer sourceId) {
+    public List<User> getUserBySourceId(Integer sourceId) {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.<User>lambdaQuery()
-                .eq(User::getSourceId,sourceId);
-        return baseMapper.selectOne(queryWrapper);
+                .eq(User::getSourceId,sourceId)
+                .eq(User::getStatus,1);
+        return baseMapper.selectList(queryWrapper);
     }
 }

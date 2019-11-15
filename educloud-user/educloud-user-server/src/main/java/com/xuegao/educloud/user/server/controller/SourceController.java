@@ -78,8 +78,12 @@ public class SourceController {
         if (source.getApplyWay() == null) {
             return R.fail("报名方式不能为空");
         }
-        sourceService.updateById(source);
-        return R.ok();
+        Integer count = sourceService.updateSource(source);
+        if (count > 0) {
+            return R.ok();
+        } else {
+            return R.fail("修改失败");
+        }
     }
 
 
@@ -91,7 +95,7 @@ public class SourceController {
      */
     @GetMapping("/source/{sourceId}")
     public R<Source> getSourceInfo(@PathVariable("sourceId") Integer sourceId) {
-        Source source = sourceService.getById(sourceId);
+        Source source = sourceService.getSourceInfo(sourceId);
         if (source == null) {
             return R.fail("生源信息不存在");
         }
@@ -101,7 +105,7 @@ public class SourceController {
     /**
      * 批量删除生源信息
      *
-     * @param sourceIds 生源ID数组
+     * @param sourceMap 生源ID数组
      * @return
      */
     @DeleteMapping("/sources")
@@ -112,8 +116,8 @@ public class SourceController {
         }
         for (Integer sourceId : sourceIds) {
             //判断是否存在已配置的生源地
-            User user = userService.getUserBySourceId(sourceId);
-            if(user == null){
+            List<User> userList = userService.getUserBySourceId(sourceId);
+            if (userList != null && userList.size() > 0) {
                 return R.fail("已配置生源地，不允许删除");
             }
         }
