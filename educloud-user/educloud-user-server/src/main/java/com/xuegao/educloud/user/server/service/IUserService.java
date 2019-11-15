@@ -101,4 +101,12 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<UserRoleVO> getUserNumGroupRole();
+
+    /**
+     * 查询已配置生源地的用户
+     * @param sourceId
+     * @return
+     */
+    List<User> getUserBySourceId(Integer sourceId);
+
 }
