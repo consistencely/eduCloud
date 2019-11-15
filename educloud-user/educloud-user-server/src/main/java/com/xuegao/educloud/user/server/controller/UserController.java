@@ -1,18 +1,25 @@
 package com.xuegao.educloud.user.server.controller;
 
+import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.error.ErrorCode;
 import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.system.client.entities.Grade;
+import com.xuegao.educloud.system.client.feign.SystemClient;
+import com.xuegao.educloud.user.client.entities.Campus;
 import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
+import com.xuegao.educloud.user.server.service.ICampusService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +46,10 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private ICampusService campusService;
+    @Autowired
+    private SystemClient systemClient;
 
     /**
      * 新增用户
@@ -53,7 +65,7 @@ public class UserController {
         }
         boolean exist = userService.isPhoneExist(userInfoDTO.getPhone());
         if(exist){
-            return R.fail("手机号码已存在");
+            return R.fail(ErrorCode.Error_40001,"手机号码已存在");
         }
 
         userService.saveUser(userInfoDTO);
@@ -87,7 +99,7 @@ public class UserController {
             return R.fail("该用户已注销");
         }
         User phone_user = userService.getUserByPhone(userInfoDTO.getPhone());
-        if(phone_user != null || !phone_user.getUserId().equals(userId)){
+        if(phone_user != null && !phone_user.getUserId().equals(userId)){
              return R.fail("手机号码已存在");
         }
         userService.updateUser(userInfoDTO);
@@ -100,13 +112,13 @@ public class UserController {
      * @return
      */
     private R verifyUserParam(UserInfoDTO userInfoDTO){
-        if(Validator.isMobile(userInfoDTO.getPhone())){
-            return R.fail("手机格式错误");
+        if(!Validator.isMobile(userInfoDTO.getPhone())){
+            return R.fail(ErrorCode.Error_40001,"手机格式错误");
         }
         //校验密码
         if(StrUtil.isEmpty(userInfoDTO.getPassword())
-                || Pattern.matches(UserConstants.PATTERN_PWD, userInfoDTO.getPassword())){
-            return R.fail("密码格式不正确");
+                || !Pattern.matches(UserConstants.PATTERN_PWD, userInfoDTO.getPassword())){
+            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
         }
 
         if(ArrayUtil.isEmpty(userInfoDTO.getRoleIds())){
@@ -148,7 +160,7 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/userInfo/{userId}")
+    @GetMapping("/user/wholeinfo/{userId}")
     public R<UserInfoDTO> getUserInfo(@PathVariable("userId") long userId){
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         if(userInfo == null){
@@ -158,14 +170,41 @@ public class UserController {
     }
 
     /**
+     * 修改密码
+     * @return
+     */
+    @PutMapping("/user/password")
+    public R updatePwd(@RequestBody User user){
+
+        Long userId = user.getUserId();
+        String newPwd = user.getPassword();
+
+        //校验密码
+        if(StrUtil.isEmpty(newPwd)
+                || !Pattern.matches(UserConstants.PATTERN_PWD, newPwd)){
+            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
+        }
+        User db_user = userService.getById(userId);
+        if(db_user == null){
+            return R.fail("用户不存在");
+        }
+        if(db_user.getStatus() == UserConstants.USER_STATUS_DEL){
+            return R.fail("用户已注销");
+        }
+
+        boolean success = userService.updatePwd(userId,db_user.getUuid(),newPwd);
+        return success ? R.ok() : R.fail("修改密码失败");
+    }
+
+    /**
      * 批量修改用户状态
      * @param statusCode 状态码
-     * @param userIds 用户ID数组
      * @return
      */
     @PutMapping("/users/status/{statusCode}")
-    public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody List<Long> userIds){
-        if(ArrayUtil.isEmpty(userIds)){
+    public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
+        List<Long> userIds = (List<Long>) userMap.get("userIds");
+        if(IterUtil.isEmpty(userIds)){
             return R.fail("请选择用户");
         }
         if(statusCode != UserConstants.USER_STATUS_DEL
@@ -183,7 +222,7 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销记录，操作失败");
+            return R.fail("包含已注销用户，操作失败");
         }
         userService.batchUpdateStatus(statusCode, userIds);
         return R.ok();
@@ -199,6 +238,7 @@ public class UserController {
         if(ArrayUtil.isEmpty(userInfo.getUserIds())){
             return R.fail("请选择用户");
         }
+
         List<User> users = (List<User>) userService.listByIds(Arrays.asList(userInfo.getUserIds()));
         boolean hasDel = false;
         for (User user : users) {
@@ -208,9 +248,21 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销记录，操作失败");
+            return R.fail("包含已注销用户，操作失败");
         }
-        //TODO 校验年级，机构
+
+        if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
+            List<Grade> grades = systemClient.getGradeByIds(userInfo.getGradeIds()).getData();
+            if(IterUtil.isEmpty(grades) || grades.size() != userInfo.getGradeIds().length){
+                return R.fail("内含不合法年级");
+            }
+        }
+        if(userInfo.getCampusId() != null){
+            Campus campus = campusService.getById(userInfo.getCampusId());
+            if(campus == null){
+                return R.fail("校区不存在");
+            }
+        }
 
         userService.batchUpdate(userInfo);
 
@@ -219,6 +271,12 @@ public class UserController {
     }
 
 
+    /**
+     * 分页查询用户列表
+     * @param curr
+     * @param userQuery
+     * @return
+     */
     @GetMapping("/users/page/{curr}")
     public R<IPage> userInfoPage(@PathVariable("curr") int curr, @ModelAttribute UserQuery userQuery ){
         Page<UserVO> page = new Page<UserVO>().setCurrent(curr);

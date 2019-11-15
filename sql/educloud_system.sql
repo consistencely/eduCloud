@@ -2,15 +2,15 @@
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50719
+Source Server Version : 50638
 Source Host           : localhost:3306
 Source Database       : educloud_system
 
 Target Server Type    : MYSQL
-Target Server Version : 50719
+Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2019-11-11 23:32:57
+Date: 2019-11-14 18:09:20
 */
 
 SET FOREIGN_KEY_CHECKS=0;

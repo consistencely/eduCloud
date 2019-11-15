@@ -51,15 +51,17 @@
     </update>
 
     <select id="getUserPage" resultType="UserVO" parameterType="UserQuery">
-        SELECT `user`.user_id,`user`.nickname,`user`.phone,`user`.`status`,`user`.register_time,`user`.campus_id,`user`.source_id
-        , tmp_grade.gradeName grade, tmp_role.roleName role
+        SELECT `user`.user_id,`user`.nickname,`user`.phone,`user`.`status`,`user`.register_time,`user`.campus_id,`user`.source_id,
+        campus.campus_name, source.source_name, tmp_grade.gradeName, tmp_role.roleName
         FROM educloud_user user
         LEFT JOIN educloud_user_grade userGrade ON userGrade.user_id = `user`.user_id
         LEFT JOIN educloud_user_role userRole ON userRole.user_id = `user`.user_id
+        LEFT JOIN educloud_campus campus ON `user`.campus_id = campus.campus_id
+        LEFT JOIN educloud_source source ON `user`.source_id = source.source_id
         LEFT JOIN (
-        SELECT userGrade.user_id,GROUP_CONCAT(grade.`name` ORDER BY grade.sort ASC SEPARATOR '、') gradeName
+        SELECT userGrade.user_id,GROUP_CONCAT(grade.grade_name ORDER BY grade.sort ASC SEPARATOR '、') gradeName
         FROM educloud_user_grade userGrade,educloud_system.educloud_grade grade
-        WHERE userGrade.grade_id = grade.id
+        WHERE userGrade.grade_id = grade.grade_id
         GROUP BY userGrade.user_id
         ) tmp_grade ON `user`.user_id = tmp_grade.user_id
         LEFT JOIN (
@@ -110,6 +112,26 @@
             ORDER BY register_time DESC
         </if>
     </select>
+
+    <select id="getUserNumGroupRole" resultType="UserRoleVO">
+        SELECT role.role_id, role_name, IFNULL(tmp_role.num,0) userNum
+        FROM educloud_role role
+        LEFT JOIN (SELECT role_id, COUNT(user_id) num FROM educloud_user_role GROUP BY role_id) tmp_role
+        ON role.role_id = tmp_role.role_id
+        WHERE role.is_del = 0
+        ORDER BY role.role_id
+    </select>
+
+    <update id="batchUpdateStatus">
+        UPDATE educloud_user SET `status` = #{status}
+        <if test="status == 0">
+            ,phone = null
+        </if>
+        WHERE user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
 
 
 </mapper>

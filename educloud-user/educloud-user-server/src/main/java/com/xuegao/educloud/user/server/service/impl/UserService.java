@@ -6,6 +6,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,6 +15,7 @@ import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.entities.UserAddress;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
+import com.xuegao.educloud.user.client.params.vo.UserRoleVO;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
 import com.xuegao.educloud.user.server.dao.UserDao;
@@ -58,7 +60,7 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
         String avatar = StrUtil.isNotEmpty(userInfoDTO.getAvatar()) ? userInfoDTO.getAvatar() : UserConstants.DEFAULT_AVATAR;
         String nickname = StrUtil.isNotEmpty(userInfoDTO.getNickname()) ? userInfoDTO.getNickname() : phoneSub;
 
-        String uuid = UUID.randomUUID().toString();
+        String uuid = cn.hutool.core.lang.UUID.randomUUID().toString(true);
 
         User user = new User()
                 .setAvatar(avatar)
@@ -113,20 +115,19 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
         long userId = userInfoDTO.getUserId();
 
         //修改用户
-        User user = new User()
-                .setUserId(userId)
-                .setAvatar(avatar)
-                .setPhone(phone)
-                .setNickname(nickname)
-                .setSourceId(userInfoDTO.getSourceId())
-                .setCampusId(userInfoDTO.getCampusId())
-                .setBirthday(userInfoDTO.getBirthday())
-                .setValidType(userInfoDTO.getValidType())
-                .setValidStart(userInfoDTO.getValidStart())
-                .setValidEnd(userInfoDTO.getValidEnd())
-                .setSchool(userInfoDTO.getSchool());
-
-        baseMapper.updateById(user);
+        LambdaUpdateWrapper<User> updateWrapper = Wrappers.<User>lambdaUpdate()
+                .eq(User::getUserId, userId)
+                .set(User::getAvatar, avatar)
+                .set(User::getPhone, phone)
+                .set(User::getNickname, nickname)
+                .set(User::getSourceId, userInfoDTO.getSourceId())
+                .set(User::getCampusId, userInfoDTO.getCampusId())
+                .set(User::getBirthday, userInfoDTO.getBirthday())
+                .set(User::getValidType, userInfoDTO.getValidType())
+                .set(User::getValidStart, userInfoDTO.getValidStart())
+                .set(User::getValidEnd, userInfoDTO.getValidEnd())
+                .set(User::getSchool, userInfoDTO.getSchool());
+        baseMapper.update(null, updateWrapper);
 
         //记录用户角色
         baseMapper.clearUserRole(userId);
@@ -147,7 +148,7 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
                 .setCounty(userInfoDTO.getCounty())
                 .setAddrDetail(userInfoDTO.getAddrDetail())
                 .setTel(userInfoDTO.getTel());
-        userAddressService.updateById(userAddress);
+        userAddressService.saveOrUpdateAddr(userAddress);
 
 
     }
@@ -255,7 +256,8 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
                 .setCity(userAddress.getCity())
                 .setCounty(userAddress.getCounty())
                 .setAddrDetail(userAddress.getAddrDetail())
-                .setTel(userAddress.getTel());
+                .setTel(userAddress.getTel())
+                .setPassword(null);
 
         return userInfo;
     }
@@ -269,10 +271,7 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
      */
     @Override
     public void batchUpdateStatus(byte statusCode, List<Long> userIds) {
-        List<User> userList = userIds.stream()
-                .map(userId -> new User().setUserId(userId).setStatus(statusCode))
-                .collect(Collectors.toList());
-        this.updateBatchById(userList);
+        baseMapper.batchUpdateStatus(statusCode, userIds);
     }
 
     /**
@@ -284,18 +283,18 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     @Override
     public void batchUpdate(UserInfoDTO userInfo) {
         Long[] userIds = userInfo.getUserIds();
-        if(ArrayUtil.isNotEmpty(userIds)){
+        if (ArrayUtil.isNotEmpty(userIds)) {
             //修改年级
-            if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
+            if (ArrayUtil.isNotEmpty(userInfo.getGradeIds())) {
 
                 baseMapper.batchClearUserGrade(userIds);
 
-                Arrays.stream(userIds).forEach(userId->{
+                Arrays.stream(userIds).forEach(userId -> {
                     baseMapper.saveUserGrade(userId, userInfo.getGradeIds());
                 });
             }
             //修改校区
-            if(userInfo.getCampusId() != null){
+            if (userInfo.getCampusId() != null) {
                 baseMapper.batchUpdateOrgan(userInfo.getCampusId(), userIds);
             }
         }
@@ -312,5 +311,32 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     @Override
     public IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery) {
         return baseMapper.getUserPage(page, userQuery);
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param userId
+     * @param newPwd
+     * @return
+     */
+    @Override
+    public boolean updatePwd(long userId, String newPwd, String uuid) {
+
+        String pwd = StrUtil.isEmpty(uuid) ? this.encryptPwd(newPwd) : this.encryptPwd(newPwd + uuid);
+
+        User user = new User().setUserId(userId).setPassword(pwd);
+
+        return updateById(user);
+    }
+
+    /**
+     * 角色对应用户数
+     *
+     * @return
+     */
+    @Override
+    public List<UserRoleVO> getUserNumGroupRole() {
+        return baseMapper.getUserNumGroupRole();
     }
 }

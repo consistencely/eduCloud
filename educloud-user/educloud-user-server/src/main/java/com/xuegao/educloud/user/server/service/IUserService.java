@@ -7,6 +7,7 @@ import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
+import com.xuegao.educloud.user.client.params.vo.UserRoleVO;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 
 import java.util.List;
@@ -85,4 +86,19 @@ public interface IUserService extends IService<User> {
      * @return
      */
     IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery);
+
+
+    /**
+     * 修改密码
+     * @param userId
+     * @param newPwd
+     * @return
+     */
+    boolean updatePwd(long userId, String newPwd, String uuid);
+
+    /**
+     * 角色对应用户数
+     * @return
+     */
+    List<UserRoleVO> getUserNumGroupRole();
 }

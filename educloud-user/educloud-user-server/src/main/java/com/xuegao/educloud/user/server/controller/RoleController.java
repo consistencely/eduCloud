@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.params.dto.RoleDTO;
+import com.xuegao.educloud.user.client.params.vo.UserRoleVO;
 import com.xuegao.educloud.user.server.service.IRoleService;
+import com.xuegao.educloud.user.server.service.IUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Auther: LIM
@@ -24,6 +27,8 @@ public class RoleController {
 
     @Autowired
     private IRoleService roleService;
+    @Autowired
+    private IUserService userService;
 
     /**
      * 查询角色
@@ -74,5 +79,15 @@ public class RoleController {
     public R delRole(@RequestBody int[] ids){
         boolean success = roleService.removeByIds(Arrays.asList(ids));
         return success ? R.ok() : R.fail("删除失败");
+    }
+
+    /**
+     * 角色对应用户数
+     * @return
+     */
+    @GetMapping("/roles/usernum")
+    public R userNum(){
+        List<UserRoleVO> userNums = userService.getUserNumGroupRole();
+        return R.ok(userNums);
     }
 }

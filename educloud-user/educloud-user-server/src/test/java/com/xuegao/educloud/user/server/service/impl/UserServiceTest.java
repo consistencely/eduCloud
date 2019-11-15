@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.system.client.entities.Grade;
+import com.xuegao.educloud.system.client.feign.SystemClient;
 import com.xuegao.educloud.user.client.entities.UserAddress;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.BaseTest;
+import com.xuegao.educloud.user.server.constants.UserConstants;
 import com.xuegao.educloud.user.server.service.IUserAddressService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import org.junit.Test;
@@ -29,6 +33,8 @@ public class UserServiceTest extends BaseTest {
     private IUserService userService;
     @Autowired
     private IUserAddressService userAddressService;
+    @Autowired
+    private SystemClient systemClient;
 
     @Test
     public void saveUser() throws Exception {
@@ -52,6 +58,24 @@ public class UserServiceTest extends BaseTest {
     }
 
     @Test
+    public void update() throws Exception {
+        long userId = 66;
+
+        UserAddress userAddress = userAddressService.getOneByUserId(userId);
+        if (userAddress == null) {
+            userAddress = new UserAddress().setUserId(userId);
+
+        }
+
+        userAddress.setProvince("广东省")
+                .setCity(null)
+                .setCounty(null)
+                .setAddrDetail(null)
+                .setTel("666");
+        userAddressService.saveOrUpdateAddr(userAddress);
+    }
+
+    @Test
     public void getAddress() throws Exception {
         long userId = 1L;
         LambdaQueryWrapper<UserAddress> wrapper = Wrappers.<UserAddress>lambdaQuery().eq(UserAddress::getUserId, userId).last("LIMIT 1");
@@ -69,15 +93,8 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void batch() throws Exception {
-        List<Long> userIds = Arrays.asList(1L,2L);
-//        userService.batchUpdateStatus((byte)1,userIds);
-
-
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setUserIds(ArrayUtil.toArray(userIds,Long.class));
-        userInfoDTO.setCampusId(88);
-        userInfoDTO.setGradeIds(new Integer[]{101,105});
-        userService.batchUpdate(userInfoDTO);
+        List<Long> userIds = Arrays.asList(1L,2L,3L,4L);
+        userService.batchUpdateStatus(UserConstants.USER_STATUS_NORMAL,userIds);
     }
 
     @Test
@@ -96,6 +113,15 @@ public class UserServiceTest extends BaseTest {
         Page<UserVO> page = new Page<UserVO>().setCurrent(curr);
         IPage<UserVO> userPage = userService.getUserPage(page,userQuery);
         printOut(userPage);
+
+    }
+
+    @Test
+    public void sys() {
+        Integer[] ids = new Integer[]{};
+        R<List<Grade>> result = systemClient.getGradeByIds(ids);
+        List<Grade> list = result.getData();
+        printOut(list);
 
     }
 }

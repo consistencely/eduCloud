@@ -20,6 +20,16 @@ public class UserVO {
     private Long userId;
 
     /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
+     * 账号状态（0：注销，1：正常，2：冻结）
+     */
+    private Byte status;
+
+    /**
      * 手机号
      */
     private String phone;
@@ -27,22 +37,22 @@ public class UserVO {
     /**
      * 角色
      */
-    private String role;
+    private String roleName;
 
     /**
      * 生源归属
      */
-    private String source;
+    private String sourceName;
 
     /**
      * 所属机构
      */
-    private String organ;
+    private String campusName;
 
     /**
      * 年级
      */
-    private String grade;
+    private String gradeName;
 
     /**
      * 注册时间
@@ -50,10 +60,14 @@ public class UserVO {
     private Date registerTime;
 
     /**
-     * 账号状态（0：注销，1：正常，2：冻结）
+     * 生源ID
      */
-    private Byte status;
+    private Integer sourceId;
 
+    /**
+     * 校区ID
+     */
+    private Integer campusId;
 
 
 }

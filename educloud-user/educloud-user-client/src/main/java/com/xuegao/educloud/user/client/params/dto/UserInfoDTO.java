@@ -21,6 +21,26 @@ public class UserInfoDTO {
     private Long userId;
 
     /**
+     * 系统账号
+     */
+    private String username;
+
+    /**
+     * 账号状态（0：注销，1：正常，2：冻结）
+     */
+    private Byte status;
+
+    /**
+     * 注册时间
+     */
+    private Date registerTime;
+
+    /**
+     * 注册来源（1：PC端，2：移动端，3：手机浏览器，4：管理员后台创建）
+     */
+    private Byte registerFrom;
+
+    /**
      * 手机号
      */
     private String phone;
