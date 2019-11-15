@@ -3,7 +3,6 @@ package com.xuegao.educloud.user.server.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
@@ -89,6 +88,7 @@ public interface IUserService extends IService<User> {
 
 
 
+
     /**
      * 修改密码
      * @param userId
@@ -110,5 +110,14 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<User> getUserBySourceId(Integer sourceId);
+
+
+    /**
+     * 判断用户是否存在角色
+     *
+     * @param roleId
+     * @return
+     */
+    List<User> getUserByRoleId(Integer roleId);
 
 }

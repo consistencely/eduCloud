@@ -74,4 +74,8 @@ public interface UserDao extends BaseMapper<User> {
      * @return
      */
     Integer batchUpdateStatus(@Param("status") byte status,@Param("userIds") List<Long> userIds);
+
+
+    List<User> getUserByRoleId(Integer roleId);
+
 }
