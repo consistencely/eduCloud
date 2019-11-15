@@ -13,6 +13,7 @@ import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.BaseTest;
+import com.xuegao.educloud.user.server.constants.UserConstants;
 import com.xuegao.educloud.user.server.service.IUserAddressService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import org.junit.Test;
@@ -92,15 +93,8 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void batch() throws Exception {
-        List<Long> userIds = Arrays.asList(1L,2L);
-//        userService.batchUpdateStatus((byte)1,userIds);
-
-
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setUserIds(ArrayUtil.toArray(userIds,Long.class));
-        userInfoDTO.setCampusId(88);
-        userInfoDTO.setGradeIds(new Integer[]{101,105});
-        userService.batchUpdate(userInfoDTO);
+        List<Long> userIds = Arrays.asList(1L,2L,3L,4L);
+        userService.batchUpdateStatus(UserConstants.USER_STATUS_NORMAL,userIds);
     }
 
     @Test

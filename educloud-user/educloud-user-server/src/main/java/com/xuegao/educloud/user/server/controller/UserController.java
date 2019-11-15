@@ -1,9 +1,11 @@
 package com.xuegao.educloud.user.server.controller;
 
+import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.error.ErrorCode;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -157,7 +160,7 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/wholeinfo/{userId}")
     public R<UserInfoDTO> getUserInfo(@PathVariable("userId") long userId){
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         if(userInfo == null){
@@ -196,12 +199,12 @@ public class UserController {
     /**
      * 批量修改用户状态
      * @param statusCode 状态码
-     * @param userIds 用户ID数组
      * @return
      */
     @PutMapping("/users/status/{statusCode}")
-    public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody List<Long> userIds){
-        if(ArrayUtil.isEmpty(userIds)){
+    public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
+        List<Long> userIds = (List<Long>) userMap.get("userIds");
+        if(IterUtil.isEmpty(userIds)){
             return R.fail("请选择用户");
         }
         if(statusCode != UserConstants.USER_STATUS_DEL
@@ -250,7 +253,7 @@ public class UserController {
 
         if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
             List<Grade> grades = systemClient.getGradeByIds(userInfo.getGradeIds()).getData();
-            if(ArrayUtil.isEmpty(grades) || grades.size() != userInfo.getGradeIds().length){
+            if(IterUtil.isEmpty(grades) || grades.size() != userInfo.getGradeIds().length){
                 return R.fail("内含不合法年级");
             }
         }

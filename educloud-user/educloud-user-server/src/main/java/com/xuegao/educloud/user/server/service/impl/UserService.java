@@ -15,6 +15,7 @@ import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.entities.UserAddress;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
+import com.xuegao.educloud.user.client.params.vo.UserRoleVO;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
 import com.xuegao.educloud.user.server.dao.UserDao;
@@ -270,10 +271,7 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
      */
     @Override
     public void batchUpdateStatus(byte statusCode, List<Long> userIds) {
-        List<User> userList = userIds.stream()
-                .map(userId -> new User().setUserId(userId).setStatus(statusCode))
-                .collect(Collectors.toList());
-        this.updateBatchById(userList);
+        baseMapper.batchUpdateStatus(statusCode, userIds);
     }
 
     /**
@@ -330,5 +328,15 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
         User user = new User().setUserId(userId).setPassword(pwd);
 
         return updateById(user);
+    }
+
+    /**
+     * 角色对应用户数
+     *
+     * @return
+     */
+    @Override
+    public List<UserRoleVO> getUserNumGroupRole() {
+        return baseMapper.getUserNumGroupRole();
     }
 }
