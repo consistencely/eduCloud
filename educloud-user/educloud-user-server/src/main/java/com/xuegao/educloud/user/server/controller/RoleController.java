@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.user.client.entities.Role;
+import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.entities.UserRole;
 import com.xuegao.educloud.user.client.params.dto.RoleDTO;
 import com.xuegao.educloud.user.server.service.IRoleService;
 import com.xuegao.educloud.user.server.service.IUserRoleService;
+import com.xuegao.educloud.user.server.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,7 @@ public class RoleController {
     @Autowired
     private IRoleService roleService;
     @Autowired
-    private IUserRoleService userRoleService;
+    private IUserService userService;
 
     /**
      * 分页查询角色
@@ -100,8 +102,8 @@ public class RoleController {
         }
         for (Integer roleId : roleIds) {
             //判断是否存在拥有角色的用户
-            List<UserRole> userRoleList = userRoleService.getUserByRoleId(roleId);
-            if (userRoleList != null && userRoleList.size() > 0) {
+            List<User> userList = userService.getUserByRoleId(roleId);
+            if (userList != null && userList.size() > 0) {
                 return R.fail("用户已存在该角色，不允许删除");
             }
         }

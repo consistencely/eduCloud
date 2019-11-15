@@ -313,4 +313,9 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     public IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery) {
         return baseMapper.getUserPage(page, userQuery);
     }
+
+    @Override
+    public List<User> getUserByRoleId(Integer roleId) {
+        return baseMapper.getUserByRoleId(roleId);
+    }
 }

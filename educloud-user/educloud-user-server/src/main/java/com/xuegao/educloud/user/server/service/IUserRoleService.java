@@ -12,12 +12,4 @@ import java.util.List;
  * @Description:
  */
 public interface IUserRoleService extends IService<UserRole> {
-
-    /**
-     * 判断用户是否存在角色
-     *
-     * @param roleId
-     * @return
-     */
-    List<UserRole> getUserByRoleId(Integer roleId);
 }

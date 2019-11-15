@@ -31,4 +31,6 @@ public interface UserDao extends BaseMapper<User> {
     IPage<UserVO> getUserPage(Page<UserVO> page, @Param("userQuery") UserQuery userQuery);
 
     List<UserVO> getUserGradesRoles(@Param("userId") List<Long> userIds);
+
+    List<User> getUserByRoleId(Integer roleId);
 }

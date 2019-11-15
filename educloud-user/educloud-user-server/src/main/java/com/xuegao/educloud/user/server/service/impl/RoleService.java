@@ -19,7 +19,7 @@ import java.util.List;
  * @Description:
  */
 @Service
-public class RoleService extends ServiceImpl<RoleDao, Role> implements IRoleService {
+public class RoleService extends ServiceImpl<RoleDao,Role> implements IRoleService {
 
     /**
      * 分页查询角色
