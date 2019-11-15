@@ -313,6 +313,7 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
         return baseMapper.getUserPage(page, userQuery);
     }
 
+
     /**
      * 修改密码
      *
@@ -338,5 +339,14 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     @Override
     public List<UserRoleVO> getUserNumGroupRole() {
         return baseMapper.getUserNumGroupRole();
+    }
+
+    @Override
+    public List<User> getUserBySourceId(Integer sourceId) {
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.<User>lambdaQuery()
+                .eq(User::getSourceId,sourceId)
+                .eq(User::getStatus,1);
+        return baseMapper.selectList(queryWrapper);
+
     }
 }
