@@ -15,10 +15,10 @@ import java.util.List;
 public class GradeWithSubjectVO {
 
     /** 学段ID */
-    private Integer id;
+    private Integer gradeId;
 
     /** 学段名称 */
-    private String name;
+    private String gradeName;
 
     /** 所属学科列表 */
     private List<Subject> subjects = new ArrayList<>();
@@ -27,8 +27,8 @@ public class GradeWithSubjectVO {
 
     }
 
-    public GradeWithSubjectVO(Integer id, String name) {
-        this.id = id;
-        this.name = name;
+    public GradeWithSubjectVO(Integer gradeId, String gradeName) {
+        this.gradeId = gradeId;
+        this.gradeName = gradeName;
     }
 }

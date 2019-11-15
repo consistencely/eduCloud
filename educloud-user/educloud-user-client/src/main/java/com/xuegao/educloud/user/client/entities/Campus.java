@@ -11,26 +11,54 @@ import java.util.Date;
 
 /**
  * @Auther: LIM
- * @Date: 2019/11/5 14:14
- * @Description: 角色实体类
+ * @Date: 2019/11/12 15:47
+ * @Description: 校区实体类
  */
 @Data
 @Accessors(chain = true)
-@TableName("educloud_role")
-public class Role {
+@TableName("educloud_campus")
+public class Campus {
 
+    /**
+     * 校区ID
+     */
     @TableId
-    private Integer roleId;
+    private Integer campusId;
 
     /**
-     * 角色名称
+     * 校区名称
      */
-    private String roleName;
+    private String campusName;
 
     /**
-     * 角色描述
+     * 负责人
      */
-    private String description;
+    private String person;
+
+    /**
+     * 省
+     */
+    private String province;
+
+    /**
+     * 市
+     */
+    private String city;
+
+    /**
+     * 县
+     */
+    private String county;
+
+    /**
+     * 详细地址
+     */
+    private String addrDetail;
+
+    /**
+     * 联系电话
+     */
+    private String tel;
 
     /**
      * 是否删除（0：未删除，1：已删除）

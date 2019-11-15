@@ -20,7 +20,6 @@ public class RoleService extends ServiceImpl<RoleDao,Role> implements IRoleServi
 
     /**
      * 分页查询角色
-     * SELECT id,name,description FROM educloud_role WHERE is_del=0
      * @param page
      * @return
      */

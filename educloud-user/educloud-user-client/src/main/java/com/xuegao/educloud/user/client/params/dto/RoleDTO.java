@@ -26,18 +26,4 @@ public class RoleDTO {
      */
     private String description;
 
-    /**
-     * 有效类型（1：永久有效，2：到期失效，3：区间有效）
-     */
-    private Byte validType;
-
-    /**
-     * 有效期开始时间
-     */
-    private Date validStart;
-
-    /**
-     * 有效期结束时间
-     */
-    private Date validEnd;
 }

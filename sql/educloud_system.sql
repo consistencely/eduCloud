@@ -2,15 +2,15 @@
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50638
+Source Server Version : 50719
 Source Host           : localhost:3306
 Source Database       : educloud_system
 
 Target Server Type    : MYSQL
-Target Server Version : 50638
+Target Server Version : 50719
 File Encoding         : 65001
 
-Date: 2019-11-01 17:55:49
+Date: 2019-11-11 23:32:57
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,37 +20,37 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `educloud_grade`;
 CREATE TABLE `educloud_grade` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL COMMENT '学段名称',
-  `sort` int(11) NOT NULL DEFAULT '1' COMMENT '排序（倒序）',
+  `grade_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `grade_name` varchar(32) NOT NULL COMMENT '学段名称',
+  `sort` int(11) NOT NULL DEFAULT '99' COMMENT '排序',
   `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0：正常，1：删除',
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='学段信息';
+  PRIMARY KEY (`grade_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8 COMMENT='学段信息';
 
 -- ----------------------------
 -- Records of educloud_grade
 -- ----------------------------
-INSERT INTO `educloud_grade` VALUES ('1', '高一', '1', '0', '2019-10-30 11:14:30', '2019-10-30 11:14:30');
 INSERT INTO `educloud_grade` VALUES ('2', '高二', '2', '0', '2019-10-30 11:14:38', '2019-10-30 11:14:38');
-INSERT INTO `educloud_grade` VALUES ('3', '高三', '3', '0', '2019-10-30 11:14:43', '2019-10-30 11:14:43');
+INSERT INTO `educloud_grade` VALUES ('101', '高一', '1', '0', '2019-11-11 16:23:07', '2019-10-30 11:14:30');
+INSERT INTO `educloud_grade` VALUES ('105', '高三', '3', '0', '2019-11-11 16:23:10', '2019-10-30 11:14:43');
 
 -- ----------------------------
 -- Table structure for `educloud_kpoint`
 -- ----------------------------
 DROP TABLE IF EXISTS `educloud_kpoint`;
 CREATE TABLE `educloud_kpoint` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `kpoint_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父级ID',
-  `name` varchar(64) NOT NULL COMMENT '考点名称',
+  `kpoint_name` varchar(64) NOT NULL COMMENT '考点名称',
   `grade_id` int(11) NOT NULL COMMENT '学段ID',
   `subject_id` int(11) NOT NULL COMMENT '学科ID',
   `level` int(11) NOT NULL DEFAULT '1' COMMENT '第几级',
   `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除（0：正常，1：删除）',
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`kpoint_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COMMENT='考点';
 
 -- ----------------------------
@@ -63,13 +63,13 @@ INSERT INTO `educloud_kpoint` VALUES ('27', '0', '考点1', '1', '1', '1', '0', 
 -- ----------------------------
 DROP TABLE IF EXISTS `educloud_subject`;
 CREATE TABLE `educloud_subject` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL COMMENT '学科名称',
-  `sort` int(11) NOT NULL DEFAULT '1' COMMENT '排序（倒序）',
+  `subject_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `subject_name` varchar(32) NOT NULL COMMENT '学科名称',
+  `sort` int(11) NOT NULL DEFAULT '99' COMMENT '排序',
   `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0：正常，1：删除',
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`subject_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='学科信息';
 
 -- ----------------------------

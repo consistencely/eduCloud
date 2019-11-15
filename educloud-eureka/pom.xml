@@ -8,7 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.xuegao</groupId>
+
 	<artifactId>educloud-eureka</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>educloud-eureka</name>
@@ -24,29 +24,7 @@
 	</dependencies>
 
 	<build>
-		<!--<finalName>educloud-eureka</finalName>-->
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!--maven打包时，过滤掉测试-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.18.1</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
-		</plugins>
+		<finalName>educloud-eureka</finalName>
 	</build>
 
 </project>

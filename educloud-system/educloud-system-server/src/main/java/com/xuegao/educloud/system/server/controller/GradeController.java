@@ -52,14 +52,14 @@ public class GradeController {
      * 新增/修改学段
      * @return
      */
-    @PostMapping("/saveOrUpdate")
+    @PostMapping("")
     public R saveGrade(@RequestBody Grade param){
-        if(StringUtils.isEmpty(param.getName())){
+        if(StringUtils.isEmpty(param.getGradeName())){
             return R.fail("请输入学段名称");
         }
         Grade grade = new Grade();
-        grade.setId(param.getId());
-        grade.setName(param.getName());
+        grade.setGradeId(param.getGradeId());
+        grade.setGradeName(param.getGradeName());
         grade.setSort(param.getSort());
         boolean success = gradeService.saveOrUpdate(grade);
         return success ? R.ok() : R.fail("保存失败");

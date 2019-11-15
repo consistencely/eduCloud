@@ -1,3 +1,6 @@
+server:
+  port: 8300
+
 #网关配置
 zuul:
   sensitive-headers:

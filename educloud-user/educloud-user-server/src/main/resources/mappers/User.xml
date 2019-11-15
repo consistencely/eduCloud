@@ -6,7 +6,7 @@
     <insert id="saveUserRole">
         INSERT educloud_user_role(user_id, role_id)
         VALUES
-        <foreach collection="array" item="roleId" separator=",">
+        <foreach collection="roleIds" item="roleId" separator=",">
             (#{userId}, #{roleId})
         </foreach>
     </insert>
@@ -14,8 +14,102 @@
     <insert id="saveUserGrade">
         INSERT educloud_user_grade(user_id, grade_id)
         VALUES
-        <foreach collection="array" item="gradeId" separator=",">
+        <foreach collection="gradeIds" index="index" item="gradeId" separator=",">
             (#{userId}, #{gradeId})
         </foreach>
     </insert>
+
+    <delete id="batchClearUserGrade">
+        DELETE FROM educloud_user_grade WHERE user_id IN
+        <foreach collection="userIds" item="userId" index="index" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <delete id="clearUserRole">
+        DELETE FROM educloud_user_role WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="clearUserGrade">
+        DELETE FROM educloud_user_grade WHERE user_id = #{userId}
+    </delete>
+
+    <select id="getUserRoles" resultType="java.lang.Integer">
+        SELECT role_id FROM educloud_user_role WHERE user_id = #{userId}
+    </select>
+
+    <select id="getUserGrades" resultType="java.lang.Integer">
+         SELECT grade_id FROM educloud_user_grade WHERE user_id = #{userId}
+    </select>
+
+    <update id="batchUpdateOrgan">
+        UPDATE educloud_user SET campus_id = #{campusId}
+        WHERE user_id IN
+        <foreach collection="userIds" item="userId" index="index" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+
+    <select id="getUserPage" resultType="UserVO" parameterType="UserQuery">
+        SELECT `user`.user_id,`user`.nickname,`user`.phone,`user`.`status`,`user`.register_time,`user`.campus_id,`user`.source_id
+        , tmp_grade.gradeName grade, tmp_role.roleName role
+        FROM educloud_user user
+        LEFT JOIN educloud_user_grade userGrade ON userGrade.user_id = `user`.user_id
+        LEFT JOIN educloud_user_role userRole ON userRole.user_id = `user`.user_id
+        LEFT JOIN (
+        SELECT userGrade.user_id,GROUP_CONCAT(grade.`name` ORDER BY grade.sort ASC SEPARATOR '、') gradeName
+        FROM educloud_user_grade userGrade,educloud_system.educloud_grade grade
+        WHERE userGrade.grade_id = grade.id
+        GROUP BY userGrade.user_id
+        ) tmp_grade ON `user`.user_id = tmp_grade.user_id
+        LEFT JOIN (
+        SELECT userRole.user_id, GROUP_CONCAT(role.role_name ORDER BY role.role_id ASC SEPARATOR '、') roleName
+        FROM educloud_user_role userRole,educloud_role role
+        WHERE userRole.role_id = role.role_id
+        GROUP BY userRole.user_id
+        ) tmp_role ON `user`.user_id = tmp_role.user_id
+        <where>
+            <if test="userQuery.phone != null">
+                AND `user`.phone LIKE '%${userQuery.phone}%'
+            </if>
+            <if test="userQuery.nickname != null">
+                AND `user`.nickname LIKE '%${userQuery.nickname}%'
+            </if>
+            <if test="userQuery.gradeIds != null and userQuery.gradeIds.length > 0">
+                <foreach collection="userQuery.gradeIds" item="gradeId" open="AND grade_id IN (" separator="," close=")">
+                    #{gradeId}
+                </foreach>
+            </if>
+            <if test="userQuery.roleIds != null and userQuery.roleIds.length > 0">
+                <foreach collection="userQuery.roleIds" item="roleId" open="AND role_id IN (" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+            <if test="userQuery.campusIds != null and userQuery.campusIds.length > 0">
+                <foreach collection="userQuery.campusIds" item="campusId" open="AND `user`.campus_id IN (" separator="," close=")">
+                    #{campusId}
+                </foreach>
+            </if>
+            <if test="userQuery.sourceIds != null and userQuery.sourceIds.length > 0">
+                <foreach collection="userQuery.sourceIds" item="sourceId" open="AND `user`.source_id IN (" separator="," close=")">
+                    #{sourceId}
+                </foreach>
+            </if>
+            <if test="userQuery.statusCodes != null and userQuery.statusCodes.length > 0">
+                <foreach collection="userQuery.statusCodes" item="status" open="AND `user`.`status` IN (" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+        </where>
+        GROUP BY `user`.user_id
+        <if test="userQuery.registerSort == 1">
+            ORDER BY register_time ASC
+        </if>
+        <if test="userQuery.registerSort == 2">
+            ORDER BY register_time DESC
+        </if>
+    </select>
+
+
 </mapper>

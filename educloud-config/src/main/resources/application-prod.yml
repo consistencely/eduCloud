@@ -1,0 +1,29 @@
+    
+server:
+  port: 8888
+
+#eureka配置
+eureka:
+  client:
+    # Eureka服务器的地址
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+  instance:
+    # 客户端在注册时使用自己的IP而不是主机名，缺省：false
+    prefer-ip-address: true
+    # 实例ID
+    instance-id: ${spring.application.name}:${server.port}
+
+spring:
+  application:
+    name: config
+  # 配置中心
+  cloud:
+    config:
+      server:
+        git:
+          uri: http://111.230.93.169:8081/root/configrepo.git
+          username: configuser
+          password: tMSmH9BA
+          basedir: /data/home/git-config-repo
+          search-paths: educloud/dev,educloud/test,educloud/prod

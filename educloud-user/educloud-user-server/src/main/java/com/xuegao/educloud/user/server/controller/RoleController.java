@@ -11,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+
 /**
  * @Auther: LIM
  * @Date: 2019/11/5 14:27
@@ -47,7 +49,7 @@ public class RoleController {
     }
 
     /**
-     * 新增或删除角色
+     * 新增或修改角色
      * @return
      */
     @PostMapping("/{id}")
@@ -55,20 +57,22 @@ public class RoleController {
         if(StrUtil.isEmpty(roleDTO.getRoleName())){
             return R.fail("请输入角色名称");
         }
-        //TODO
-        Role role = new Role();
-        BeanUtils.copyProperties(roleDTO,role);
+        Role role = new Role()
+                .setRoleId(roleDTO.getRoleId())
+                .setRoleName(roleDTO.getRoleName())
+                .setDescription(roleDTO.getDescription());
+
         boolean success = roleService.saveOrUpdate(role);
         return success ? R.ok() : R.fail("保存失败");
     }
 
     /**
-     * 删除角色
+     * 批量删除角色
      * @return
      */
-    @DeleteMapping("/{id}")
-    public R delRole(@PathVariable("id") int id){
-        boolean success = roleService.removeById(id);
+    @DeleteMapping("")
+    public R delRole(@RequestBody int[] ids){
+        boolean success = roleService.removeByIds(Arrays.asList(ids));
         return success ? R.ok() : R.fail("删除失败");
     }
 }
