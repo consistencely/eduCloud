@@ -18,4 +18,10 @@ import java.util.List;
  */
 @Service
 public class UserRoleService extends ServiceImpl<UserRoleDao, UserRole> implements IUserRoleService {
+    @Override
+    public List<UserRole> getUserByRoleId(Integer roleId) {
+        LambdaQueryWrapper<UserRole> queryWrapper = Wrappers.<UserRole>lambdaQuery()
+                .eq(UserRole::getRoleId,roleId);
+        return baseMapper.selectList(queryWrapper);
+    }
 }

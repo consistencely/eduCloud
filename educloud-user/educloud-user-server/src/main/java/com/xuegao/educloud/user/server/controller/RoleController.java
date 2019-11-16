@@ -32,7 +32,7 @@ public class RoleController {
     @Autowired
     private IRoleService roleService;
     @Autowired
-    private IUserService userService;
+    private IUserRoleService userRoleService;
 
     /**
      * 分页查询角色
@@ -53,8 +53,8 @@ public class RoleController {
      * @return
      */
     @PutMapping("/role")
-    public R saveOrUpdate(@RequestBody Role role) {
-        Integer roleId = role.getRoleId();
+    public R saveOrUpdate(@RequestBody RoleDTO roleDTO) {
+        Integer roleId = roleDTO.getRoleId();
         if (roleId == null) {
             return R.fail("角色ID为空");
         }
@@ -62,10 +62,10 @@ public class RoleController {
         if (roleInfo == null) {
             return R.fail("该角色不存在");
         }
-        if (StrUtil.isEmpty(role.getRoleName())) {
+        if (StrUtil.isEmpty(roleDTO.getRoleName())) {
             return R.fail("请输入角色名称");
         }
-        Integer count = roleService.updateRole(role);
+        Integer count = roleService.updateRole(roleDTO);
         if (count > 0) {
             return R.ok();
         } else {
@@ -80,12 +80,16 @@ public class RoleController {
      * @return
      */
     @PostMapping("/role")
-    public R saveSource(@RequestBody Role role) {
-        if (role.getRoleName() == null) {
+    public R saveSource(@RequestBody RoleDTO roleDTO) {
+        if (StrUtil.isEmpty(roleDTO.getRoleName())) {
             return R.fail("角色名称不能为空");
         }
-        boolean success = roleService.save(role);
-        return success ? R.ok() : R.fail("保存失败");
+        Integer success = roleService.saveRole(roleDTO);
+        if(success > 0){
+            return R.ok();
+        }else {
+            return  R.fail("保存失败");
+        }
     }
 
 
@@ -102,8 +106,8 @@ public class RoleController {
         }
         for (Integer roleId : roleIds) {
             //判断是否存在拥有角色的用户
-            List<User> userList = userService.getUserByRoleId(roleId);
-            if (userList != null && userList.size() > 0) {
+            List<UserRole> userRoleList = userRoleService.getUserByRoleId(roleId);
+            if (userRoleList != null && userRoleList.size() > 0) {
                 return R.fail("用户已存在该角色，不允许删除");
             }
         }

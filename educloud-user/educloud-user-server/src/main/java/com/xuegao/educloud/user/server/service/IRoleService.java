@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xuegao.educloud.user.client.entities.Role;
+import com.xuegao.educloud.user.client.params.dto.RoleDTO;
 
 import java.util.List;
 
@@ -32,8 +33,15 @@ public interface IRoleService extends IService<Role> {
     /**
      * 修改角色
      *
-     * @param role
+     * @param roleDTO
      * @return
      */
-    Integer updateRole(Role role);
+    Integer updateRole(RoleDTO roleDTO);
+
+    /**
+     * 保存角色
+     * @param roleDTO
+     * @return
+     */
+    Integer saveRole(RoleDTO roleDTO);
 }

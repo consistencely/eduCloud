@@ -314,8 +314,4 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
         return baseMapper.getUserPage(page, userQuery);
     }
 
-    @Override
-    public List<User> getUserByRoleId(Integer roleId) {
-        return baseMapper.getUserByRoleId(roleId);
-    }
 }

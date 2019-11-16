@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xuegao.educloud.user.client.entities.Role;
+import com.xuegao.educloud.user.client.params.dto.RoleDTO;
 import com.xuegao.educloud.user.server.dao.RoleDao;
 import com.xuegao.educloud.user.server.service.IRoleService;
+import jdk.nashorn.internal.objects.NativeUint8Array;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +43,18 @@ public class RoleService extends ServiceImpl<RoleDao,Role> implements IRoleServi
     }
 
     @Override
-    public Integer updateRole(Role role) {
+    public Integer updateRole(RoleDTO roleDTO) {
         LambdaUpdateWrapper<Role> updateWrapper = Wrappers.<Role>lambdaUpdate()
-                .eq(Role::getRoleId, role.getRoleId())
-                .set(Role::getRoleName, role.getRoleName())
-                .set(Role::getDescription, role.getDescription());
-        return baseMapper.update(role, updateWrapper);
+                .eq(Role::getRoleId, roleDTO.getRoleId())
+                .set(Role::getRoleName, roleDTO.getRoleName())
+                .set(Role::getDescription, roleDTO.getDescription());
+        return baseMapper.update(null, updateWrapper);
+    }
+
+    @Override
+    public Integer saveRole(RoleDTO roleDTO) {
+        Role role = new Role()
+                .setRoleName(roleDTO.getRoleName()).setDescription(roleDTO.getDescription());
+        return baseMapper.insert(role);
     }
 }

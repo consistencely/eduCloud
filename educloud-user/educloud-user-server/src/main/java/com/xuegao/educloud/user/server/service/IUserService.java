@@ -85,12 +85,4 @@ public interface IUserService extends IService<User> {
      */
     IPage<UserVO> getUserPage(Page<UserVO> page, UserQuery userQuery);
 
-
-    /**
-     * 判断用户是否存在角色
-     *
-     * @param roleId
-     * @return
-     */
-    List<User> getUserByRoleId(Integer roleId);
 }
