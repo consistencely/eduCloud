@@ -20,7 +20,6 @@ public class SourceDTO {
     /**
      * 生源ID
      */
-    @TableId
     private Integer sourceId;
 
     /**

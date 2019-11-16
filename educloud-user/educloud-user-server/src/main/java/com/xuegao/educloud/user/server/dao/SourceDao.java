@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Param;
 
 public interface SourceDao extends BaseMapper<Source> {
 
-    IPage<SourceDTO> getSourcePage(Page<SourceDTO> page, @Param("source") Source source);
+    IPage<SourceDTO> getSourcePage(Page<SourceDTO> page, @Param("sourceDTO") SourceDTO sourceDTO);
 }

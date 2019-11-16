@@ -19,10 +19,10 @@ public interface ISourceService extends IService<Source> {
      * 分页查询生源信息
      *
      * @param page
-     * @param source
+     * @param sourceDTO
      * @return
      */
-    IPage<SourceDTO> getSourcePage(Page<SourceDTO> page, Source source);
+    IPage<SourceDTO> getSourcePage(Page<SourceDTO> page, SourceDTO sourceDTO);
 
     /**
      * 查询生源地
@@ -34,10 +34,10 @@ public interface ISourceService extends IService<Source> {
     /**
      * 修改生源信息
      *
-     * @param source
+     * @param sourceDTO
      * @return
      */
-    Integer updateSource(Source source);
+    Integer updateSource(SourceDTO sourceDTO);
 
     /**
      * 查询单个生源信息
@@ -45,4 +45,10 @@ public interface ISourceService extends IService<Source> {
      * @return
      */
     Source getSourceInfo(Integer sourceId);
+
+    /**
+     * 保存生源地
+     * @param sourceDTO
+     */
+    Integer saveSource(SourceDTO sourceDTO);
 }
