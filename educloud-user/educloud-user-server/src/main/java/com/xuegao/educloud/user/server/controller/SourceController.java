@@ -2,6 +2,7 @@ package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.sql.Query;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +29,6 @@ import java.util.Map;
  * @Description:
  */
 @RestController
-@RequestMapping
 @Slf4j
 public class SourceController {
 
@@ -43,7 +44,7 @@ public class SourceController {
      * @param sourceDTO
      * @return
      */
-    @PostMapping("/source")
+    @PostMapping("/sources")
     public R saveSource(@RequestBody SourceDTO sourceDTO) {
         if (StrUtil.isEmpty(sourceDTO.getSourceName())) {
             return R.fail("生源地不能为空");
@@ -65,14 +66,10 @@ public class SourceController {
      * @param sourceDTO
      * @return
      */
-    @PutMapping("/source")
-    public R updateSource(@RequestBody SourceDTO sourceDTO) {
+    @PutMapping("/sources/{sourceId}")
+    public R updateSource(@PathVariable("sourceId") int sourceId, @RequestBody SourceDTO sourceDTO) {
 
         //参数校验
-        Integer sourceId = sourceDTO.getSourceId();
-        if (sourceId == null) {
-            return R.fail("生源ID为空");
-        }
         Source sourceInfo = sourceService.getById(sourceId);
         if (sourceInfo == null) {
             return R.fail("生源信息不存在");
@@ -83,6 +80,7 @@ public class SourceController {
         if (StrUtil.isEmpty(sourceDTO.getApplyWay())) {
             return R.fail("报名方式不能为空");
         }
+        sourceDTO.setSourceId(sourceId);
         Integer count = sourceService.updateSource(sourceDTO);
         if (count > 0) {
             return R.ok();
@@ -98,7 +96,7 @@ public class SourceController {
      * @param sourceId
      * @return
      */
-    @GetMapping("/source/{sourceId}")
+    @GetMapping("/sources/{sourceId}")
     public R<Source> getSourceInfo(@PathVariable("sourceId") Integer sourceId) {
         Source source = sourceService.getSourceInfo(sourceId);
         if (source == null) {
@@ -132,14 +130,16 @@ public class SourceController {
 
     /**
      * 分页查询生源
-     *
-     * @param curr
+     * @param pageNum
+     * @param pageSize
      * @param sourceDTO
      * @return
      */
-    @GetMapping("/sources/page/{curr}")
-    public R<IPage<SourceDTO>> sourceInfoPage(@PathVariable("curr") int curr, @ModelAttribute("sourceDTO") SourceDTO sourceDTO) {
-        Page<SourceDTO> page = new Page<SourceDTO>().setCurrent(curr);
+    @GetMapping("/sources/page")
+    public R<IPage<SourceDTO>> sourceInfoPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
+                                              @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize,
+                                              @ModelAttribute("sourceDTO") SourceDTO sourceDTO) {
+        Page<SourceDTO> page = new Page<SourceDTO>().setCurrent(pageNum).setSize(pageSize);
         IPage<SourceDTO> sourcePage = sourceService.getSourcePage(page, sourceDTO);
         return R.ok(sourcePage);
     }

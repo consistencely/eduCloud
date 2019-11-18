@@ -33,7 +33,6 @@ import java.util.Map;
  * @Description:
  */
 @RestController
-@RequestMapping
 @Slf4j
 public class RoleController {
 
@@ -46,24 +45,25 @@ public class RoleController {
 
     /**
      * 查询角色
-     * @param id
+     * @param roleId
      * @return
      */
-    @GetMapping("/{id}")
-    public R<Role> getRoleById(@PathVariable("id") int id){
-        Role role = roleService.getById(id);
+    @GetMapping("/roles/{roleId}")
+    public R<Role> getRoleById(@PathVariable("roleId") int roleId){
+        Role role = roleService.getById(roleId);
         return R.ok(role);
     }
 
     /**
      * 分页查询角色
-     *
-     * @param curr
+     * @param pageNum
+     * @param pageSize
      * @return
      */
-    @GetMapping("/roles/page/{curr}")
-    public R<IPage<Role>> getByPage(@PathVariable("curr") int curr) {
-        Page<Role> page = new Page<Role>().setCurrent(curr);
+    @GetMapping("/roles/page")
+    public R<IPage<Role>> getByPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
+                                    @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize) {
+        Page<Role> page = new Page<Role>().setCurrent(pageNum).setSize(pageSize);
         IPage<Role> roleRage = roleService.getRolePage(page);
         return R.ok(roleRage);
     }
@@ -73,12 +73,8 @@ public class RoleController {
      *
      * @return
      */
-    @PutMapping("/role")
-    public R saveOrUpdate(@RequestBody RoleDTO roleDTO) {
-        Integer roleId = roleDTO.getRoleId();
-        if (roleId == null) {
-            return R.fail("角色ID为空");
-        }
+    @PutMapping("/roles/{roleId}")
+    public R saveOrUpdate(@PathVariable("roleId") int roleId, @RequestBody RoleDTO roleDTO) {
         Role roleInfo = roleService.getById(roleId);
         if (roleInfo == null) {
             return R.fail("该角色不存在");
@@ -86,6 +82,7 @@ public class RoleController {
         if (StrUtil.isEmpty(roleDTO.getRoleName())) {
             return R.fail("请输入角色名称");
         }
+        roleDTO.setRoleId(roleId);
         Integer count = roleService.updateRole(roleDTO);
         if (count > 0) {
             return R.ok();
@@ -97,10 +94,9 @@ public class RoleController {
     /**
      * 新增生源
      *
-     * @param role
      * @return
      */
-    @PostMapping("/role")
+    @PostMapping("/roles")
     public R saveSource(@RequestBody RoleDTO roleDTO) {
         if (StrUtil.isEmpty(roleDTO.getRoleName())) {
             return R.fail("角色名称不能为空");

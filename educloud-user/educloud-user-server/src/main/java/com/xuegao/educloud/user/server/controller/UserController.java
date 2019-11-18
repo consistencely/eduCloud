@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
  * @Description:
  */
 @RestController
-@RequestMapping
 @Slf4j
 public class UserController {
 
@@ -50,7 +49,7 @@ public class UserController {
      * @param userInfoDTO
      * @return
      */
-    @PostMapping("/user")
+    @PostMapping("/users")
     public R saveUser(@RequestBody UserInfoDTO userInfoDTO){
 
         R result = this.verifyUserParam(userInfoDTO);
@@ -71,14 +70,10 @@ public class UserController {
      * @param userInfoDTO
      * @return
      */
-    @PutMapping("/user")
-    public R updateUser(@RequestBody UserInfoDTO userInfoDTO){
+    @PutMapping("/users/{userId}")
+    public R updateUser(@PathVariable("userId") long userId,@RequestBody UserInfoDTO userInfoDTO){
 
         //参数校验
-        Long userId = userInfoDTO.getUserId();
-        if(userId == null){
-            return R.fail("用户ID为空");
-        }
         R result = this.verifyUserParam(userInfoDTO);
         if(!result.isSuccess()){
             return result;
@@ -96,6 +91,7 @@ public class UserController {
         if(phone_user != null && !phone_user.getUserId().equals(userId)){
              return R.fail("手机号码已存在");
         }
+        userInfoDTO.setUserId(userId);
         userService.updateUser(userInfoDTO);
         return R.ok();
     }
@@ -154,7 +150,7 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/user/wholeinfo/{userId}")
+    @GetMapping("/users/{userId}")
     public R<UserInfoDTO> getUserInfo(@PathVariable("userId") long userId){
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         if(userInfo == null){
@@ -167,10 +163,9 @@ public class UserController {
      * 修改密码
      * @return
      */
-    @PutMapping("/user/password")
-    public R updatePwd(@RequestBody User user){
+    @PutMapping("/users/{userId}/password")
+    public R updatePwd(@PathVariable("userId") long userId,@RequestBody User user){
 
-        Long userId = user.getUserId();
         String newPwd = user.getPassword();
 
         //校验密码
@@ -224,6 +219,7 @@ public class UserController {
 
     /**
      * 批量修改年级、从属机构
+     * TODO
      * @param userInfo
      * @return
      */
@@ -267,13 +263,15 @@ public class UserController {
 
     /**
      * 分页查询用户列表
-     * @param curr
+     * @param pageNum
      * @param userQuery
      * @return
      */
-    @GetMapping("/users/page/{curr}")
-    public R<IPage> userInfoPage(@PathVariable("curr") int curr, @ModelAttribute UserQuery userQuery ){
-        Page<UserVO> page = new Page<UserVO>().setCurrent(curr);
+    @GetMapping("/users/page")
+    public R<IPage> userInfoPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
+                                 @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize,
+                                 @ModelAttribute UserQuery userQuery ){
+        Page<UserVO> page = new Page<UserVO>().setCurrent(pageNum).setSize(pageSize);
         IPage<UserVO> userPage = userService.getUserPage(page,userQuery);
         return R.ok(userPage);
     }
