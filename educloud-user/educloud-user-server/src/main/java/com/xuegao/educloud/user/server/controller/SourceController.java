@@ -1,6 +1,7 @@
 package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -39,32 +40,36 @@ public class SourceController {
     /**
      * 新增生源
      *
-     * @param source
+     * @param sourceDTO
      * @return
      */
     @PostMapping("/source")
-    public R saveSource(@RequestBody Source source) {
-        if (source.getSourceName() == null) {
+    public R saveSource(@RequestBody SourceDTO sourceDTO) {
+        if (StrUtil.isEmpty(sourceDTO.getSourceName())) {
             return R.fail("生源地不能为空");
         }
-        if (source.getApplyWay() == null) {
+        if (StrUtil.isEmpty(sourceDTO.getApplyWay())) {
             return R.fail("报名方式不能为空");
         }
-        sourceService.save(source);
-        return R.ok();
+        Integer success = sourceService.saveSource(sourceDTO);
+        if (success > 0) {
+            return R.ok();
+        } else {
+            return R.fail("保存失败");
+        }
     }
 
     /**
      * 修改用户
      *
-     * @param source
+     * @param sourceDTO
      * @return
      */
     @PutMapping("/source")
-    public R updateSource(@RequestBody Source source) {
+    public R updateSource(@RequestBody SourceDTO sourceDTO) {
 
         //参数校验
-        Integer sourceId = source.getSourceId();
+        Integer sourceId = sourceDTO.getSourceId();
         if (sourceId == null) {
             return R.fail("生源ID为空");
         }
@@ -72,13 +77,13 @@ public class SourceController {
         if (sourceInfo == null) {
             return R.fail("生源信息不存在");
         }
-        if (source.getSourceName() == null) {
+        if (StrUtil.isEmpty(sourceDTO.getSourceName())) {
             return R.fail("生源地不能为空");
         }
-        if (source.getApplyWay() == null) {
+        if (StrUtil.isEmpty(sourceDTO.getApplyWay())) {
             return R.fail("报名方式不能为空");
         }
-        Integer count = sourceService.updateSource(source);
+        Integer count = sourceService.updateSource(sourceDTO);
         if (count > 0) {
             return R.ok();
         } else {
@@ -129,13 +134,13 @@ public class SourceController {
      * 分页查询生源
      *
      * @param curr
-     * @param source
+     * @param sourceDTO
      * @return
      */
     @GetMapping("/sources/page/{curr}")
-    public R<IPage<SourceDTO>> sourceInfoPage(@PathVariable("curr") int curr, @ModelAttribute("source") Source source) {
+    public R<IPage<SourceDTO>> sourceInfoPage(@PathVariable("curr") int curr, @ModelAttribute("sourceDTO") SourceDTO sourceDTO) {
         Page<SourceDTO> page = new Page<SourceDTO>().setCurrent(curr);
-        IPage<SourceDTO> sourcePage = sourceService.getSourcePage(page, source);
+        IPage<SourceDTO> sourcePage = sourceService.getSourcePage(page, sourceDTO);
         return R.ok(sourcePage);
     }
 

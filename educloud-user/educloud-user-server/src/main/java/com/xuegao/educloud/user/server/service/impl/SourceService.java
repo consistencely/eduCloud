@@ -23,8 +23,8 @@ import java.util.List;
 public class SourceService extends ServiceImpl<SourceDao, Source> implements ISourceService {
 
     @Override
-    public IPage<SourceDTO> getSourcePage(Page<SourceDTO> page, Source source) {
-        return baseMapper.getSourcePage(page,source);
+    public IPage<SourceDTO> getSourcePage(Page<SourceDTO> page, SourceDTO sourceDTO) {
+        return baseMapper.getSourcePage(page,sourceDTO);
     }
 
     @Override
@@ -37,18 +37,18 @@ public class SourceService extends ServiceImpl<SourceDao, Source> implements ISo
     }
 
     @Override
-    public Integer updateSource(Source source) {
+    public Integer updateSource(SourceDTO sourceDTO) {
         LambdaUpdateWrapper<Source> updateWrapper = Wrappers.<Source>lambdaUpdate()
-                .eq(Source::getSourceId,source.getSourceId())
-                .set(Source::getSourceName,source.getSourceName())
-                .set(Source::getApplyWay,source.getApplyWay())
-                .set(Source::getPerson,source.getPerson())
-                .set(Source::getCity,source.getCity())
-                .set(Source::getProvince,source.getProvince())
-                .set(Source::getCounty,source.getCounty())
-                .set(Source::getAddrDetail,source.getAddrDetail())
-                .set(Source::getTel,source.getTel());
-        return baseMapper.update(source,updateWrapper);
+                .eq(Source::getSourceId,sourceDTO.getSourceId())
+                .set(Source::getSourceName,sourceDTO.getSourceName())
+                .set(Source::getApplyWay,sourceDTO.getApplyWay())
+                .set(Source::getPerson,sourceDTO.getPerson())
+                .set(Source::getCity,sourceDTO.getCity())
+                .set(Source::getProvince,sourceDTO.getProvince())
+                .set(Source::getCounty,sourceDTO.getCounty())
+                .set(Source::getAddrDetail,sourceDTO.getAddrDetail())
+                .set(Source::getTel,sourceDTO.getTel());
+        return baseMapper.update(null,updateWrapper);
     }
 
     @Override
@@ -60,5 +60,14 @@ public class SourceService extends ServiceImpl<SourceDao, Source> implements ISo
                         Source::getPerson,Source::getCity,Source::getProvince,
                         Source::getCounty,Source::getAddrDetail,Source::getTel);
         return baseMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public Integer saveSource(SourceDTO sourceDTO) {
+        Source source = new Source()
+                .setSourceName(sourceDTO.getSourceName()).setApplyWay(sourceDTO.getApplyWay())
+                .setCity(sourceDTO.getCity()).setCounty(sourceDTO.getCounty()).setProvince(sourceDTO.getProvince())
+                .setAddrDetail(sourceDTO.getAddrDetail()).setTel(sourceDTO.getTel()).setPerson(sourceDTO.getPerson());
+        return baseMapper.insert(source);
     }
 }
