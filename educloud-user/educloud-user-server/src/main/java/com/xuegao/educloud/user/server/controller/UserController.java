@@ -1,19 +1,16 @@
 package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.core.collection.IterUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xuegao.educloud.common.error.ErrorCode;
+import com.xuegao.educloud.common.exception.ErrorCode;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.feign.SystemClient;
 import com.xuegao.educloud.user.client.entities.Campus;
-import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
@@ -21,14 +18,11 @@ import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
 import com.xuegao.educloud.user.server.service.ICampusService;
 import com.xuegao.educloud.user.server.service.IUserService;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;

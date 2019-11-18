@@ -1,4 +1,4 @@
-package com.xuegao.educloud.common.error;
+package com.xuegao.educloud.common.exception;
 
 import com.xuegao.educloud.common.params.R;
 
