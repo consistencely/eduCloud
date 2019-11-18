@@ -1,4 +1,4 @@
-package com.xuegao.educloud.system.server.config;
+package com.xuegao.educloud.common.config;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @EnableTransactionManagement
 @Configuration
-@MapperScan("com.xuegao.educloud.system.server.dao")
+//@MapperScan("com.xuegao.educloud.user.server.dao")
 public class MybatisPlusConfig {
 
     /**

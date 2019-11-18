@@ -20,6 +20,9 @@ import cn.hutool.core.date.DatePattern;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.xuegao.educloud.common.jackson.EduJavaTimeModule;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,13 +31,22 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.TimeZone;
 
-@Configuration
-@ConditionalOnClass(ObjectMapper.class)
-@AutoConfigureBefore(JacksonAutoConfiguration.class)
+/**
+ * 使用fastjson作为Json 转换器 详见{@link WebMvcConfig} 的configureMessageConverters
+ * modified by lim on 20191116
+ */
+//@Configuration
+//@ConditionalOnClass(ObjectMapper.class)
+//@AutoConfigureBefore(JacksonAutoConfiguration.class)
+@Deprecated
 public class JacksonConfig {
 	@Bean
 	public Jackson2ObjectMapperBuilderCustomizer customizer() {
@@ -45,7 +57,6 @@ public class JacksonConfig {
 			builder.modules(new EduJavaTimeModule());
 			builder.serializationInclusion(JsonInclude.Include.NON_NULL);
 			builder.failOnUnknownProperties(false);
-			//builder.propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE); // 下划线分割
 		};
 	}
 

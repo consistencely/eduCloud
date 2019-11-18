@@ -108,4 +108,13 @@ public interface IUserService extends IService<User> {
      */
     List<User> getUserBySourceId(Integer sourceId);
 
+
+    /**
+     * 判断用户是否存在角色
+     *
+     * @param roleId
+     * @return
+     */
+    List<User> getUserByRoleId(Integer roleId);
+
 }
