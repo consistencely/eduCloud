@@ -50,5 +50,9 @@ public class Role {
      */
     private Date createTime;
 
+    /**
+     * 是否默认(0：未默认，1：已默认)
+     */
+    private Byte isDefault;
 
 }
