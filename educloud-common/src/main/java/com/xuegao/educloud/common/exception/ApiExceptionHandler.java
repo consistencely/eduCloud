@@ -28,7 +28,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(ResourceNoFoundException.class)
     public Result<?> handleNotFound(ResourceNoFoundException e) {
         ErrorResource errorResource = new ErrorResource(e.getCode(),e.getMessage());
-        logger.error(errorResource.toString());
+        logger.error(errorResource.getMessage());
         return Result.restResult(errorResource, HttpStatus.NOT_FOUND);
     }
 
@@ -40,7 +40,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(InvalidRequestException.class)
     public Result<?> handleInvalidRequest(InvalidRequestException e) {
         ErrorResource errorResource = new ErrorResource(e.getCode(),e.getMessage());
-        logger.error(errorResource.toString());
+        logger.error(errorResource.getMessage());
         return Result.restResult(errorResource, HttpStatus.BAD_REQUEST);
     }
 
@@ -51,7 +51,7 @@ public class ApiExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Result<?> handleException(Exception e) {
-        logger.error("系统错误：{}",e);
+        logger.error("系统错误：",e);
         return Result.restResult(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -7,7 +7,10 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.xuegao.educloud.common.response.Result;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
@@ -25,8 +28,9 @@ public class JavaTest {
     @Test
     public void test(){
 //        List<Integer> list = Arrays.asList(1,2,3);
-        List<Integer> list = new ArrayList<>();
-        System.out.println(IterUtil.isEmpty(list));
+        Result<Object> result = Result.success(123465);
+//        Result<Object> result = (Result<Object>) ResponseEntity.ok();
+        System.out.println(result);
 
     }
 }

@@ -29,6 +29,7 @@ import java.util.Map;
  * @Description:
  */
 @RestController
+@RequestMapping("/v1/sources")
 @Slf4j
 public class SourceController {
 
@@ -44,7 +45,7 @@ public class SourceController {
      * @param sourceDTO
      * @return
      */
-    @PostMapping("/sources")
+    @PostMapping
     public R saveSource(@RequestBody SourceDTO sourceDTO) {
         if (StrUtil.isEmpty(sourceDTO.getSourceName())) {
             return R.fail("生源地不能为空");
@@ -66,7 +67,7 @@ public class SourceController {
      * @param sourceDTO
      * @return
      */
-    @PutMapping("/sources/{sourceId}")
+    @PutMapping("/{sourceId}")
     public R updateSource(@PathVariable("sourceId") int sourceId, @RequestBody SourceDTO sourceDTO) {
 
         //参数校验
@@ -96,7 +97,7 @@ public class SourceController {
      * @param sourceId
      * @return
      */
-    @GetMapping("/sources/{sourceId}")
+    @GetMapping("/{sourceId}")
     public R<Source> getSourceInfo(@PathVariable("sourceId") Integer sourceId) {
         Source source = sourceService.getSourceInfo(sourceId);
         if (source == null) {
@@ -111,7 +112,7 @@ public class SourceController {
      * @param sourceMap 生源ID数组
      * @return
      */
-    @DeleteMapping("/sources")
+    @DeleteMapping
     public R batchDeleteSource(@RequestBody Map<String, List<Integer>> sourceMap) {
         List<Integer> sourceIds = sourceMap.get("sourceIds");
         if (sourceIds == null || sourceIds.size() == 0) {
@@ -135,7 +136,7 @@ public class SourceController {
      * @param sourceDTO
      * @return
      */
-    @GetMapping("/sources/page")
+    @GetMapping("/page")
     public R<IPage<SourceDTO>> sourceInfoPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
                                               @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize,
                                               @ModelAttribute("sourceDTO") SourceDTO sourceDTO) {
@@ -149,7 +150,7 @@ public class SourceController {
      *
      * @return
      */
-    @GetMapping("/sources")
+    @GetMapping
     public R sourceInfoList() {
         List<Source> sourceList = sourceService.getSourceList();
         return R.ok(sourceList);

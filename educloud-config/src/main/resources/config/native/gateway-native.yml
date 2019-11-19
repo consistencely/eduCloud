@@ -6,5 +6,5 @@ zuul:
   sensitive-headers:
   #自定义路由
   routes:
-    system: /sys/**
-    user: /user/**
+    system: /sys/api/**
+    user: /user/api/**

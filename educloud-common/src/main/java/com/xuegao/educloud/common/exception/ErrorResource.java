@@ -16,6 +16,6 @@ import lombok.ToString;
 @Getter
 public class ErrorResource {
 
-    private Integer code;
+    private Integer errorCode;
     private String message;
 }

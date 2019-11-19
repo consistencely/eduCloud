@@ -33,6 +33,7 @@ import java.util.Map;
  * @Description:
  */
 @RestController
+@RequestMapping("/v1/roles")
 @Slf4j
 public class RoleController {
 
@@ -48,7 +49,7 @@ public class RoleController {
      * @param roleId
      * @return
      */
-    @GetMapping("/roles/{roleId}")
+    @GetMapping("/{roleId}")
     public R<Role> getRoleById(@PathVariable("roleId") int roleId){
         Role role = roleService.getById(roleId);
         return R.ok(role);
@@ -60,7 +61,7 @@ public class RoleController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/roles/page")
+    @GetMapping("/page")
     public R<IPage<Role>> getByPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
                                     @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize) {
         Page<Role> page = new Page<Role>().setCurrent(pageNum).setSize(pageSize);
@@ -73,7 +74,7 @@ public class RoleController {
      *
      * @return
      */
-    @PutMapping("/roles/{roleId}")
+    @PutMapping("/{roleId}")
     public R saveOrUpdate(@PathVariable("roleId") int roleId, @RequestBody RoleDTO roleDTO) {
         Role roleInfo = roleService.getById(roleId);
         if (roleInfo == null) {
@@ -96,7 +97,7 @@ public class RoleController {
      *
      * @return
      */
-    @PostMapping("/roles")
+    @PostMapping
     public R saveSource(@RequestBody RoleDTO roleDTO) {
         if (StrUtil.isEmpty(roleDTO.getRoleName())) {
             return R.fail("角色名称不能为空");
@@ -115,7 +116,7 @@ public class RoleController {
      *
      * @return
      */
-    @DeleteMapping("/roles")
+    @DeleteMapping
     public R delRole(@RequestBody Map<String, List<Integer>> roleMap) {
         List<Integer> roleIds = roleMap.get("roleIds");
         if (roleIds == null || roleIds.size() == 0) {
@@ -136,7 +137,7 @@ public class RoleController {
      * 角色对应用户数
      * @return
      */
-    @GetMapping("/roles/usernum")
+    @GetMapping("/usernum")
     public R userNum(){
         List<UserRoleVO> userNums = userService.getUserNumGroupRole();
         return R.ok(userNums);
@@ -147,7 +148,7 @@ public class RoleController {
      *
      * @return
      */
-    @GetMapping("/roles")
+    @GetMapping
     public R roleInfoList() {
         List<Role> roleList = roleService.getRoleList();
         return R.ok(roleList);

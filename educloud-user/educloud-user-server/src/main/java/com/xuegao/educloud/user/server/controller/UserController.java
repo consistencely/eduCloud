@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.Query;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import java.util.regex.Pattern;
  * @Description:
  */
 @RestController
+@RequestMapping("/v1/users")
 @Slf4j
 public class UserController {
 
@@ -49,7 +51,7 @@ public class UserController {
      * @param userInfoDTO
      * @return
      */
-    @PostMapping("/users")
+    @PostMapping
     public R saveUser(@RequestBody UserInfoDTO userInfoDTO){
 
         R result = this.verifyUserParam(userInfoDTO);
@@ -70,7 +72,7 @@ public class UserController {
      * @param userInfoDTO
      * @return
      */
-    @PutMapping("/users/{userId}")
+    @PutMapping("/{userId}")
     public R updateUser(@PathVariable("userId") long userId,@RequestBody UserInfoDTO userInfoDTO){
 
         //参数校验
@@ -150,7 +152,7 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public R<UserInfoDTO> getUserInfo(@PathVariable("userId") long userId){
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         if(userInfo == null){
@@ -163,7 +165,7 @@ public class UserController {
      * 修改密码
      * @return
      */
-    @PutMapping("/users/{userId}/password")
+    @PutMapping("/{userId}/password")
     public R updatePwd(@PathVariable("userId") long userId,@RequestBody User user){
 
         String newPwd = user.getPassword();
@@ -190,7 +192,7 @@ public class UserController {
      * @param statusCode 状态码
      * @return
      */
-    @PutMapping("/users/status/{statusCode}")
+    @PutMapping("/status/{statusCode}")
     public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
         List<Long> userIds = (List<Long>) userMap.get("userIds");
         if(IterUtil.isEmpty(userIds)){
@@ -219,11 +221,10 @@ public class UserController {
 
     /**
      * 批量修改年级、从属机构
-     * TODO
      * @param userInfo
      * @return
      */
-    @PutMapping("/users")
+    @PutMapping("/info")
     public R batchUpdate(@RequestBody UserInfoDTO userInfo){
         if(ArrayUtil.isEmpty(userInfo.getUserIds())){
             return R.fail("请选择用户");
@@ -267,7 +268,7 @@ public class UserController {
      * @param userQuery
      * @return
      */
-    @GetMapping("/users/page")
+    @GetMapping("/page")
     public R<IPage> userInfoPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
                                  @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize,
                                  @ModelAttribute UserQuery userQuery ){

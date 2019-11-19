@@ -19,7 +19,7 @@ import java.util.List;
  * @Date: 2019/11/16 09:52
  * @Description:
  */
-@Configuration
+//@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
 
