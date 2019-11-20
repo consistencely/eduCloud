@@ -18,4 +18,18 @@ public interface IGradeService extends IService<Grade> {
      * @return
      */
     List<Grade> getGrades();
+
+    /**
+     * 新增年级
+     * @param param
+     * @return
+     */
+    boolean saveGrade(Grade param);
+
+    /**
+     * 修改年级
+     * @param param
+     * @return
+     */
+    boolean updateGrade(Grade param);
 }
