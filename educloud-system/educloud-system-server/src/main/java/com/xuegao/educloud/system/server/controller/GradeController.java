@@ -1,8 +1,10 @@
 package com.xuegao.educloud.system.server.controller;
 
+import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.params.vo.GradeWithSubjectVO;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: LIM
@@ -28,46 +31,68 @@ public class GradeController {
 
 
     /**
-     * 分页查询学段
-     * @param current 页数
+     * 分页查询年级
+     * @param pageNum 页数
+     * @param pageSize 每页记录数
      * @return
      */
-    @GetMapping("/grade/page/{curr}")
-    public R getGradePage(@PathVariable("curr") int current){
-        Page<Grade> page = new Page<Grade>().setCurrent(current);
+    @GetMapping("/grades/page")
+    public R getGradePage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                          @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize){
+        Page<Grade> page = new Page<Grade>().setCurrent(pageNum).setSize(pageSize);
         IPage<Grade> gradePage = gradeService.getGradePage(page);
         return R.ok(gradePage);
 
     }
 
     /**
-     * 删除学段
+     * 批量删除年级
+     * @param param ids  年级ID列表
      * @return
      */
-    @DeleteMapping("/grade/{id}")
-    public R delGrade(@PathVariable("id") int id){
-        boolean success = gradeService.removeById(id);
-        return success ? R.ok() : R.fail("删除失败");
+    @DeleteMapping("/grades/batch")
+    public R delGrade(@RequestBody Map<String,List<Integer>> param){
+
+        List<Integer> ids = param.get("ids");
+        if(IterUtil.isEmpty(ids)){
+            return R.fail("年级ID为空");
+        }
+
+        boolean success = gradeService.removeByIds(ids);
+        return success ? R.ok() : R.fail("删除年级失败");
     }
 
     /**
-     * 新增/修改学段
+     * 修改年级
+     * @param gradeId
+     * @param param
      * @return
      */
-    @PostMapping("/grade")
-    public R saveGrade(@RequestBody Grade param){
+    @PutMapping("/grades/{gradeId}")
+    public R updateGrade(@PathVariable("gradeId") int gradeId,@RequestBody Grade param){
         if(StringUtils.isEmpty(param.getGradeName())){
-            return R.fail("请输入学段名称");
+            return R.fail("请输入年级名称");
         }
-        Grade grade = new Grade();
-        grade.setGradeId(param.getGradeId());
-        grade.setGradeName(param.getGradeName());
-        grade.setSort(param.getSort());
-        boolean success = gradeService.saveOrUpdate(grade);
-        return success ? R.ok() : R.fail("保存失败");
+        param.setGradeId(gradeId);
+        boolean success = gradeService.updateGrade(param);
+        return success ? R.ok() : R.fail("修改年级失败");
     }
 
-    @GetMapping("/gradeWithSubject")
+    /**
+     * 新增年级
+     * @return
+     */
+    @PostMapping("/grades")
+    public R saveGrade(@RequestBody Grade param){
+        if(StringUtils.isEmpty(param.getGradeName())){
+            return R.fail("请输入年级名称");
+        }
+        boolean success = gradeService.saveGrade(param);
+        return success ? R.ok() : R.fail("保存年级失败");
+    }
+
+
+    @GetMapping("/grades/subject")
     public R<List<GradeWithSubjectVO>> gradeWithSubject(){
         List<GradeWithSubjectVO> gradeWithSubject = gradeService.getGradesWithSubject();
         return R.ok(gradeWithSubject);

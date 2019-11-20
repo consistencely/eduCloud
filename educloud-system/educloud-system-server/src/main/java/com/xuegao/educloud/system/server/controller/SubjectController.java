@@ -1,11 +1,13 @@
 package com.xuegao.educloud.system.server.controller;
 
+import cn.hutool.core.collection.IterUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.exception.InvalidRequestException;
 import com.xuegao.educloud.common.exception.ResourceNoFoundException;
+import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.common.response.Result;
@@ -19,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: LIM
@@ -26,7 +29,6 @@ import java.util.List;
  * @Description:
  */
 @RestController
-@RequestMapping("/subject")
 public class SubjectController {
 
     @Autowired
@@ -35,61 +37,91 @@ public class SubjectController {
 
     /**
      * 分页查询学科
-     * @param current
+     *
      * @return
      */
-    @GetMapping("/page/{curr}")
-    public R<IPage<Subject>> getSubjectPage(@PathVariable("curr") int current){
-        Page<Subject> page = new Page<Subject>().setCurrent(current);
+    @GetMapping("/subjects/page")
+    public R<IPage<Subject>> getSubjectPage(@RequestParam(value = "pageNum", defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                                            @RequestParam(value = "pageSize", defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize) {
+
+        Page<Subject> page = new Page<Subject>().setCurrent(pageNum).setSize(pageSize);
         IPage<Subject> subjectPage = subjectService.getSubjectPage(page);
         return R.ok(subjectPage);
 
     }
 
     /**
-     * 删除学科
+     * 批量删除学科
+     *
      * @return
      */
-    @DeleteMapping("/{id}")
-    public R delSubject(@PathVariable("id") int id){
-        boolean success = subjectService.removeById(id);
+    @DeleteMapping("/subjects/batch")
+    public R delSubject(@RequestBody Map<String, List<Integer>> param) {
+
+        List<Integer> ids = param.get("ids");
+        if (IterUtil.isEmpty(ids)) {
+            return R.fail("学科ID为空");
+        }
+
+        boolean success = subjectService.removeByIds(ids);
         return success ? R.ok() : R.fail("删除失败");
     }
 
     /**
-     * 新增/修改学科
+     * 新增学科
+     *
      * @return
      */
-    @PostMapping("")
-    public R saveSubject(@RequestBody Subject param){
-        if(StringUtils.isEmpty(param.getSubjectName())){
+    @PostMapping("/subjects")
+    public R saveSubject(@RequestBody Subject param) {
+        if (StringUtils.isEmpty(param.getSubjectName())) {
             return R.fail("请输入学科名称");
         }
         Subject subject = new Subject();
-        subject.setSubjectId(param.getSubjectId());
         subject.setSubjectName(param.getSubjectName());
         subject.setSort(param.getSort());
-        boolean success = subjectService.saveOrUpdate(subject);
-        return success ? R.ok() : R.fail("保存失败");
+        boolean success = subjectService.save(subject);
+        return success ? R.ok() : R.fail("新增学科失败");
     }
 
     /**
-     * 查询所有学科
+     * 修改学科
+     *
      * @return
      */
-    @GetMapping("/all")
-    public R<List<Subject>> getAllSubject(){
+    @PutMapping("/subjects/{subjectId}")
+    public R updateSubject(@PathVariable("subjectId") int subjectId, @RequestBody Subject param) {
+        if (StringUtils.isEmpty(param.getSubjectName())) {
+            return R.fail("请输入学科名称");
+        }
+        Subject subject = new Subject();
+        subject.setSubjectId(subjectId);
+        subject.setSubjectName(param.getSubjectName());
+        subject.setSort(param.getSort() != null ? param.getSort() : CommonConstants.DEFAULT_SORT);
+        boolean success = subjectService.updateById(subject);
+        return success ? R.ok() : R.fail("修改学科失败");
+    }
+
+
+    /**
+     * 查询所有学科
+     *
+     * @return
+     */
+    @GetMapping("/subjects")
+    public R<List<Subject>> getAllSubject() {
         List<Subject> list = subjectService.getAllSubject();
         return R.ok(list);
     }
 
     /**
      * 保存学科年级配置
+     *
      * @return
      */
-    @PostMapping("/saveSubjectGrade")
-    public R saveSubjectGrade(@RequestBody SubjectGradeDTO subjectGradeDTO){
-        if(subjectGradeDTO.getGradeId() == null ){
+    @PostMapping("/subjects/grade")
+    public R saveSubjectGrade(@RequestBody SubjectGradeDTO subjectGradeDTO) {
+        if (subjectGradeDTO.getGradeId() == null) {
             return R.fail("保存失败，请重试！");
         }
         subjectService.saveSubjectGrade(subjectGradeDTO);

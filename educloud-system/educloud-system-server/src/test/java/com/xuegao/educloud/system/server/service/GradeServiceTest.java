@@ -1,5 +1,8 @@
 package com.xuegao.educloud.system.server.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.params.vo.GradeWithSubjectVO;
 import com.xuegao.educloud.system.server.BaseTest;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,14 @@ public class GradeServiceTest extends BaseTest{
     public void getGradesWithSubject() throws Exception {
         List<GradeWithSubjectVO> list = gradeService.getGradesWithSubject();
         printOut(list);
+    }
+
+    @Test
+    public void page() throws Exception {
+        Page<Grade> page = new Page<Grade>();
+        IPage<Grade> gradePage = gradeService.getGradePage(page);
+        printOut(gradePage);
+
     }
 
     @Test
