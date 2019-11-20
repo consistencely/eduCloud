@@ -46,8 +46,14 @@ public interface CommonConstants {
 	 */
 	int DEFAULT_SORT = 99;
 
+	/**
+	 * 第一页
+	 */
 	String FIRST_PAGE = "1";
 
+	/**
+	 * 每页显示记录数
+	 */
 	String DEFAULT_PAGE_SIZE = "10";
 
 }

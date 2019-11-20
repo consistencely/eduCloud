@@ -37,14 +37,14 @@ public class SystemClientFallBack implements SystemClient {
     }
 
     @Override
-    public String demo(int id) {
+    public ResponseEntity<Subject> demo(int id) {
         log.error("熔断器12：开 -> {}",cause.getMessage());
-        return "熔断器开启";
+        return ResponseEntity.ok(new Subject());
     }
 
     @Override
-    public R getById(int id) {
-        log.error("熔断器：开");
-        return R.fail("hystrix -> 请求超时...");
+    public ResponseEntity<?> getById(int id) {
+        log.error("熔断器12：开 -> {}",cause.getMessage());
+        return Result.success();
     }
 }

@@ -1,6 +1,7 @@
 package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.json.JSONUtil;
+import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.common.response.Result;
 import com.xuegao.educloud.system.client.entities.Subject;
@@ -43,18 +44,24 @@ public class DemoController {
 
 
     @GetMapping("/subject/demo2/{id}")
-    public Subject demoSubejct(@PathVariable("id") int id){
-        String json = systemClient.demo(id);
+    public  Subject demoSubejct(@PathVariable("id") int id){
+        try {
+            ResponseEntity<Subject> result = systemClient.demo(id);
+            log.info("DemoController : {}",JSONUtil.toJsonStr(result));
+            return result.getBody();
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
 
-        log.info(json);
+
         return null;
     }
 
     @GetMapping("/subject/demo/{id}")
-    public R demoSubject(@PathVariable("id") int id){
-        R result = systemClient.getById(id);
-        log.info("subject -> {}",result);
-        return result;
+    public Subject demoSubject(@PathVariable("id") int id){
+        ResponseEntity result = systemClient.getById(id);
+        log.info("subject -> {}",JSONUtil.toJsonStr(result));
+        return (Subject) result.getBody();
     }
 
     @PostMapping("json")

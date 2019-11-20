@@ -128,10 +128,9 @@ public class SubjectController {
         return R.ok();
     }
 
-    /*
-       Feign测试用
-    @GetMapping("/demo/{id}")
-    public Result<Subject> demo(@PathVariable("id") int id){
+
+    @GetMapping("/subjects/demo/{id}")
+    public ResponseEntity<Subject> demo(@PathVariable("id") int id){
 
         if(id == 0){
             throw new InvalidRequestException(100,"不合法参数");
@@ -139,17 +138,20 @@ public class SubjectController {
         if(id == 1){
             throw new ResourceNoFoundException(404110,"不存在");
         }
+        if(id == 2){
+            int a = 1 / 0;
+        }
 
+        Subject subject = subjectService.getById(id);
+        return ResponseEntity.ok(subject);
+
+    }
+
+    @GetMapping("/subjects/{id}")
+    public Result<Subject> getById(@PathVariable("id") int id){
         Subject subject = subjectService.getById(id);
         return Result.success(subject);
-
     }
 
-    @GetMapping("/{id}")
-    public R getById(@PathVariable("id") int id){
-        Subject subject = subjectService.getById(id);
-        return R.ok(subject);
-    }
-    */
 
 }

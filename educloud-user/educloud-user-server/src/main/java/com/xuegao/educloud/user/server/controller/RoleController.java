@@ -3,6 +3,7 @@ package com.xuegao.educloud.user.server.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
@@ -33,7 +34,7 @@ import java.util.Map;
  * @Description:
  */
 @RestController
-@RequestMapping("/v1/roles")
+@RequestMapping("/roles")
 @Slf4j
 public class RoleController {
 
@@ -62,8 +63,8 @@ public class RoleController {
      * @return
      */
     @GetMapping("/page")
-    public R<IPage<Role>> getByPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
-                                    @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize) {
+    public R<IPage<Role>> getByPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                                    @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize) {
         Page<Role> page = new Page<Role>().setCurrent(pageNum).setSize(pageSize);
         IPage<Role> roleRage = roleService.getRolePage(page);
         return R.ok(roleRage);
@@ -116,7 +117,7 @@ public class RoleController {
      *
      * @return
      */
-    @DeleteMapping
+    @DeleteMapping("/batch")
     public R delRole(@RequestBody Map<String, List<Integer>> roleMap) {
         List<Integer> roleIds = roleMap.get("roleIds");
         if (roleIds == null || roleIds.size() == 0) {

@@ -27,13 +27,13 @@ public interface SystemClient {
     R<List<Grade>> getGradeByIds(@RequestParam("ids") Integer[] ids);
 
 
-    @GetMapping("/subject/all")
+    @GetMapping("/subjects/all")
     R getAllSubject();
 
 
-    @GetMapping("/subject/demo/{id}")
-    String demo(@PathVariable("id") int id);
+    @GetMapping("/subjects/demo/{id}")
+    ResponseEntity<Subject> demo(@PathVariable("id") int id);
 
-    @GetMapping("/subject/{id}")
-    R getById(@PathVariable("id") int id);
+    @GetMapping("/subjects/{id}")
+    ResponseEntity<?> getById(@PathVariable("id") int id);
 }

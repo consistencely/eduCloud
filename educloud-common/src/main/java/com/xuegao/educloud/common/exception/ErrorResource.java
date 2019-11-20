@@ -1,9 +1,6 @@
 package com.xuegao.educloud.common.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * @Auther: LIM
@@ -12,8 +9,7 @@ import lombok.ToString;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Getter
+@Data
 public class ErrorResource {
 
     private Integer errorCode;

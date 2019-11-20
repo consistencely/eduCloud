@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.user.client.entities.Source;
 import com.xuegao.educloud.user.client.entities.User;
@@ -29,7 +30,7 @@ import java.util.Map;
  * @Description:
  */
 @RestController
-@RequestMapping("/v1/sources")
+@RequestMapping("/sources")
 @Slf4j
 public class SourceController {
 
@@ -112,7 +113,7 @@ public class SourceController {
      * @param sourceMap 生源ID数组
      * @return
      */
-    @DeleteMapping
+    @DeleteMapping("/batch")
     public R batchDeleteSource(@RequestBody Map<String, List<Integer>> sourceMap) {
         List<Integer> sourceIds = sourceMap.get("sourceIds");
         if (sourceIds == null || sourceIds.size() == 0) {
@@ -137,8 +138,8 @@ public class SourceController {
      * @return
      */
     @GetMapping("/page")
-    public R<IPage<SourceDTO>> sourceInfoPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
-                                              @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize,
+    public R<IPage<SourceDTO>> sourceInfoPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                                              @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize,
                                               @ModelAttribute("sourceDTO") SourceDTO sourceDTO) {
         Page<SourceDTO> page = new Page<SourceDTO>().setCurrent(pageNum).setSize(pageSize);
         IPage<SourceDTO> sourcePage = sourceService.getSourcePage(page, sourceDTO);

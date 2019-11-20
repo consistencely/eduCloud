@@ -1,6 +1,9 @@
 package com.xuegao.educloud.common.exception;
 
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import com.xuegao.educloud.common.response.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +47,19 @@ public class ApiExceptionHandler {
         return Result.restResult(errorResource, HttpStatus.BAD_REQUEST);
     }
 
+
+    @ExceptionHandler(HystrixBadRequestException.class)
+    public Result<?> hystrixBadRequestException(Exception e) {
+        logger.error("HystrixBadRequestException：{}",e.getMessage());
+        ErrorResource resource = null;
+        if(StrUtil.isNotEmpty(e.getMessage())){
+            resource = JSONUtil.toBean(e.getMessage(), ErrorResource.class);
+        }
+        return Result.success(resource);
+    }
+
     /**
-     * 拦截500异常
+     * 拦截其他异常
      * @param e
      * @return
      */

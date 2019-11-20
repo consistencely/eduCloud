@@ -6,6 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.exception.ErrorCode;
 import com.xuegao.educloud.common.params.R;
 import com.xuegao.educloud.system.client.entities.Grade;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
  * @Description:
  */
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping("/users")
 @Slf4j
 public class UserController {
 
@@ -192,7 +193,7 @@ public class UserController {
      * @param statusCode 状态码
      * @return
      */
-    @PutMapping("/status/{statusCode}")
+    @PutMapping("/batch/status/{statusCode}")
     public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
         List<Long> userIds = (List<Long>) userMap.get("userIds");
         if(IterUtil.isEmpty(userIds)){
@@ -224,7 +225,7 @@ public class UserController {
      * @param userInfo
      * @return
      */
-    @PutMapping("/info")
+    @PutMapping("/batch")
     public R batchUpdate(@RequestBody UserInfoDTO userInfo){
         if(ArrayUtil.isEmpty(userInfo.getUserIds())){
             return R.fail("请选择用户");
@@ -269,8 +270,8 @@ public class UserController {
      * @return
      */
     @GetMapping("/page")
-    public R<IPage> userInfoPage(@RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
-                                 @RequestParam(value = "pageSize",required = false,defaultValue = "10") Integer pageSize,
+    public R<IPage> userInfoPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) Integer pageNum,
+                                 @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) Integer pageSize,
                                  @ModelAttribute UserQuery userQuery ){
         Page<UserVO> page = new Page<UserVO>().setCurrent(pageNum).setSize(pageSize);
         IPage<UserVO> userPage = userService.getUserPage(page,userQuery);

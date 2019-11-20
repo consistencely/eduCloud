@@ -7,6 +7,9 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.xuegao.educloud.common.exception.ErrorResource;
 import com.xuegao.educloud.common.response.Result;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -27,10 +30,13 @@ public class JavaTest {
 
     @Test
     public void test(){
-//        List<Integer> list = Arrays.asList(1,2,3);
-        Result<Object> result = Result.success(123465);
-//        Result<Object> result = (Result<Object>) ResponseEntity.ok();
+//        Result<Object> result = Result.success();
+//        System.out.println(result instanceof Result);
+//        System.out.println(result instanceof ResponseEntity);
+//        System.out.println(result.getClass() );
+//        ResponseEntity<Object> responseEntity = new ResponseEntity<>(null, null, HttpStatus.OK);
+        ResponseEntity<Object> responseEntity = ResponseEntity.ok().build();
+        Result<Object> result = (Result<Object>) responseEntity;
         System.out.println(result);
-
     }
 }
