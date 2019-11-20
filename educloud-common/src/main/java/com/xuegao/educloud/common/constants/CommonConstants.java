@@ -30,9 +30,24 @@ public interface CommonConstants {
 	 * 成功标记
 	 */
 	int SUCCESS = 200;
+
 	/**
 	 * 失败标记
 	 */
 	int FAIL = 500;
+
+	/**
+	 * 根节点
+	 */
+	int TREE_ROOT = 0 ;
+
+	/**
+	 * 默认排序
+	 */
+	int DEFAULT_SORT = 99;
+
+	String FIRST_PAGE = "1";
+
+	String DEFAULT_PAGE_SIZE = "10";
 
 }

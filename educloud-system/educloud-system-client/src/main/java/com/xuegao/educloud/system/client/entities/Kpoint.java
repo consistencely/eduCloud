@@ -46,6 +46,11 @@ public class Kpoint {
     private Integer level;
 
     /**
+     * 节点路径
+     */
+    private String path;
+
+    /**
      * 是否删除（0：正常，1：删除）
      * 逻辑删除字段
      */

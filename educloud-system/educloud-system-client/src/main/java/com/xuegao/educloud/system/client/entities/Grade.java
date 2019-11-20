@@ -22,11 +22,17 @@ public class Grade {
     @TableId
     private Integer gradeId;
 
-    /** 学科名称 */
+    /** 年级名称 */
     private String gradeName;
+
+    /** 父级ID */
+    private Integer parentId;
 
     /** 排序*/
     private Integer sort;
+
+    /** 节点路径 */
+    private String path;
 
     /** 0：正常，1：删除 */
     @TableLogic
