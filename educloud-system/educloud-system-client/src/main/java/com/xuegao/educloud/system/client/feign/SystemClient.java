@@ -1,15 +1,11 @@
 package com.xuegao.educloud.system.client.feign;
 
-import com.xuegao.educloud.common.params.R;
-import com.xuegao.educloud.common.response.Result;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.entities.Subject;
 import com.xuegao.educloud.system.client.feign.factory.SystemClientFallBackFactory;
-import com.xuegao.educloud.system.client.feign.fallback.SystemClientFallBack;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,8 +28,8 @@ public interface SystemClient {
 
 
     @GetMapping("/subjects/demo/{id}")
-    ResponseEntity<Subject> demo(@PathVariable("id") int id);
+    R<Subject> demo(@PathVariable("id") int id);
 
     @GetMapping("/subjects/{id}")
-    ResponseEntity<?> getById(@PathVariable("id") int id);
+    R getById(@PathVariable("id") int id);
 }

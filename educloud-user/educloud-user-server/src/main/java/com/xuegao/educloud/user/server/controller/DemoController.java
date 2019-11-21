@@ -1,17 +1,12 @@
 package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.json.JSONUtil;
-import com.xuegao.educloud.common.constants.CommonConstants;
-import com.xuegao.educloud.common.params.R;
-import com.xuegao.educloud.common.response.Result;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Subject;
 import com.xuegao.educloud.system.client.feign.SystemClient;
-import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
-import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,43 +27,37 @@ public class DemoController {
 
 
     @GetMapping("msg")
-    public R demo(HttpServletRequest request, HttpServletResponse response){
+    public R demo(HttpServletRequest request, HttpServletResponse response) {
         return R.ok("错误信息");
     }
 
     @GetMapping("msg2/{curr}")
-    public R dem2o(@PathVariable("curr") int curr,@ModelAttribute("name") String name){
+    public R dem2o(@PathVariable("curr") int curr, @ModelAttribute("name") String name) {
         return R.ok(name);
     }
 
 
-
     @GetMapping("/subject/demo2/{id}")
-    public  Subject demoSubejct(@PathVariable("id") int id){
-        try {
-            ResponseEntity<Subject> result = systemClient.demo(id);
-            log.info("DemoController : {}",JSONUtil.toJsonStr(result));
-            return result.getBody();
-        }catch (Exception e){
-            log.info(e.getMessage());
-        }
+    public R<?> demoSubejct(@PathVariable("id") int id) {
 
-
-        return null;
+//        Subject result = systemClient.demo(id);
+        R<Subject> result = systemClient.demo(id);
+        log.info("DemoController : {}", JSONUtil.toJsonStr(result));
+        return result;
     }
 
     @GetMapping("/subject/demo/{id}")
-    public Subject demoSubject(@PathVariable("id") int id){
-        ResponseEntity result = systemClient.getById(id);
-        log.info("subject -> {}",JSONUtil.toJsonStr(result));
-        return (Subject) result.getBody();
+    public R demoSubject(@PathVariable("id") int id) {
+        R result = systemClient.getById(id);
+        log.info("subject -> {}", JSONUtil.toJsonStr(result));
+        return result;
     }
 
     @PostMapping("json")
-    public R jsonTest(@RequestBody User info){
+    public R jsonTest(@RequestBody User info) {
         info.setModifyTime(new Date());
         String str = JSONUtil.toJsonStr(info);
-        log.info("JSON -> {}",str);
+        log.info("JSON -> {}", str);
         return R.ok(info);
 
     }

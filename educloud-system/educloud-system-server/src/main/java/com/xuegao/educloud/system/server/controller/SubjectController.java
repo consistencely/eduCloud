@@ -1,23 +1,17 @@
 package com.xuegao.educloud.system.server.controller;
 
 import cn.hutool.core.collection.IterUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.exception.InvalidRequestException;
 import com.xuegao.educloud.common.exception.ResourceNoFoundException;
-import com.xuegao.educloud.common.constants.CommonConstants;
-import com.xuegao.educloud.common.params.R;
-import com.xuegao.educloud.common.params.R;
-import com.xuegao.educloud.common.response.Result;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Subject;
 import com.xuegao.educloud.system.client.params.dto.SubjectGradeDTO;
 import com.xuegao.educloud.system.server.service.ISubjectService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -130,27 +124,30 @@ public class SubjectController {
 
 
     @GetMapping("/subjects/demo/{id}")
-    public ResponseEntity<Subject> demo(@PathVariable("id") int id){
+    public R<Subject> demo(@PathVariable("id") int id){
 
         if(id == 0){
-            throw new InvalidRequestException(100,"不合法参数");
+            throw new InvalidRequestException("不合法参数");
         }
         if(id == 1){
-            throw new ResourceNoFoundException(404110,"不存在");
+            throw new ResourceNoFoundException("ID不存在");
         }
         if(id == 2){
             int a = 1 / 0;
         }
+        if(id == 3){
+            throw new ResourceNoFoundException("不存在");
+        }
 
         Subject subject = subjectService.getById(id);
-        return ResponseEntity.ok(subject);
+        return R.ok(subject);
 
     }
 
     @GetMapping("/subjects/{id}")
-    public Result<Subject> getById(@PathVariable("id") int id){
+    public R<Subject> getById(@PathVariable("id") int id){
         Subject subject = subjectService.getById(id);
-        return Result.success(subject);
+        return R.ok(subject);
     }
 
 

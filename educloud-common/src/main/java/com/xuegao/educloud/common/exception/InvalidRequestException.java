@@ -7,17 +7,16 @@ import lombok.Getter;
  * @Date: 2019/11/18 15:09
  * @Description:
  */
-public class InvalidRequestException extends RuntimeException {
+public class InvalidRequestException extends ServiceException {
 
-    @Getter
-    private Integer code;
 
-    public InvalidRequestException(String message){
-        super(message);
+    public InvalidRequestException(){
+        super(400, "请求数据不完整或格式错误！");
     }
 
-    public InvalidRequestException(Integer code, String message){
-        super(message);
-        this.code = code;
+    public InvalidRequestException(String message) {
+        super(400, message);
     }
+
+
 }

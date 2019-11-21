@@ -1,15 +1,13 @@
 package com.xuegao.educloud.system.server.controller;
 
 import cn.hutool.core.collection.IterUtil;
-import cn.hutool.core.util.StrUtil;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Kpoint;
 import com.xuegao.educloud.system.server.service.IKpointService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

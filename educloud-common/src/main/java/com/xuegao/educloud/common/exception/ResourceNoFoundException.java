@@ -7,17 +7,14 @@ import lombok.Getter;
  * @Date: 2019/11/18 15:07
  * @Description:
  */
-public class ResourceNoFoundException extends  RuntimeException {
+public class ResourceNoFoundException extends  ServiceException {
 
-    @Getter
-    private Integer code;
 
-    public ResourceNoFoundException(String message){
-        super(message);
+    public ResourceNoFoundException(){
+        super(404, "找不到对应资源");
     }
 
-    public ResourceNoFoundException(Integer code, String message){
-        super(message);
-        this.code = code;
+    public ResourceNoFoundException(String message) {
+        super(404, message);
     }
 }

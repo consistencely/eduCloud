@@ -1,22 +1,15 @@
 package com.xuegao.educloud.user.server.error;
 
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSON;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
-import com.xuegao.educloud.common.exception.ErrorResource;
-import feign.FeignException;
+import com.xuegao.educloud.common.exception.resource.ErrorResource;
 import feign.Response;
 import feign.Util;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @Auther: LIM
@@ -39,10 +32,10 @@ public class BusinessExceptionFeignErrorDecoder extends ErrorDecoder.Default {
         if(body != null){
             //log.info("【FeignErrorDecoder】body：{}",body);
             ErrorResource errorResource = JSONUtil.toBean(body, ErrorResource.class);
-            Integer errorCode = errorResource.getErrorCode();
+            Integer errorCode = errorResource.getCode();
+            //TODO
             if(errorCode != null){
-                // exception = new HystrixBadRequestException(body);
-                return null;
+                 exception = new HystrixBadRequestException(body);
             }
         }
         if (exception == null) {

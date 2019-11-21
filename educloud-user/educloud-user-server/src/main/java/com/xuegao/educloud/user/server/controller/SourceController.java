@@ -1,14 +1,10 @@
 package com.xuegao.educloud.user.server.controller;
 
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.sql.Query;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.user.client.entities.Source;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.SourceDTO;
@@ -18,9 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

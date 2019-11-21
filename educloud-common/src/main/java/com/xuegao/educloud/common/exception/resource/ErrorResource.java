@@ -1,4 +1,4 @@
-package com.xuegao.educloud.common.exception;
+package com.xuegao.educloud.common.exception.resource;
 
 import lombok.*;
 
@@ -12,6 +12,6 @@ import lombok.*;
 @Data
 public class ErrorResource {
 
-    private Integer errorCode;
+    private Integer code;
     private String message;
 }

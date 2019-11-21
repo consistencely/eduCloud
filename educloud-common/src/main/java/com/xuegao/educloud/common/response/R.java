@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.xuegao.educloud.common.params;
+package com.xuegao.educloud.common.response;
 
 import com.xuegao.educloud.common.constants.CommonConstants;
 import lombok.*;

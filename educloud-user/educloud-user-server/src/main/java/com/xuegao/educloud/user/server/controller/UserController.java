@@ -7,8 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
-import com.xuegao.educloud.common.exception.ErrorCode;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.feign.SystemClient;
 import com.xuegao.educloud.user.client.entities.Campus;
@@ -23,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.Query;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +59,7 @@ public class UserController {
         }
         boolean exist = userService.isPhoneExist(userInfoDTO.getPhone());
         if(exist){
-            return R.fail(ErrorCode.Error_40001,"手机号码已存在");
+            return R.fail("手机号码已存在");
         }
 
         userService.saveUser(userInfoDTO);
@@ -106,12 +104,12 @@ public class UserController {
      */
     private R verifyUserParam(UserInfoDTO userInfoDTO){
         if(!Validator.isMobile(userInfoDTO.getPhone())){
-            return R.fail(ErrorCode.Error_40001,"手机格式错误");
+            return R.fail("手机格式错误");
         }
         //校验密码
         if(StrUtil.isEmpty(userInfoDTO.getPassword())
                 || !Pattern.matches(UserConstants.PATTERN_PWD, userInfoDTO.getPassword())){
-            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
+            return R.fail("密码格式不正确");
         }
 
         if(ArrayUtil.isEmpty(userInfoDTO.getRoleIds())){
@@ -174,7 +172,7 @@ public class UserController {
         //校验密码
         if(StrUtil.isEmpty(newPwd)
                 || !Pattern.matches(UserConstants.PATTERN_PWD, newPwd)){
-            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
+            return R.fail("密码格式不正确");
         }
         User db_user = userService.getById(userId);
         if(db_user == null){

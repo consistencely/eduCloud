@@ -4,28 +4,20 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.user.client.entities.Role;
-import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.entities.UserRole;
 import com.xuegao.educloud.user.client.params.dto.RoleDTO;
 import com.xuegao.educloud.user.client.params.vo.UserRoleVO;
 import com.xuegao.educloud.user.server.service.IRoleService;
 import com.xuegao.educloud.user.server.service.IUserService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import com.xuegao.educloud.user.server.service.IUserRoleService;
-import com.xuegao.educloud.user.server.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Map;
 
 /**
