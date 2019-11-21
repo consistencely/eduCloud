@@ -23,17 +23,6 @@ public class ApiExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @ExceptionHandler(HystrixBadRequestException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public R<?> demoException(HystrixBadRequestException e) {
-        ErrorResource errorResource = null;
-        if(StrUtil.isEmpty(e.getMessage())){
-            errorResource = JSONUtil.toBean(e.getMessage(), ErrorResource.class);
-        }
-        logger.error("HystrixBadRequestException：{}",e.getMessage());
-        return R.fail(errorResource);
-    }
-
     /**
      * 拦截业务异常
      * @param e
@@ -42,7 +31,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(ServiceException.class)
     @ResponseStatus(HttpStatus.OK)
     public R<?> handleServiceException(ServiceException e) {
-        logger.warn("业务异常：",e.getMessage());
+        logger.warn("业务异常：{}",e.getMessage());
         return R.fail(e.getCode(),null,e.getMessage());
     }
 
