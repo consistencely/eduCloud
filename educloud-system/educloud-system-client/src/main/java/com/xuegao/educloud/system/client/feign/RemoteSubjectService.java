@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = ServiceNameConstants.SYS_SERVICE,fallbackFactory = RemoteSubjectServiceFallbackFactory.class)
+@FeignClient(contextId = "remoteSubjectService", name = ServiceNameConstants.SYS_SERVICE,fallbackFactory = RemoteSubjectServiceFallbackFactory.class)
 public interface RemoteSubjectService {
 
 

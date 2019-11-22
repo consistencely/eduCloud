@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = ServiceNameConstants.SYS_SERVICE,fallbackFactory = RemoteGradeServiceFallbackFactory.class)
+@FeignClient(contextId = "remoteGradeService",name = ServiceNameConstants.SYS_SERVICE,fallbackFactory = RemoteGradeServiceFallbackFactory.class)
 public interface RemoteGradeService {
 
     @GetMapping("/grades/ids")
