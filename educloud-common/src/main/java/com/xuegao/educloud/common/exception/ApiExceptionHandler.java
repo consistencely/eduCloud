@@ -4,14 +4,18 @@ package com.xuegao.educloud.common.exception;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
+import com.xuegao.educloud.common.exception.enums.CommonExceptionEnum;
 import com.xuegao.educloud.common.exception.resource.ErrorResource;
 import com.xuegao.educloud.common.response.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Objects;
 
 /**
  * @Auther: LIM
@@ -22,6 +26,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ApiExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    /**
+     * 拦截业务异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public R<?> handleValidException(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldError().getDefaultMessage();
+        logger.error("参数异常：{}",message);
+        return R.fail(CommonExceptionEnum.INVALID_PARAM.getCode(),null,message);
+    }
 
     /**
      * 拦截业务异常

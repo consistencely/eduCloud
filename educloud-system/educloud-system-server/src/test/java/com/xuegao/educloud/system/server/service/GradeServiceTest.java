@@ -2,9 +2,11 @@ package com.xuegao.educloud.system.server.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.params.vo.GradeWithSubjectVO;
 import com.xuegao.educloud.system.server.BaseTest;
+import com.xuegao.educloud.system.server.service.impl.GradeService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import java.util.List;
 public class GradeServiceTest extends BaseTest{
 
     @Autowired
-    private IGradeService gradeService;
+    private GradeService gradeService;
     @Test
     public void getGradesWithSubject() throws Exception {
         List<GradeWithSubjectVO> list = gradeService.getGradesWithSubject();
@@ -30,7 +32,7 @@ public class GradeServiceTest extends BaseTest{
     @Test
     public void page() throws Exception {
         Page<Grade> page = new Page<Grade>();
-        IPage<Grade> gradePage = gradeService.getGradePage(page);
+        R gradePage = (R) gradeService.getGradePage(page);
         printOut(gradePage);
 
     }

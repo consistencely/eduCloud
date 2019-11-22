@@ -1,5 +1,6 @@
 package com.xuegao.educloud.common.exception;
 
+import com.xuegao.educloud.common.exception.enums.CommonExceptionEnum;
 import lombok.Getter;
 
 /**
@@ -11,10 +12,10 @@ public class ResourceNoFoundException extends  ServiceException {
 
 
     public ResourceNoFoundException(){
-        super(404, "找不到对应资源");
+        super(CommonExceptionEnum.NOT_FOUND);
     }
 
     public ResourceNoFoundException(String message) {
-        super(404, message);
+        super(CommonExceptionEnum.NOT_FOUND.getCode(), message);
     }
 }

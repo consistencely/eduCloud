@@ -2,11 +2,9 @@ package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.xuegao.educloud.common.response.R;
-import com.xuegao.educloud.system.client.entities.Subject;
-import com.xuegao.educloud.system.client.feign.SystemClient;
+import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.user.client.entities.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,11 +18,36 @@ import java.util.Date;
  */
 @Slf4j
 @RestController
+@RequestMapping("demo")
 public class DemoController {
 
-    @Autowired
-    private SystemClient systemClient;
 
+    @GetMapping("grade")
+    public Grade getGrade() {
+        log.info("返回类型 对象 ");
+        return new Grade().setGradeId(1).setGradeName("高二");
+    }
+
+
+    @GetMapping("grade/{id}")
+    public boolean isGrade(@PathVariable("id") int id) {
+        log.info("返回类型 boolean ");
+        return id == 0;
+    }
+
+    @GetMapping("/{id}")
+    public int test(@PathVariable("id") int id) {
+        log.info("返回类型 int ");
+        if(id == 0){
+            int a = 1 / 0;
+        }
+        return id;
+    }
+
+    @GetMapping("/void")
+    public void v() {
+        log.info("返回类型 void ");
+    }
 
     @GetMapping("msg")
     public R demo(HttpServletRequest request, HttpServletResponse response) {
@@ -36,22 +59,6 @@ public class DemoController {
         return R.ok(name);
     }
 
-
-    @GetMapping("/subject/demo2/{id}")
-    public R<?> demoSubejct(@PathVariable("id") int id) {
-
-//        Subject result = systemClient.demo(id);
-        R<Subject> result = systemClient.demo(id);
-        log.info("DemoController : {}", JSONUtil.toJsonStr(result));
-        return result;
-    }
-
-    @GetMapping("/subject/demo/{id}")
-    public R demoSubject(@PathVariable("id") int id) {
-        R result = systemClient.getById(id);
-        log.info("subject -> {}", JSONUtil.toJsonStr(result));
-        return result;
-    }
 
     @PostMapping("json")
     public R jsonTest(@RequestBody User info) {

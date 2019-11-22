@@ -1,5 +1,6 @@
 package com.xuegao.educloud.common.exception;
 
+import com.xuegao.educloud.common.exception.enums.CommonExceptionEnum;
 import lombok.Getter;
 
 /**
@@ -11,11 +12,11 @@ public class InvalidRequestException extends ServiceException {
 
 
     public InvalidRequestException(){
-        super(400, "请求数据不完整或格式错误！");
+        super(CommonExceptionEnum.INVALID_PARAM);
     }
 
     public InvalidRequestException(String message) {
-        super(400, message);
+        super(CommonExceptionEnum.INVALID_PARAM.getCode(), message);
     }
 
 

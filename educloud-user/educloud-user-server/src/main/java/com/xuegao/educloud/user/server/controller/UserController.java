@@ -4,18 +4,22 @@ import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.exception.ServiceException;
 import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Grade;
-import com.xuegao.educloud.system.client.feign.SystemClient;
+import com.xuegao.educloud.system.client.feign.RemoteGradeService;
 import com.xuegao.educloud.user.client.entities.Campus;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
+import com.xuegao.educloud.user.server.error.ECUserExceptionEnum;
 import com.xuegao.educloud.user.server.service.ICampusService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +47,15 @@ public class UserController {
     @Autowired
     private ICampusService campusService;
     @Autowired
-    private SystemClient systemClient;
+    private RemoteGradeService remoteGradeService;
+
+    @GetMapping("/demo")
+    public R<List<Grade>> getGrades(){
+        Integer[] ids = new Integer[]{1,2,3,4};
+        R<List<Grade>> result = remoteGradeService.getGradeByIds(ids);
+        log.info(JSONUtil.toJsonStr(result));
+        return result;
+    }
 
     /**
      * 新增用户
@@ -51,19 +63,17 @@ public class UserController {
      * @return
      */
     @PostMapping
-    public R saveUser(@RequestBody UserInfoDTO userInfoDTO){
+    public void saveUser(@RequestBody UserInfoDTO userInfoDTO){
 
-        R result = this.verifyUserParam(userInfoDTO);
-        if(!result.isSuccess()){
-            return result;
-        }
+        //校验参数
+        this.verifyUserParam(userInfoDTO);
+
         boolean exist = userService.isPhoneExist(userInfoDTO.getPhone());
         if(exist){
-            return R.fail("手机号码已存在");
+            throw new ServiceException(ECUserExceptionEnum.PHONE_EXIST);
         }
 
         userService.saveUser(userInfoDTO);
-        return R.ok();
     }
 
     /**
@@ -72,29 +82,25 @@ public class UserController {
      * @return
      */
     @PutMapping("/{userId}")
-    public R updateUser(@PathVariable("userId") long userId,@RequestBody UserInfoDTO userInfoDTO){
+    public void updateUser(@PathVariable("userId") long userId,@RequestBody UserInfoDTO userInfoDTO){
 
-        //参数校验
-        R result = this.verifyUserParam(userInfoDTO);
-        if(!result.isSuccess()){
-            return result;
-        }
+        //校验参数
+        this.verifyUserParam(userInfoDTO);
 
         User user = userService.getById(userId);
         if(user == null){
-            return R.fail("用户不存在");
+            throw new ServiceException(ECUserExceptionEnum.USER_NOT_FOUND);
         }
         if(user.getStatus() == UserConstants.USER_STATUS_DEL){
             log.error("该用户[{}]已注销，不可修改",userId);
-            return R.fail("该用户已注销");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
         User phone_user = userService.getUserByPhone(userInfoDTO.getPhone());
         if(phone_user != null && !phone_user.getUserId().equals(userId)){
-             return R.fail("手机号码已存在");
+            throw new ServiceException(ECUserExceptionEnum.PHONE_EXIST);
         }
         userInfoDTO.setUserId(userId);
         userService.updateUser(userInfoDTO);
-        return R.ok();
     }
 
     /**
@@ -102,24 +108,24 @@ public class UserController {
      * @param userInfoDTO
      * @return
      */
-    private R verifyUserParam(UserInfoDTO userInfoDTO){
+    private void verifyUserParam(UserInfoDTO userInfoDTO){
         if(!Validator.isMobile(userInfoDTO.getPhone())){
-            return R.fail("手机格式错误");
+            throw new InvalidRequestException("手机格式不正确");
         }
         //校验密码
         if(StrUtil.isEmpty(userInfoDTO.getPassword())
                 || !Pattern.matches(UserConstants.PATTERN_PWD, userInfoDTO.getPassword())){
-            return R.fail("密码格式不正确");
+            throw new InvalidRequestException("密码格式不正确");
         }
 
         if(ArrayUtil.isEmpty(userInfoDTO.getRoleIds())){
-            return R.fail("请选择角色");
+            throw new InvalidRequestException("角色参数不正确");
         }
         if(ArrayUtil.isEmpty(userInfoDTO.getGradeIds())){
-            return R.fail("请选择年级");
+            throw new InvalidRequestException("年级参数不正确");
         }
         if(userInfoDTO.getCampusId() == null){
-            return R.fail("请选择所属校区");
+            throw new InvalidRequestException("校区不正确");
         }
 
         if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_PERPETUAL){
@@ -127,23 +133,22 @@ public class UserController {
         }else if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_OVERDUE){
             userInfoDTO.setValidStart(null);
             if(userInfoDTO.getValidEnd() == null){
-                return R.fail("请选择过期时间");
+                throw new InvalidRequestException("过期时间不正确");
             }
         }else if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_SCOPE){
             if(userInfoDTO.getValidStart() == null){
-                return R.fail("请选择有效期开始时间");
+                throw new InvalidRequestException("有效期开始时间不正确");
             }
             if(userInfoDTO.getValidEnd() == null){
-                return R.fail("请选择有效期过期时间");
+                throw new InvalidRequestException("有效期过期时间不正确");
             }
             if(!userInfoDTO.getValidStart().before(userInfoDTO.getValidEnd())){
-                return R.fail("请选择正确有效时间");
+                throw new InvalidRequestException("有效时间不正确");
             }
         }else{
-            return R.fail("请选择正确的有效类型");
+            throw new InvalidRequestException("有效类型不正确");
         }
 
-        return R.ok();
     }
 
     /**
@@ -152,12 +157,12 @@ public class UserController {
      * @return
      */
     @GetMapping("/{userId}")
-    public R<UserInfoDTO> getUserInfo(@PathVariable("userId") long userId){
+    public UserInfoDTO getUserInfo(@PathVariable("userId") long userId){
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         if(userInfo == null){
-            return R.fail("用户不存在");
+            throw new ServiceException(ECUserExceptionEnum.USER_NOT_FOUND);
         }
-        return R.ok(userInfo);
+        return userInfo;
     }
 
     /**
@@ -165,25 +170,24 @@ public class UserController {
      * @return
      */
     @PutMapping("/{userId}/password")
-    public R updatePwd(@PathVariable("userId") long userId,@RequestBody User user){
+    public boolean updatePwd(@PathVariable("userId") long userId,@RequestBody User user){
 
         String newPwd = user.getPassword();
 
         //校验密码
         if(StrUtil.isEmpty(newPwd)
                 || !Pattern.matches(UserConstants.PATTERN_PWD, newPwd)){
-            return R.fail("密码格式不正确");
+            throw new InvalidRequestException("密码格式不正确");
         }
         User db_user = userService.getById(userId);
         if(db_user == null){
-            return R.fail("用户不存在");
+            throw new ServiceException(ECUserExceptionEnum.USER_NOT_FOUND);
         }
         if(db_user.getStatus() == UserConstants.USER_STATUS_DEL){
-            return R.fail("用户已注销");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
 
-        boolean success = userService.updatePwd(userId,db_user.getUuid(),newPwd);
-        return success ? R.ok() : R.fail("修改密码失败");
+        return userService.updatePwd(userId,db_user.getUuid(),newPwd);
     }
 
     /**
@@ -192,15 +196,15 @@ public class UserController {
      * @return
      */
     @PutMapping("/batch/status/{statusCode}")
-    public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
+    public void batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
         List<Long> userIds = (List<Long>) userMap.get("userIds");
         if(IterUtil.isEmpty(userIds)){
-            return R.fail("请选择用户");
+            throw new InvalidRequestException("用户ID不能为空");
         }
         if(statusCode != UserConstants.USER_STATUS_DEL
                 && statusCode != UserConstants.USER_STATUS_NORMAL
                 && statusCode != UserConstants.USER_STATUS_LOCK){
-            return R.fail("请选择正确的状态");
+            throw new InvalidRequestException("状态不正确");
         }
 
         List<User> users = (List<User>) userService.listByIds(userIds);
@@ -212,10 +216,9 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销用户，操作失败");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
         userService.batchUpdateStatus(statusCode, userIds);
-        return R.ok();
     }
 
     /**
@@ -224,9 +227,9 @@ public class UserController {
      * @return
      */
     @PutMapping("/batch")
-    public R batchUpdate(@RequestBody UserInfoDTO userInfo){
+    public void batchUpdate(@RequestBody UserInfoDTO userInfo){
         if(ArrayUtil.isEmpty(userInfo.getUserIds())){
-            return R.fail("请选择用户");
+            throw new InvalidRequestException("用户ID不能为空");
         }
 
         List<User> users = (List<User>) userService.listByIds(Arrays.asList(userInfo.getUserIds()));
@@ -238,25 +241,24 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销用户，操作失败");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
 
         if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
-            List<Grade> grades = systemClient.getGradeByIds(userInfo.getGradeIds()).getData();
+            List<Grade> grades = remoteGradeService.getGradeByIds(userInfo.getGradeIds()).getData();
             if(IterUtil.isEmpty(grades) || grades.size() != userInfo.getGradeIds().length){
-                return R.fail("内含不合法年级");
+                throw new ServiceException(ECUserExceptionEnum.INCLUDE_INVALID_GRADE);
             }
         }
         if(userInfo.getCampusId() != null){
             Campus campus = campusService.getById(userInfo.getCampusId());
             if(campus == null){
-                return R.fail("校区不存在");
+                throw new ServiceException(ECUserExceptionEnum.CAMPUS_NOT_FOUND);
             }
         }
 
         userService.batchUpdate(userInfo);
 
-        return R.ok();
 
     }
 
@@ -268,12 +270,11 @@ public class UserController {
      * @return
      */
     @GetMapping("/page")
-    public R<IPage> userInfoPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) Integer pageNum,
+    public IPage<UserVO> userInfoPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) Integer pageNum,
                                  @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) Integer pageSize,
                                  @ModelAttribute UserQuery userQuery ){
         Page<UserVO> page = new Page<UserVO>().setCurrent(pageNum).setSize(pageSize);
-        IPage<UserVO> userPage = userService.getUserPage(page,userQuery);
-        return R.ok(userPage);
+        return userService.getUserPage(page,userQuery);
     }
 
 }

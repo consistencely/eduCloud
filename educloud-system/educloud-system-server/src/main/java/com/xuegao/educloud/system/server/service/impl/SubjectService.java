@@ -32,8 +32,12 @@ public class SubjectService extends ServiceImpl<SubjectDao,Subject> implements I
 
     //TODO 事务
     @Override
-    public void saveSubjectGrade(SubjectGradeDTO subjectGradeDTO) {
+    public boolean saveSubjectGrade(SubjectGradeDTO subjectGradeDTO) {
         Integer grade = subjectGradeDTO.getGradeId();
+        if (grade == null) {
+           return false;
+        }
+
         //先删除后添加
         baseMapper.delSubjectGradeByGrade(grade);
         if(StringUtils.isNotBlank(subjectGradeDTO.getSubjectIds())){
@@ -41,6 +45,7 @@ public class SubjectService extends ServiceImpl<SubjectDao,Subject> implements I
             List<Integer> subjectIds = Arrays.stream(idStrs).map(Integer::valueOf).collect(Collectors.toList());
             baseMapper.saveSubjectGrade(grade,subjectIds);
         }
+        return true;
     }
 
     /**

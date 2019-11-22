@@ -1,5 +1,6 @@
 package com.xuegao.educloud.common.exception;
 
+import com.xuegao.educloud.common.exception.enums.BaseExceptionEnum;
 import lombok.Getter;
 
 /**
@@ -19,5 +20,12 @@ public class ServiceException extends RuntimeException {
         this.code = code;
         this.message = message;
     }
+
+    public ServiceException(BaseExceptionEnum baseExceptionEnum){
+        super(baseExceptionEnum.getMessage());
+        this.code = baseExceptionEnum.getCode();
+        this.message = baseExceptionEnum.getMessage();
+    }
+
 
 }

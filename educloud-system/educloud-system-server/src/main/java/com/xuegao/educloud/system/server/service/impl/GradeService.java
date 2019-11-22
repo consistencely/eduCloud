@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.entities.Subject;
+import com.xuegao.educloud.system.client.params.dto.GradeDTO;
 import com.xuegao.educloud.system.client.params.vo.GradeWithSubjectVO;
 import com.xuegao.educloud.system.server.dao.GradeDao;
 import com.xuegao.educloud.system.server.service.IGradeService;
@@ -64,7 +65,7 @@ public class GradeService extends ServiceImpl<GradeDao, Grade> implements IGrade
      * @return
      */
     @Override
-    public boolean saveGrade(Grade param) {
+    public boolean saveGrade(GradeDTO param) {
 
         Grade grade = new Grade().setGradeName(param.getGradeName()).setSort(param.getSort());
         String path = "/";

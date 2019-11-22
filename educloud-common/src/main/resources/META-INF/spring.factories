@@ -2,4 +2,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.xuegao.educloud.common.config.JacksonConfig,\
   com.xuegao.educloud.common.config.WebMvcConfig,\
   com.xuegao.educloud.common.config.MybatisPlusConfig,\
-  com.xuegao.educloud.common.exception.ApiExceptionHandler
+  com.xuegao.educloud.common.exception.ApiExceptionHandler,\
+  com.xuegao.educloud.common.response.ResponseBodyHandler

@@ -1,9 +1,7 @@
 package com.xuegao.educloud.system.client.feign.factory;
 
 import com.xuegao.educloud.system.client.feign.RemoteSubjectService;
-import com.xuegao.educloud.system.client.feign.SystemClient;
 import com.xuegao.educloud.system.client.feign.fallback.RemoteSubjectServiceFallback;
-import com.xuegao.educloud.system.client.feign.fallback.SystemClientFallBack;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 
