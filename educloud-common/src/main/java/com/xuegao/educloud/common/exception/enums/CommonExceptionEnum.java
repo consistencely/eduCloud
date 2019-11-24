@@ -7,9 +7,12 @@ package com.xuegao.educloud.common.exception.enums;
  */
 public enum CommonExceptionEnum implements BaseExceptionEnum {
 
-    NOT_FOUND(404,"资源未找到"),
-    INVALID_PARAM(400,"参数不合法"),
-    SERVER_ERROR(500,"系统错误")
+    INVALID_PARAM(40000,"请求参数非法"),
+    NOT_ALLOW(40300,"拒绝访问"),
+    NOT_FOUND(40400,"资源不存在"),
+    SERVER_ERROR(50000,"服务器内部错误"),
+    HANDLE_ERROR(50100,"资源操作失败"),
+    INTERFACE_CLOSED(60000,"接口暂时无法访问")
     ;
 
     CommonExceptionEnum(int code, String message) {
@@ -30,4 +33,6 @@ public enum CommonExceptionEnum implements BaseExceptionEnum {
     public String getMessage() {
         return this.message;
     }
+
+
 }

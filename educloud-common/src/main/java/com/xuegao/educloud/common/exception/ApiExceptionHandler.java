@@ -29,14 +29,15 @@ public class ApiExceptionHandler {
 
 
     /**
-     * 拦截业务异常
+     * 拦截无效参数异常
      * @param e
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R<?> handleValidException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
-        logger.error("参数异常：{}",message);
+        //TODO
+        logger.warn("参数异常：{}",message);
         return R.fail(CommonExceptionEnum.INVALID_PARAM.getCode(),null,message);
     }
 

@@ -1,24 +1,22 @@
 package com.xuegao.educloud.user.server.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.exception.InvalidRequestException;
-import com.xuegao.educloud.common.exception.ResourceNoFoundException;
 import com.xuegao.educloud.common.exception.ServiceException;
-import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.UserRole;
 import com.xuegao.educloud.user.client.params.dto.RoleDTO;
 import com.xuegao.educloud.user.client.params.vo.UserRoleVO;
-import com.xuegao.educloud.user.server.error.ECUserExceptionEnum;
+import com.xuegao.educloud.user.client.error.ECUserExceptionEnum;
 import com.xuegao.educloud.user.server.service.IRoleService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 import com.xuegao.educloud.user.server.service.IUserRoleService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,23 +42,25 @@ public class RoleController {
 
     /**
      * 查询角色
+     *
      * @param roleId
      * @return
      */
     @GetMapping("/{roleId}")
-    public Role getRoleById(@PathVariable("roleId") int roleId){
+    public Role getRoleById(@PathVariable("roleId") int roleId) {
         return roleService.getById(roleId);
     }
 
     /**
      * 分页查询角色
+     *
      * @param pageNum
      * @param pageSize
      * @return
      */
     @GetMapping("/page")
-    public IPage<Role> getByPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
-                                    @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize) {
+    public IPage<Role> getByPage(@RequestParam(value = "pageNum", defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                                 @RequestParam(value = "pageSize", defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize) {
         Page<Role> page = new Page<Role>().setCurrent(pageNum).setSize(pageSize);
         return roleService.getRolePage(page);
     }
@@ -71,13 +71,13 @@ public class RoleController {
      * @return
      */
     @PutMapping("/{roleId}")
-    public boolean saveOrUpdate(@PathVariable("roleId") int roleId,@Valid @RequestBody RoleDTO roleDTO) {
+    public boolean saveOrUpdate(@PathVariable("roleId") int roleId, @Valid @RequestBody RoleDTO roleDTO) {
         Role roleInfo = roleService.getById(roleId);
         if (roleInfo == null) {
             throw new ServiceException(ECUserExceptionEnum.ROLE_NOT_FOUND);
         }
         roleDTO.setRoleId(roleId);
-       return roleService.updateRole(roleDTO) > 0;
+        return roleService.updateRole(roleDTO) > 0;
     }
 
     /**
@@ -115,10 +115,11 @@ public class RoleController {
 
     /**
      * 角色对应用户数
+     *
      * @return
      */
     @GetMapping("/usernum")
-    public List<UserRoleVO> userNum(){
+    public List<UserRoleVO> userNum() {
         return userService.getUserNumGroupRole();
     }
 

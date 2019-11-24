@@ -4,13 +4,11 @@ import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.exception.InvalidRequestException;
 import com.xuegao.educloud.common.exception.ServiceException;
-import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Grade;
 import com.xuegao.educloud.system.client.feign.RemoteGradeService;
 import com.xuegao.educloud.user.client.entities.Campus;
@@ -19,7 +17,7 @@ import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
-import com.xuegao.educloud.user.server.error.ECUserExceptionEnum;
+import com.xuegao.educloud.user.client.error.ECUserExceptionEnum;
 import com.xuegao.educloud.user.server.service.ICampusService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,14 +46,6 @@ public class UserController {
     private ICampusService campusService;
     @Autowired
     private RemoteGradeService remoteGradeService;
-
-    @GetMapping("/demo")
-    public R<List<Grade>> getGrades(){
-        Integer[] ids = new Integer[]{1,2,3,4};
-        R<List<Grade>> result = remoteGradeService.getGradeByIds(ids);
-        log.info(JSONUtil.toJsonStr(result));
-        return result;
-    }
 
     /**
      * 新增用户

@@ -57,7 +57,7 @@ public class SubjectController {
 
         List<Integer> ids = param.get("ids");
         if (IterUtil.isEmpty(ids)) {
-            throw new InvalidRequestException();
+            throw new InvalidRequestException("学科ID不能为空");
         }
 
         return subjectService.removeByIds(ids);

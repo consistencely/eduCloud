@@ -57,7 +57,7 @@ public class GradeController {
     public boolean delGrade(@RequestBody Map<String,List<Integer>> param){
         List<Integer> ids = param.get("ids");
         if(IterUtil.isEmpty(ids)){
-            throw new InvalidRequestException();
+            throw new InvalidRequestException("年级ID不能为空");
         }
         return gradeService.removeByIds(ids);
     }
@@ -92,7 +92,6 @@ public class GradeController {
     }
 
 
-    //TODO
     @GetMapping("/ids")
     public List<Grade> getGradeByIds(@RequestParam("ids") Integer[] ids){
         if(ids.length == 0){

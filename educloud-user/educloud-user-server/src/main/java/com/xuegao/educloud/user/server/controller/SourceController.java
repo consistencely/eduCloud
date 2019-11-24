@@ -1,16 +1,14 @@
 package com.xuegao.educloud.user.server.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
 import com.xuegao.educloud.common.exception.InvalidRequestException;
 import com.xuegao.educloud.common.exception.ServiceException;
-import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.user.client.entities.Source;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.SourceDTO;
-import com.xuegao.educloud.user.server.error.ECUserExceptionEnum;
+import com.xuegao.educloud.user.client.error.ECUserExceptionEnum;
 import com.xuegao.educloud.user.server.service.ISourceService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
