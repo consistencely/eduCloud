@@ -43,10 +43,10 @@ import java.util.TimeZone;
  * 使用fastjson作为Json 转换器 详见{@link WebMvcConfig} 的configureMessageConverters
  * modified by lim on 20191116
  */
-//@Configuration
-//@ConditionalOnClass(ObjectMapper.class)
-//@AutoConfigureBefore(JacksonAutoConfiguration.class)
-@Deprecated
+@Configuration
+@ConditionalOnClass(ObjectMapper.class)
+@AutoConfigureBefore(JacksonAutoConfiguration.class)
+//@Deprecated
 public class JacksonConfig {
 	@Bean
 	public Jackson2ObjectMapperBuilderCustomizer customizer() {

@@ -1,34 +1,30 @@
 package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.core.collection.IterUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xuegao.educloud.common.error.ErrorCode;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.constants.CommonConstants;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.exception.ServiceException;
 import com.xuegao.educloud.system.client.entities.Grade;
-import com.xuegao.educloud.system.client.feign.SystemClient;
+import com.xuegao.educloud.system.client.feign.RemoteGradeService;
 import com.xuegao.educloud.user.client.entities.Campus;
-import com.xuegao.educloud.user.client.entities.Role;
 import com.xuegao.educloud.user.client.entities.User;
 import com.xuegao.educloud.user.client.params.dto.UserInfoDTO;
 import com.xuegao.educloud.user.client.params.dto.UserQuery;
 import com.xuegao.educloud.user.client.params.vo.UserVO;
 import com.xuegao.educloud.user.server.constants.UserConstants;
+import com.xuegao.educloud.user.client.error.ECUserExceptionEnum;
 import com.xuegao.educloud.user.server.service.ICampusService;
 import com.xuegao.educloud.user.server.service.IUserService;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -39,7 +35,7 @@ import java.util.regex.Pattern;
  * @Description:
  */
 @RestController
-@RequestMapping
+@RequestMapping("/users")
 @Slf4j
 public class UserController {
 
@@ -49,27 +45,25 @@ public class UserController {
     @Autowired
     private ICampusService campusService;
     @Autowired
-    private SystemClient systemClient;
+    private RemoteGradeService remoteGradeService;
 
     /**
      * 新增用户
      * @param userInfoDTO
      * @return
      */
-    @PostMapping("/user")
-    public R saveUser(@RequestBody UserInfoDTO userInfoDTO){
+    @PostMapping
+    public void saveUser(@RequestBody UserInfoDTO userInfoDTO){
 
-        R result = this.verifyUserParam(userInfoDTO);
-        if(!result.isSuccess()){
-            return result;
-        }
+        //校验参数
+        this.verifyUserParam(userInfoDTO);
+
         boolean exist = userService.isPhoneExist(userInfoDTO.getPhone());
         if(exist){
-            return R.fail(ErrorCode.Error_40001,"手机号码已存在");
+            throw new ServiceException(ECUserExceptionEnum.PHONE_EXIST);
         }
 
         userService.saveUser(userInfoDTO);
-        return R.ok();
     }
 
     /**
@@ -77,33 +71,26 @@ public class UserController {
      * @param userInfoDTO
      * @return
      */
-    @PutMapping("/user")
-    public R updateUser(@RequestBody UserInfoDTO userInfoDTO){
+    @PutMapping("/{userId}")
+    public void updateUser(@PathVariable("userId") long userId,@RequestBody UserInfoDTO userInfoDTO){
 
-        //参数校验
-        Long userId = userInfoDTO.getUserId();
-        if(userId == null){
-            return R.fail("用户ID为空");
-        }
-        R result = this.verifyUserParam(userInfoDTO);
-        if(!result.isSuccess()){
-            return result;
-        }
+        //校验参数
+        this.verifyUserParam(userInfoDTO);
 
         User user = userService.getById(userId);
         if(user == null){
-            return R.fail("用户不存在");
+            throw new ServiceException(ECUserExceptionEnum.USER_NOT_FOUND);
         }
         if(user.getStatus() == UserConstants.USER_STATUS_DEL){
             log.error("该用户[{}]已注销，不可修改",userId);
-            return R.fail("该用户已注销");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
         User phone_user = userService.getUserByPhone(userInfoDTO.getPhone());
         if(phone_user != null && !phone_user.getUserId().equals(userId)){
-             return R.fail("手机号码已存在");
+            throw new ServiceException(ECUserExceptionEnum.PHONE_EXIST);
         }
+        userInfoDTO.setUserId(userId);
         userService.updateUser(userInfoDTO);
-        return R.ok();
     }
 
     /**
@@ -111,24 +98,24 @@ public class UserController {
      * @param userInfoDTO
      * @return
      */
-    private R verifyUserParam(UserInfoDTO userInfoDTO){
+    private void verifyUserParam(UserInfoDTO userInfoDTO){
         if(!Validator.isMobile(userInfoDTO.getPhone())){
-            return R.fail(ErrorCode.Error_40001,"手机格式错误");
+            throw new InvalidRequestException("手机格式不正确");
         }
         //校验密码
         if(StrUtil.isEmpty(userInfoDTO.getPassword())
                 || !Pattern.matches(UserConstants.PATTERN_PWD, userInfoDTO.getPassword())){
-            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
+            throw new InvalidRequestException("密码格式不正确");
         }
 
         if(ArrayUtil.isEmpty(userInfoDTO.getRoleIds())){
-            return R.fail("请选择角色");
+            throw new InvalidRequestException("角色参数不正确");
         }
         if(ArrayUtil.isEmpty(userInfoDTO.getGradeIds())){
-            return R.fail("请选择年级");
+            throw new InvalidRequestException("年级参数不正确");
         }
         if(userInfoDTO.getCampusId() == null){
-            return R.fail("请选择所属校区");
+            throw new InvalidRequestException("校区不正确");
         }
 
         if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_PERPETUAL){
@@ -136,23 +123,22 @@ public class UserController {
         }else if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_OVERDUE){
             userInfoDTO.setValidStart(null);
             if(userInfoDTO.getValidEnd() == null){
-                return R.fail("请选择过期时间");
+                throw new InvalidRequestException("过期时间不正确");
             }
         }else if(userInfoDTO.getValidType() == UserConstants.VALID_TYPE_SCOPE){
             if(userInfoDTO.getValidStart() == null){
-                return R.fail("请选择有效期开始时间");
+                throw new InvalidRequestException("有效期开始时间不正确");
             }
             if(userInfoDTO.getValidEnd() == null){
-                return R.fail("请选择有效期过期时间");
+                throw new InvalidRequestException("有效期过期时间不正确");
             }
             if(!userInfoDTO.getValidStart().before(userInfoDTO.getValidEnd())){
-                return R.fail("请选择正确有效时间");
+                throw new InvalidRequestException("有效时间不正确");
             }
         }else{
-            return R.fail("请选择正确的有效类型");
+            throw new InvalidRequestException("有效类型不正确");
         }
 
-        return R.ok();
     }
 
     /**
@@ -160,40 +146,38 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/user/wholeinfo/{userId}")
-    public R<UserInfoDTO> getUserInfo(@PathVariable("userId") long userId){
+    @GetMapping("/{userId}")
+    public UserInfoDTO getUserInfo(@PathVariable("userId") long userId){
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         if(userInfo == null){
-            return R.fail("用户不存在");
+            throw new ServiceException(ECUserExceptionEnum.USER_NOT_FOUND);
         }
-        return R.ok(userInfo);
+        return userInfo;
     }
 
     /**
      * 修改密码
      * @return
      */
-    @PutMapping("/user/password")
-    public R updatePwd(@RequestBody User user){
+    @PutMapping("/{userId}/password")
+    public boolean updatePwd(@PathVariable("userId") long userId,@RequestBody User user){
 
-        Long userId = user.getUserId();
         String newPwd = user.getPassword();
 
         //校验密码
         if(StrUtil.isEmpty(newPwd)
                 || !Pattern.matches(UserConstants.PATTERN_PWD, newPwd)){
-            return R.fail(ErrorCode.Error_40002,"密码格式不正确");
+            throw new InvalidRequestException("密码格式不正确");
         }
         User db_user = userService.getById(userId);
         if(db_user == null){
-            return R.fail("用户不存在");
+            throw new ServiceException(ECUserExceptionEnum.USER_NOT_FOUND);
         }
         if(db_user.getStatus() == UserConstants.USER_STATUS_DEL){
-            return R.fail("用户已注销");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
 
-        boolean success = userService.updatePwd(userId,db_user.getUuid(),newPwd);
-        return success ? R.ok() : R.fail("修改密码失败");
+        return userService.updatePwd(userId,db_user.getUuid(),newPwd);
     }
 
     /**
@@ -201,16 +185,16 @@ public class UserController {
      * @param statusCode 状态码
      * @return
      */
-    @PutMapping("/users/status/{statusCode}")
-    public R batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
+    @PutMapping("/batch/status/{statusCode}")
+    public void batchUpdateStatus(@PathVariable("statusCode") byte statusCode,@RequestBody Map<String,Object> userMap){
         List<Long> userIds = (List<Long>) userMap.get("userIds");
         if(IterUtil.isEmpty(userIds)){
-            return R.fail("请选择用户");
+            throw new InvalidRequestException("用户ID不能为空");
         }
         if(statusCode != UserConstants.USER_STATUS_DEL
                 && statusCode != UserConstants.USER_STATUS_NORMAL
                 && statusCode != UserConstants.USER_STATUS_LOCK){
-            return R.fail("请选择正确的状态");
+            throw new InvalidRequestException("状态不正确");
         }
 
         List<User> users = (List<User>) userService.listByIds(userIds);
@@ -222,10 +206,9 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销用户，操作失败");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
         userService.batchUpdateStatus(statusCode, userIds);
-        return R.ok();
     }
 
     /**
@@ -233,10 +216,10 @@ public class UserController {
      * @param userInfo
      * @return
      */
-    @PutMapping("/users")
-    public R batchUpdate(@RequestBody UserInfoDTO userInfo){
+    @PutMapping("/batch")
+    public void batchUpdate(@RequestBody UserInfoDTO userInfo){
         if(ArrayUtil.isEmpty(userInfo.getUserIds())){
-            return R.fail("请选择用户");
+            throw new InvalidRequestException("用户ID不能为空");
         }
 
         List<User> users = (List<User>) userService.listByIds(Arrays.asList(userInfo.getUserIds()));
@@ -248,40 +231,40 @@ public class UserController {
             }
         }
         if(hasDel){
-            return R.fail("包含已注销用户，操作失败");
+            throw new ServiceException(ECUserExceptionEnum.USER_DEL);
         }
 
         if(ArrayUtil.isNotEmpty(userInfo.getGradeIds())){
-            List<Grade> grades = systemClient.getGradeByIds(userInfo.getGradeIds()).getData();
+            List<Grade> grades = remoteGradeService.getGradeByIds(userInfo.getGradeIds()).getData();
             if(IterUtil.isEmpty(grades) || grades.size() != userInfo.getGradeIds().length){
-                return R.fail("内含不合法年级");
+                throw new ServiceException(ECUserExceptionEnum.INCLUDE_INVALID_GRADE);
             }
         }
         if(userInfo.getCampusId() != null){
             Campus campus = campusService.getById(userInfo.getCampusId());
             if(campus == null){
-                return R.fail("校区不存在");
+                throw new ServiceException(ECUserExceptionEnum.CAMPUS_NOT_FOUND);
             }
         }
 
         userService.batchUpdate(userInfo);
 
-        return R.ok();
 
     }
 
 
     /**
      * 分页查询用户列表
-     * @param curr
+     * @param pageNum
      * @param userQuery
      * @return
      */
-    @GetMapping("/users/page/{curr}")
-    public R<IPage> userInfoPage(@PathVariable("curr") int curr, @ModelAttribute UserQuery userQuery ){
-        Page<UserVO> page = new Page<UserVO>().setCurrent(curr);
-        IPage<UserVO> userPage = userService.getUserPage(page,userQuery);
-        return R.ok(userPage);
+    @GetMapping("/page")
+    public IPage<UserVO> userInfoPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) Integer pageNum,
+                                 @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) Integer pageSize,
+                                 @ModelAttribute UserQuery userQuery ){
+        Page<UserVO> page = new Page<UserVO>().setCurrent(pageNum).setSize(pageSize);
+        return userService.getUserPage(page,userQuery);
     }
 
 }

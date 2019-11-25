@@ -1,19 +1,25 @@
 package com.xuegao.educloud.system.server.controller;
 
-import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.IterUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.constants.CommonConstants;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Grade;
+import com.xuegao.educloud.system.client.params.dto.GradeDTO;
 import com.xuegao.educloud.system.client.params.vo.GradeWithSubjectVO;
 import com.xuegao.educloud.system.server.service.IGradeService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: LIM
@@ -21,6 +27,7 @@ import java.util.List;
  * @Description:
  */
 @RestController
+@RequestMapping("/grades")
 public class GradeController {
 
     @Autowired
@@ -28,58 +35,68 @@ public class GradeController {
 
 
     /**
-     * 分页查询学段
-     * @param current 页数
+     * 分页查询年级
+     * @param pageNum 页数
+     * @param pageSize 每页记录数
      * @return
      */
-    @GetMapping("/grade/page/{curr}")
-    public R getGradePage(@PathVariable("curr") int current){
-        Page<Grade> page = new Page<Grade>().setCurrent(current);
-        IPage<Grade> gradePage = gradeService.getGradePage(page);
-        return R.ok(gradePage);
+    @GetMapping("/page")
+    public IPage<Grade> getGradePage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                          @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize){
+        Page<Grade> page = new Page<Grade>().setCurrent(pageNum).setSize(pageSize);
+        return gradeService.getGradePage(page);
 
     }
 
     /**
-     * 删除学段
+     * 批量删除年级
+     * @param param ids  年级ID列表
      * @return
      */
-    @DeleteMapping("/grade/{id}")
-    public R delGrade(@PathVariable("id") int id){
-        boolean success = gradeService.removeById(id);
-        return success ? R.ok() : R.fail("删除失败");
-    }
-
-    /**
-     * 新增/修改学段
-     * @return
-     */
-    @PostMapping("/grade")
-    public R saveGrade(@RequestBody Grade param){
-        if(StringUtils.isEmpty(param.getGradeName())){
-            return R.fail("请输入学段名称");
+    @DeleteMapping("/batch")
+    public boolean delGrade(@RequestBody Map<String,List<Integer>> param){
+        List<Integer> ids = param.get("ids");
+        if(IterUtil.isEmpty(ids)){
+            throw new InvalidRequestException("年级ID不能为空");
         }
+        return gradeService.removeByIds(ids);
+    }
+
+    /**
+     * 修改年级
+     * @param gradeId
+     * @param param
+     * @return
+     */
+    @PutMapping("/{gradeId}")
+    public boolean updateGrade(@PathVariable("gradeId") int gradeId,@Valid @RequestBody GradeDTO param){
         Grade grade = new Grade();
-        grade.setGradeId(param.getGradeId());
-        grade.setGradeName(param.getGradeName());
-        grade.setSort(param.getSort());
-        boolean success = gradeService.saveOrUpdate(grade);
-        return success ? R.ok() : R.fail("保存失败");
+        BeanUtils.copyProperties(param,grade);
+        grade.setGradeId(gradeId);
+        return gradeService.updateGrade(grade);
     }
 
-    @GetMapping("/gradeWithSubject")
-    public R<List<GradeWithSubjectVO>> gradeWithSubject(){
-        List<GradeWithSubjectVO> gradeWithSubject = gradeService.getGradesWithSubject();
-        return R.ok(gradeWithSubject);
+    /**
+     * 新增年级
+     * @return
+     */
+    @PostMapping
+    public boolean saveGrade(@Valid @RequestBody GradeDTO param){
+        return gradeService.saveGrade(param);
     }
 
 
-    @GetMapping("/grades/ids")
-    public R<List<Grade>> getGradeByIds(@RequestParam("ids") Integer[] ids){
+    @GetMapping("/subject")
+    public List<GradeWithSubjectVO> gradeWithSubject(){
+        return gradeService.getGradesWithSubject();
+    }
+
+
+    @GetMapping("/ids")
+    public List<Grade> getGradeByIds(@RequestParam("ids") Integer[] ids){
         if(ids.length == 0){
-            return R.fail("id数组为空");
+            throw new InvalidRequestException("年级ID不能为空");
         }
-        List<Grade> grades = (List<Grade>) gradeService.listByIds(Arrays.asList(ids));
-        return R.ok(grades);
-    }
+        return (List<Grade>) gradeService.listByIds(Arrays.asList(ids));
+}
 }

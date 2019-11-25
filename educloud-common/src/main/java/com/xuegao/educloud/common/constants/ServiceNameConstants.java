@@ -16,44 +16,15 @@
 
 package com.xuegao.educloud.common.constants;
 
-public interface CommonConstants {
+public interface ServiceNameConstants {
 	/**
-	 * 删除
+	 * 系统配置微服务
 	 */
-	Byte STATUS_DEL = 1;
-	/**
-	 * 正常
-	 */
-	Byte STATUS_NORMAL = 0;
+	String SYS_SERVICE = "system";
 
 	/**
-	 * 成功标记
+	 * 用户微服务
 	 */
-	int SUCCESS = 200;
-
-	/**
-	 * 失败标记
-	 */
-	int FAIL = 500;
-
-	/**
-	 * 根节点
-	 */
-	int TREE_ROOT = 0 ;
-
-	/**
-	 * 默认排序
-	 */
-	int DEFAULT_SORT = 99;
-
-	/**
-	 * 第一页
-	 */
-	String FIRST_PAGE = "1";
-
-	/**
-	 * 每页显示记录数
-	 */
-	String DEFAULT_PAGE_SIZE = "10";
+	String USER_SERVICE = "user";
 
 }

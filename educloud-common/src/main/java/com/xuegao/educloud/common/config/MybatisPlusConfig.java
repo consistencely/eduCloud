@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @EnableTransactionManagement
 @Configuration
-//@MapperScan("com.xuegao.educloud.user.server.dao")
 public class MybatisPlusConfig {
 
     /**

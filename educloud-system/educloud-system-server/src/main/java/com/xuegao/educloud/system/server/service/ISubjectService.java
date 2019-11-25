@@ -11,7 +11,7 @@ import java.util.List;
 public interface ISubjectService extends IService<Subject> {
     IPage<Subject> getSubjectPage(Page<Subject> page);
 
-    void saveSubjectGrade(SubjectGradeDTO subjectGradeDTO);
+    boolean saveSubjectGrade(SubjectGradeDTO subjectGradeDTO);
 
     /**
      * 学段所有学科

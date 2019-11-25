@@ -1,5 +1,6 @@
 package com.xuegao.educloud.system.server.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -30,4 +31,30 @@ public class KpointService extends ServiceImpl<KpointDao,Kpoint> implements IKpo
 
         return this.list(wrapper);
     }
+
+    /**
+     * 新增知识点
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public boolean saveKpoint(Kpoint param) {
+
+        Kpoint kpoint = new Kpoint();
+        String name = StrUtil.isEmpty(param.getKpointName()) ? "新创建知识点" : param.getKpointName();
+        kpoint.setKpointName(name);
+        kpoint.setGradeId(param.getGradeId());
+        kpoint.setSubjectId(param.getSubjectId());
+        Kpoint pkpoint = baseMapper.selectById(param.getParentId());
+        if(pkpoint != null){
+            kpoint.setLevel(pkpoint.getLevel() + 1);
+            kpoint.setParentId(param.getParentId());
+            StringBuilder pathsb = new StringBuilder(pkpoint.getPath()).append(pkpoint.getKpointId()).append("/");
+            kpoint.setPath(pathsb.toString());
+        }
+
+        return this.save(kpoint);
+    }
+
 }

@@ -19,7 +19,7 @@
         SELECT `subject`.subject_id, `subject`.subject_name
         FROM educloud_subject subject,educloud_subject_grade sg
         WHERE `subject`.subject_id = sg.subject_id AND sg.grade_id = #{gradeId}
-        ORDER BY `subject`.sort , `subject`.id
+        ORDER BY `subject`.sort , `subject`.subject_id
     </select>
 
 </mapper>

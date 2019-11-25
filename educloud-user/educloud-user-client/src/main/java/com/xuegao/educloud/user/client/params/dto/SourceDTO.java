@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -25,11 +26,13 @@ public class SourceDTO {
     /**
      * 生源名称
      */
+    @NotBlank(message = "生源名称不能为空")
     private String sourceName;
 
     /**
      * 报名方式
      */
+    @NotBlank(message = "报名方式不能为空")
     private String applyWay;
 
     /**

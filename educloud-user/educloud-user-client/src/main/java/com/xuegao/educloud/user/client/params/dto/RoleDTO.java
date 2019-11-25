@@ -3,7 +3,7 @@ package com.xuegao.educloud.user.client.params.dto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @Auther: LIM
@@ -19,6 +19,7 @@ public class RoleDTO {
     /**
      * 角色名称
      */
+    @NotBlank(message = "{code:29902,message:角色名称不能为空}")
     private String roleName;
 
     /**

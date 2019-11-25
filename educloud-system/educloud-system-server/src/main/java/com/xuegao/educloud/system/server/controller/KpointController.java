@@ -1,14 +1,16 @@
 package com.xuegao.educloud.system.server.controller;
 
-import com.xuegao.educloud.common.params.R;
+import cn.hutool.core.collection.IterUtil;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Kpoint;
 import com.xuegao.educloud.system.server.service.IKpointService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: LIM
@@ -16,81 +18,71 @@ import java.util.List;
  * @Description:
  */
 @RestController
-@RequestMapping("kpoint")
+@RequestMapping("kpoints")
 public class KpointController {
 
     @Autowired
     private IKpointService kpointService;
 
     /**
-     * 学段学科下的考点
+     * 年级学科下的知识点
      * @param gradeId
      * @param subjectId
      * @return
      */
-    @GetMapping("/getKpoint")
-    public R<List<Kpoint>> getKpoint(@RequestParam("gradeId") int gradeId, @RequestParam(value = "subjectId") int subjectId){
-        List<Kpoint> kpoints = kpointService.getKpointByGradeSubject(gradeId,subjectId);
-        return R.ok(kpoints);
+    @GetMapping("/grade/{gradeId}/subject/{subjectId}")
+    public List<Kpoint> getKpoint(@PathVariable("gradeId") int gradeId, @PathVariable("subjectId") int subjectId){
+        return kpointService.getKpointByGradeSubject(gradeId,subjectId);
     }
 
     /**
-     * 新建考点
+     * 新建知识点
      * @param param
      * @return
      */
-    @PostMapping("/addKpoint")
-    public R<Kpoint> addKpoint(@RequestBody Kpoint param){
+    @PostMapping
+    public boolean addKpoint(@RequestBody Kpoint param){
 
         if(param.getGradeId() == null || param.getGradeId() <= 0){
-            return R.fail("请选择专业节点");
+            throw new InvalidRequestException("年级不能为空");
         }
         if(param.getSubjectId() == null || param.getSubjectId() <= 0){
-            return R.fail("请选择专业节点");
+            throw new InvalidRequestException("学科不能为空");
         }
 
-        Kpoint kpoint = new Kpoint();
-        kpoint.setKpointName("新创建考点");
-        kpoint.setGradeId(param.getGradeId());
-        kpoint.setSubjectId(param.getSubjectId());
-        kpoint.setLevel(param.getLevel());
-        kpoint.setParentId(param.getParentId());
-
-        boolean success = kpointService.save(kpoint);
-
-        return success ? R.ok(kpoint) : R.fail("新建失败");
+        return kpointService.saveKpoint(param);
 
     }
 
     /**
-     * 修改考点
+     * 修改知识点名称
      * @return
      */
-    @PutMapping("")
-    public R<Kpoint> updateKpoint(@RequestBody Kpoint param){
-        if(param.getKpointId() == null || param.getKpointId() <= 0){
-            return R.fail("id不正确,修改失败");
-        }
+    @PutMapping("/{kpointId}/name")
+    public boolean updateKpoint(@PathVariable("kpointId") int kpointId, @RequestBody Kpoint param){
+
         if(StringUtils.isEmpty(param.getKpointName())){
-            return R.fail("请输入考点名称");
+            throw new InvalidRequestException("知识点名称不能为空");
         }
 
         Kpoint kpoint = new Kpoint();
-        kpoint.setKpointId(param.getKpointId());
+        kpoint.setKpointId(kpointId);
         kpoint.setKpointName(param.getKpointName());
 
-        boolean success = kpointService.updateById(kpoint);
-        return success ? R.ok(kpoint) : R.fail("修改失败");
+        return kpointService.updateById(kpoint);
     }
 
 
     /**
-     * 删除考点
+     * 批量删除知识点
      * @return
      */
-    @DeleteMapping("")
-    public R delKpoint(@RequestBody int[] ids){
-        boolean success = kpointService.removeByIds(Arrays.asList(ids));
-        return success ? R.ok() : R.fail("删除失败");
+    @DeleteMapping("/batch")
+    public boolean delKpoint(@RequestBody Map<String,List<Integer>> param){
+        List<Integer> ids = param.get("ids");
+        if(IterUtil.isEmpty(ids)){
+            throw new InvalidRequestException("知识点ID不能为空");
+        }
+        return kpointService.removeByIds(ids);
     }
 }
