@@ -117,4 +117,10 @@ public interface IUserService extends IService<User> {
      */
     List<User> getUserByRoleId(Integer roleId);
 
+    /**
+     * 判断校区是否存在用户
+     * @param campusId
+     * @return
+     */
+    List<User> getUserByCampusId(Integer campusId);
 }

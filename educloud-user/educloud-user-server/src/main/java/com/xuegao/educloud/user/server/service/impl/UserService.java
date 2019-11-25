@@ -354,4 +354,11 @@ public class UserService extends ServiceImpl<UserDao, User> implements IUserServ
     public List<User> getUserByRoleId(Integer roleId) {
         return baseMapper.getUserByRoleId(roleId);
     }
+
+    @Override
+    public List<User> getUserByCampusId(Integer campusId) {
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.<User>lambdaQuery()
+                .eq(User::getCampusId,campusId);
+        return baseMapper.selectList(queryWrapper);
+    }
 }

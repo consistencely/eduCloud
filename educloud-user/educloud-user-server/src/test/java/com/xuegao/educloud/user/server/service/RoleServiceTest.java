@@ -1,14 +1,14 @@
 package com.xuegao.educloud.user.server.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xuegao.educloud.user.client.entities.CampusDepartment;
 import com.xuegao.educloud.user.client.entities.Role;
+import com.xuegao.educloud.user.client.params.dto.CampusDeptDTO;
 import com.xuegao.educloud.user.server.BaseTest;
-import lombok.experimental.Accessors;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.Assert.*;
 
 /**
  * @Auther: LIM
@@ -19,6 +19,8 @@ public class RoleServiceTest extends BaseTest{
 
     @Autowired
     private IRoleService roleService;
+    @Autowired
+    private ICampusDepartmentService campusDepartmentService;
 
     @Test
     public void testPage(){
@@ -27,4 +29,13 @@ public class RoleServiceTest extends BaseTest{
         IPage<Role> roleRage = roleService.getRolePage(page);
         printOut(roleRage);
     }
+
+    @Test
+    public void testBeanUtil(){
+        CampusDepartment byId = campusDepartmentService.getById(1);
+        CampusDeptDTO departmentDTO = new CampusDeptDTO();
+        BeanUtil.copyProperties(byId,departmentDTO);
+        printOut(departmentDTO);
+    }
+
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuegao.educloud.user.server.dao.CampusDao">
+
+    <select id="getCampusPage" parameterType="CampusDTO" resultType="CampusDTO">
+        SELECT educloud_campus.campus_id,educloud_campus.campus_name,educloud_campus.person,
+        educloud_campus.tel,educloud_campus.province,
+        educloud_campus.city,educloud_campus.county,educloud_campus.addr_detail,IFNULL(users.countNum,0) countNum
+        FROM educloud_campus
+        LEFT JOIN
+        (SELECT count(campus_id) countNum, campus_id FROM educloud_user GROUP BY campus_id) users
+        ON educloud_campus.campus_id = users.campus_id
+        WHERE is_del = 0
+        <if test="campusDTO.campusName != null">
+            AND campus_name LIKE '%${campusDTO.campusName}%'
+        </if>
+        ORDER BY campus_id DESC
+    </select>
+</mapper>
