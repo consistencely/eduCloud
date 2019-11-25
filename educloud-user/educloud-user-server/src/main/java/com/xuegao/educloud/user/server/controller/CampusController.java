@@ -3,11 +3,14 @@ package com.xuegao.educloud.user.server.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.constants.CommonConstants;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.exception.ServiceException;
 import com.xuegao.educloud.user.client.entities.Campus;
 import com.xuegao.educloud.user.client.entities.CampusDepartment;
 import com.xuegao.educloud.user.client.entities.Source;
 import com.xuegao.educloud.user.client.entities.User;
+import com.xuegao.educloud.user.client.error.ECUserExceptionEnum;
 import com.xuegao.educloud.user.client.params.dto.CampusDTO;
 import com.xuegao.educloud.user.client.params.dto.SourceDTO;
 import com.xuegao.educloud.user.server.service.ICampusService;
@@ -17,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +30,7 @@ import java.util.Map;
  * @Description:
  */
 @RestController
-@RequestMapping
+@RequestMapping("/campuss")
 @Slf4j
 public class CampusController {
 
@@ -41,17 +45,9 @@ public class CampusController {
      * @param campusDTO
      * @return
      */
-    @PostMapping("/campus")
-    public R saveCampus(@RequestBody CampusDTO campusDTO) {
-        if (StrUtil.isEmpty(campusDTO.getCampusName())) {
-            return R.fail("校区名称不能为空");
-        }
-        Integer success = campusService.saveCampus(campusDTO);
-        if (success > 0) {
-            return R.ok();
-        } else {
-            return R.fail("保存失败");
-        }
+    @PostMapping
+    public Boolean saveCampus(@Valid @RequestBody CampusDTO campusDTO) {
+        return campusService.saveCampus(campusDTO) > 0;
     }
 
     /**
@@ -60,27 +56,14 @@ public class CampusController {
      * @param campusDTO
      * @return
      */
-    @PutMapping("/campus")
-    public R updateCampus(@RequestBody CampusDTO campusDTO) {
-
-        //参数校验
-        Integer campusId = campusDTO.getCampusId();
-        if (campusId == null) {
-            return R.fail("校区ID为空");
-        }
+    @PutMapping("/{campusId}")
+    public Boolean updateCampus(@PathVariable("campusId") int campusId, @Valid @RequestBody CampusDTO campusDTO) {
         Campus campusInfo = campusService.getById(campusId);
         if (campusInfo == null) {
-            return R.fail("校区信息不存在");
+            throw new ServiceException(ECUserExceptionEnum.CAMPUS_NOT_FOUND);
         }
-        if (StrUtil.isEmpty(campusDTO.getCampusName())) {
-            return R.fail("校区名称不能为空");
-        }
-        Integer count = campusService.updateCampus(campusDTO);
-        if (count > 0) {
-            return R.ok();
-        } else {
-            return R.fail("修改失败");
-        }
+        campusDTO.setCampusId(campusId);
+        return campusService.updateCampus(campusDTO) > 0;
     }
 
     /**
@@ -89,21 +72,20 @@ public class CampusController {
      * @param campusMap 校区ID数组
      * @return
      */
-    @DeleteMapping("/campuss")
-    public R batchDeleteCampus(@RequestBody Map<String, List<Integer>> campusMap) {
+    @DeleteMapping("/batch")
+    public void batchDeleteCampus(@RequestBody Map<String, List<Integer>> campusMap) {
         List<Integer> campusIds = campusMap.get("campusIds");
         if (campusIds == null || campusIds.size() == 0) {
-            return R.fail("请选择校区");
+            throw new InvalidRequestException("校区ID不能为空");
         }
         for (Integer campusId : campusIds) {
             //判断是否存在已配置的校区
             List<User> userList = userService.getUserByCampusId(campusId);
             if (userList != null && userList.size() > 0) {
-                return R.fail("已配置校区，不允许删除");
+                throw new ServiceException(ECUserExceptionEnum.CAMPUS_NOTALLOW_DEL);
             }
         }
         campusService.removeByIds(campusIds);
-        return R.ok();
     }
 
     /**
@@ -113,11 +95,13 @@ public class CampusController {
      * @param campusDTO
      * @return
      */
-    @GetMapping("/campuss/pageTree/{curr}")
-    public R<IPage<CampusDTO>> campusTreeInfoPage(@PathVariable("curr") int curr, @ModelAttribute("campusDTO") CampusDTO campusDTO) {
-        Page<CampusDTO> page = new Page<CampusDTO>().setCurrent(curr);
+    @GetMapping("/pageTree")
+    public IPage<CampusDTO> campusTreeInfoPage(@RequestParam(value = "pageNum", defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                                               @RequestParam(value = "pageSize", defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize,
+                                               @ModelAttribute("campusDTO") CampusDTO campusDTO) {
+        Page<CampusDTO> page = new Page<CampusDTO>().setCurrent(pageNum).setSize(pageSize);
         IPage<CampusDTO> sourcePage = campusService.getCampusDeptTreePage(page, campusDTO);
-        return R.ok(sourcePage);
+        return sourcePage;
     }
 
     /**
@@ -127,11 +111,13 @@ public class CampusController {
      * @param campusDTO
      * @return
      */
-    @GetMapping("/campuss/page/{curr}")
-    public R<IPage<CampusDTO>> campusInfoPage(@PathVariable("curr") int curr, @ModelAttribute("campusDTO") CampusDTO campusDTO) {
-        Page<CampusDTO> page = new Page<CampusDTO>().setCurrent(curr);
+    @GetMapping("/page")
+    public IPage<CampusDTO> campusInfoPage(@RequestParam(value = "pageNum", defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                                           @RequestParam(value = "pageSize", defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize,
+                                           @ModelAttribute("campusDTO") CampusDTO campusDTO) {
+        Page<CampusDTO> page = new Page<CampusDTO>().setCurrent(pageNum).setSize(pageSize);
         IPage<CampusDTO> sourcePage = campusService.getCampusPage(page, campusDTO);
-        return R.ok(sourcePage);
+        return sourcePage;
     }
 
     /**
@@ -139,9 +125,8 @@ public class CampusController {
      *
      * @return
      */
-    @GetMapping("/campuss")
-    public R campusInfoList() {
-        List<Campus> campusList = campusService.getCampusList();
-        return R.ok(campusList);
+    @GetMapping
+    public List<Campus> campusInfoList() {
+        return campusService.getCampusList();
     }
 }

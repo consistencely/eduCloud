@@ -1,14 +1,17 @@
 package com.xuegao.educloud.user.server.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.exception.ServiceException;
 import com.xuegao.educloud.user.client.entities.CampusDepartment;
+import com.xuegao.educloud.user.client.error.ECUserExceptionEnum;
 import com.xuegao.educloud.user.client.params.dto.CampusDeptDTO;
 import com.xuegao.educloud.user.server.service.ICampusDepartmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +21,7 @@ import java.util.Map;
  * @Description:
  */
 @RestController
-@RequestMapping
+@RequestMapping("/campusDepts")
 @Slf4j
 public class CampusDepartmentController {
 
@@ -31,20 +34,9 @@ public class CampusDepartmentController {
      * @param campusDeptDTO
      * @return
      */
-    @PostMapping("/campusDept")
-    public R saveCampusDept(@RequestBody CampusDeptDTO campusDeptDTO) {
-        if (campusDeptDTO.getParentId() == null || campusDeptDTO.getCampusId() == null) {
-            return R.fail("参数有误");
-        }
-        if (StrUtil.isEmpty(campusDeptDTO.getDepartmentName())) {
-            return R.fail("部门名称不能为空");
-        }
-        Integer success = campusDeptService.saveDepartment(campusDeptDTO);
-        if (success > 0) {
-            return R.ok();
-        } else {
-            return R.fail("保存失败");
-        }
+    @PostMapping
+    public Boolean saveCampusDept(@Valid @RequestBody CampusDeptDTO campusDeptDTO) {
+        return campusDeptService.saveDepartment(campusDeptDTO) > 0;
     }
 
     /**
@@ -53,28 +45,14 @@ public class CampusDepartmentController {
      * @param campusDeptDTO
      * @return
      */
-    @PutMapping("/campusDept")
-    public R updateCampusDept(@RequestBody CampusDeptDTO campusDeptDTO) {
-
-        //参数校验
-        Integer departmentId = campusDeptDTO.getDepartmentId();
-        if (departmentId == null) {
-            return R.fail("部门ID为空");
-        }
+    @PutMapping("/{departmentId}")
+    public Boolean updateCampusDept(@PathVariable("departmentId") int departmentId, @Valid @RequestBody CampusDeptDTO campusDeptDTO) {
         CampusDepartment campusInfo = campusDeptService.getById(departmentId);
         if (campusInfo == null) {
-            return R.fail("部门信息不存在");
+            throw new ServiceException(ECUserExceptionEnum.CAMPUSDEPT_NOT_FOUND);
         }
-
-        if (StrUtil.isEmpty(campusDeptDTO.getDepartmentName())) {
-            return R.fail("部门名称不能为空");
-        }
-        Integer count = campusDeptService.updateCampus(campusDeptDTO);
-        if (count > 0) {
-            return R.ok();
-        } else {
-            return R.fail("修改失败");
-        }
+        campusDeptDTO.setDepartmentId(departmentId);
+        return campusDeptService.updateCampus(campusDeptDTO) > 0;
     }
 
     /**
@@ -82,10 +60,9 @@ public class CampusDepartmentController {
      *
      * @return
      */
-    @GetMapping("/campusDeptTree/{campusId}")
-    public R campusDeptTreeList(@PathVariable("campusId") Integer campusId) {
-        List<CampusDeptDTO> campusDepartmentList = campusDeptService.getDeptTreeByCampusId(campusId);
-        return R.ok(campusDepartmentList);
+    @GetMapping("/deptTree/{campusId}")
+    public List<CampusDeptDTO> campusDeptTreeList(@PathVariable("campusId") Integer campusId) {
+        return campusDeptService.getDeptTreeByCampusId(campusId);
     }
 
     /**
@@ -93,10 +70,9 @@ public class CampusDepartmentController {
      *
      * @return
      */
-    @GetMapping("/campusDept/{campusId}")
-    public R campusDeptInfoList(@PathVariable("campusId") Integer campusId) {
-        List<CampusDepartment> campusDepartmentList = campusDeptService.getDeptByCampusId(campusId);
-        return R.ok(campusDepartmentList);
+    @GetMapping("/{campusId}")
+    public List<CampusDepartment> campusDeptInfoList(@PathVariable("campusId") Integer campusId) {
+        return campusDeptService.getDeptByCampusId(campusId);
     }
 
     /**
@@ -105,13 +81,12 @@ public class CampusDepartmentController {
      * @param deptCampusMap 部门ID数组
      * @return
      */
-    @DeleteMapping("/campusDepts")
-    public R batchDeletecampusDept(@RequestBody Map<String, List<Integer>> deptCampusMap) {
+    @DeleteMapping("/batch")
+    public void batchDeletecampusDept(@RequestBody Map<String, List<Integer>> deptCampusMap) {
         List<Integer> campusDeptIds = deptCampusMap.get("campusDeptIds");
         if (campusDeptIds == null || campusDeptIds.size() == 0) {
-            return R.fail("请选择部门");
+            throw new InvalidRequestException("校区部门ID不存在");
         }
         campusDeptService.removeByIds(campusDeptIds);
-        return R.ok();
     }
 }

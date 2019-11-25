@@ -10,6 +10,7 @@ import com.xuegao.educloud.user.client.entities.UserRole;
 import com.xuegao.educloud.user.client.params.dto.RoleDTO;
 import com.xuegao.educloud.user.client.params.vo.UserRoleVO;
 import com.xuegao.educloud.user.client.error.ECUserExceptionEnum;
+import com.xuegao.educloud.user.server.constants.UserConstants;
 import com.xuegao.educloud.user.server.service.IRoleService;
 import com.xuegao.educloud.user.server.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,9 @@ public class RoleController {
         if (roleInfo == null) {
             throw new ServiceException(ECUserExceptionEnum.ROLE_NOT_FOUND);
         }
+        if (roleInfo.getIsDefault() == UserConstants.USER_ROLE_ISDEFAULT) {
+            throw new ServiceException(ECUserExceptionEnum.ROLE_ISDEFAULT_NOTDEL);
+        }
         roleDTO.setRoleId(roleId);
         return roleService.updateRole(roleDTO) > 0;
     }
@@ -103,11 +107,13 @@ public class RoleController {
             throw new InvalidRequestException("角色ID不能为空");
         }
         for (Integer roleId : roleIds) {
+            if (roleId == UserConstants.USER_ROLE_ISDEFAULT) {
+                throw new ServiceException(ECUserExceptionEnum.ROLE_ISDEFAULT_NOTDEL);
+            }
             //判断是否存在拥有角色的用户
             List<UserRole> userRoleList = userRoleService.getUserByRoleId(roleId);
             if (userRoleList != null && userRoleList.size() > 0) {
                 throw new ServiceException(ECUserExceptionEnum.ROLE_NOTALLOW_DEL);
-
             }
         }
         roleService.removeByIds(roleIds);

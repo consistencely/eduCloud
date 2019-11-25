@@ -65,4 +65,9 @@ public interface UserConstants {
      * 用户有效类型 - 区间有效
      */
     byte VALID_TYPE_SCOPE = 3;
+
+    /**
+     * 用户角色是否默认(0:否,1:是)
+     */
+    byte USER_ROLE_ISDEFAULT = 1;
 }
