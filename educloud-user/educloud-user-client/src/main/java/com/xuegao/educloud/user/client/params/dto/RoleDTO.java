@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 /**
  * @Auther: LIM
@@ -20,7 +19,7 @@ public class RoleDTO {
     /**
      * 角色名称
      */
-    @NotBlank(message = "角色名称不能为空")
+    @NotBlank(message = "{code:29902,message:角色名称不能为空}")
     private String roleName;
 
     /**

@@ -35,10 +35,27 @@ public class ApiExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R<?> handleValidException(MethodArgumentNotValidException e) {
+        int code = CommonExceptionEnum.INVALID_PARAM.getCode();
+        String msg = CommonExceptionEnum.INVALID_PARAM.getMessage();
+
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
-        //TODO
         logger.warn("参数异常：{}",message);
-        return R.fail(CommonExceptionEnum.INVALID_PARAM.getCode(),null,message);
+
+        if(StrUtil.isNotEmpty(message)){
+            if(JSONUtil.isJson(message)){
+                ErrorResource errorbean = JSONUtil.toBean(message, ErrorResource.class);
+                if(errorbean.getCode() != null){
+                    code = errorbean.getCode();
+                }
+                if(StrUtil.isNotEmpty(errorbean.getMessage())){
+                    msg = errorbean.getMessage();
+                }
+
+            }else{
+                msg = message;
+            }
+        }
+        return R.fail(code,null,msg);
     }
 
     /**

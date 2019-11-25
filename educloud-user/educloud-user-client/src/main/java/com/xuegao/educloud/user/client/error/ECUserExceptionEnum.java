@@ -8,7 +8,7 @@ import com.xuegao.educloud.common.exception.enums.BaseExceptionEnum;
  * @Description: 用户服务异常枚举类
  *
  *  错误码格式为ABBCC:
- *      A：微服务ID（1-系统服务，2-用户...查看help.txt）
+ *      A：微服务ID（1-系统服务，2-用户...）
  *      B：服务内模块ID，从01自增
  *      C：具体错误编号，从01自增
  *
@@ -44,6 +44,7 @@ public enum ECUserExceptionEnum implements BaseExceptionEnum {
      * 其他
      */
     INCLUDE_INVALID_GRADE(29901,"内含无效年级"),
+    NAME_NOT_EMPTY(29902,"名称不能为空"),
 
 
     ;
@@ -66,6 +67,5 @@ public enum ECUserExceptionEnum implements BaseExceptionEnum {
     public String getMessage() {
         return this.message;
     }
-
 
 }
