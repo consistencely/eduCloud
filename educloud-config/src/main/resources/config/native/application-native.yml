@@ -45,6 +45,10 @@ mybatis-plus:
 feign:
   hystrix:
     enabled: true
+  httpclient:
+    enabled: true
+    max-connections: 200
+    max-connections-per-route: 50
 
 # hystrix 配置
 hystrix:

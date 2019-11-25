@@ -1,15 +1,14 @@
 package com.xuegao.educloud.system.server.controller;
 
 import cn.hutool.core.collection.IterUtil;
-import cn.hutool.core.util.StrUtil;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Kpoint;
 import com.xuegao.educloud.system.server.service.IKpointService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +18,7 @@ import java.util.Map;
  * @Description:
  */
 @RestController
+@RequestMapping("kpoints")
 public class KpointController {
 
     @Autowired
@@ -30,10 +30,9 @@ public class KpointController {
      * @param subjectId
      * @return
      */
-    @GetMapping("/kpoints/grade/{gradeId}/subject/{subjectId}")
-    public R<List<Kpoint>> getKpoint(@PathVariable("gradeId") int gradeId, @PathVariable("subjectId") int subjectId){
-        List<Kpoint> kpoints = kpointService.getKpointByGradeSubject(gradeId,subjectId);
-        return R.ok(kpoints);
+    @GetMapping("/grade/{gradeId}/subject/{subjectId}")
+    public List<Kpoint> getKpoint(@PathVariable("gradeId") int gradeId, @PathVariable("subjectId") int subjectId){
+        return kpointService.getKpointByGradeSubject(gradeId,subjectId);
     }
 
     /**
@@ -41,19 +40,17 @@ public class KpointController {
      * @param param
      * @return
      */
-    @PostMapping("/kpoints")
-    public R<Kpoint> addKpoint(@RequestBody Kpoint param){
+    @PostMapping
+    public boolean addKpoint(@RequestBody Kpoint param){
 
         if(param.getGradeId() == null || param.getGradeId() <= 0){
-            return R.fail("请选择专业节点");
+            throw new InvalidRequestException("年级不能为空");
         }
         if(param.getSubjectId() == null || param.getSubjectId() <= 0){
-            return R.fail("请选择专业节点");
+            throw new InvalidRequestException("学科不能为空");
         }
 
-        boolean success = kpointService.saveKpoint(param);
-
-        return success ? R.ok() : R.fail("新建失败");
+        return kpointService.saveKpoint(param);
 
     }
 
@@ -61,19 +58,18 @@ public class KpointController {
      * 修改知识点名称
      * @return
      */
-    @PutMapping("/kpoints/{kpointId}/name")
-    public R<Kpoint> updateKpoint(@PathVariable("kpointId") int kpointId, @RequestBody Kpoint param){
+    @PutMapping("/{kpointId}/name")
+    public boolean updateKpoint(@PathVariable("kpointId") int kpointId, @RequestBody Kpoint param){
 
         if(StringUtils.isEmpty(param.getKpointName())){
-            return R.fail("请输入知识点名称");
+            throw new InvalidRequestException("知识点名称不能为空");
         }
 
         Kpoint kpoint = new Kpoint();
         kpoint.setKpointId(kpointId);
         kpoint.setKpointName(param.getKpointName());
 
-        boolean success = kpointService.updateById(kpoint);
-        return success ? R.ok() : R.fail("修改失败");
+        return kpointService.updateById(kpoint);
     }
 
 
@@ -81,13 +77,12 @@ public class KpointController {
      * 批量删除知识点
      * @return
      */
-    @DeleteMapping("/kpoints/batch")
-    public R delKpoint(@RequestBody Map<String,List<Integer>> param){
+    @DeleteMapping("/batch")
+    public boolean delKpoint(@RequestBody Map<String,List<Integer>> param){
         List<Integer> ids = param.get("ids");
         if(IterUtil.isEmpty(ids)){
-            return R.fail("ID为空");
+            throw new InvalidRequestException("知识点ID不能为空");
         }
-        boolean success = kpointService.removeByIds(ids);
-        return success ? R.ok() : R.fail("删除失败");
+        return kpointService.removeByIds(ids);
     }
 }

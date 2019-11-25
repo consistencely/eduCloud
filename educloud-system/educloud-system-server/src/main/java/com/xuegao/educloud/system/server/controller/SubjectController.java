@@ -1,20 +1,23 @@
 package com.xuegao.educloud.system.server.controller;
 
 import cn.hutool.core.collection.IterUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuegao.educloud.common.constants.CommonConstants;
-import com.xuegao.educloud.common.params.R;
-import com.xuegao.educloud.common.params.R;
+import com.xuegao.educloud.common.exception.InvalidRequestException;
+import com.xuegao.educloud.common.exception.ResourceNoFoundException;
+import com.xuegao.educloud.common.exception.ServiceException;
+import com.xuegao.educloud.common.response.R;
 import com.xuegao.educloud.system.client.entities.Subject;
+import com.xuegao.educloud.system.client.params.dto.SubjectDTO;
 import com.xuegao.educloud.system.client.params.dto.SubjectGradeDTO;
+import com.xuegao.educloud.system.server.enums.SysExceptionEnum;
 import com.xuegao.educloud.system.server.service.ISubjectService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -24,24 +27,23 @@ import java.util.Map;
  * @Description:
  */
 @RestController
+@RequestMapping("subjects")
 public class SubjectController {
 
     @Autowired
     private ISubjectService subjectService;
-
 
     /**
      * 分页查询学科
      *
      * @return
      */
-    @GetMapping("/subjects/page")
-    public R<IPage<Subject>> getSubjectPage(@RequestParam(value = "pageNum", defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+    @GetMapping("/page")
+    public IPage<Subject> getSubjectPage(@RequestParam(value = "pageNum", defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
                                             @RequestParam(value = "pageSize", defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize) {
 
         Page<Subject> page = new Page<Subject>().setCurrent(pageNum).setSize(pageSize);
-        IPage<Subject> subjectPage = subjectService.getSubjectPage(page);
-        return R.ok(subjectPage);
+        return subjectService.getSubjectPage(page);
 
     }
 
@@ -50,16 +52,15 @@ public class SubjectController {
      *
      * @return
      */
-    @DeleteMapping("/subjects/batch")
-    public R delSubject(@RequestBody Map<String, List<Integer>> param) {
+    @DeleteMapping("/batch")
+    public boolean delSubject(@RequestBody Map<String, List<Integer>> param) {
 
         List<Integer> ids = param.get("ids");
         if (IterUtil.isEmpty(ids)) {
-            return R.fail("学科ID为空");
+            throw new InvalidRequestException("学科ID不能为空");
         }
 
-        boolean success = subjectService.removeByIds(ids);
-        return success ? R.ok() : R.fail("删除失败");
+        return subjectService.removeByIds(ids);
     }
 
     /**
@@ -67,16 +68,12 @@ public class SubjectController {
      *
      * @return
      */
-    @PostMapping("/subjects")
-    public R saveSubject(@RequestBody Subject param) {
-        if (StringUtils.isEmpty(param.getSubjectName())) {
-            return R.fail("请输入学科名称");
-        }
+    @PostMapping
+    public boolean saveSubject(@Valid @RequestBody SubjectDTO param) {
         Subject subject = new Subject();
         subject.setSubjectName(param.getSubjectName());
         subject.setSort(param.getSort());
-        boolean success = subjectService.save(subject);
-        return success ? R.ok() : R.fail("新增学科失败");
+        return subjectService.save(subject);
     }
 
     /**
@@ -84,17 +81,13 @@ public class SubjectController {
      *
      * @return
      */
-    @PutMapping("/subjects/{subjectId}")
-    public R updateSubject(@PathVariable("subjectId") int subjectId, @RequestBody Subject param) {
-        if (StringUtils.isEmpty(param.getSubjectName())) {
-            return R.fail("请输入学科名称");
-        }
+    @PutMapping("/{subjectId}")
+    public boolean updateSubject(@PathVariable("subjectId") int subjectId,@Valid @RequestBody SubjectDTO param) {
         Subject subject = new Subject();
         subject.setSubjectId(subjectId);
         subject.setSubjectName(param.getSubjectName());
         subject.setSort(param.getSort() != null ? param.getSort() : CommonConstants.DEFAULT_SORT);
-        boolean success = subjectService.updateById(subject);
-        return success ? R.ok() : R.fail("修改学科失败");
+        return subjectService.updateById(subject);
     }
 
 
@@ -103,10 +96,9 @@ public class SubjectController {
      *
      * @return
      */
-    @GetMapping("/subjects")
-    public R<List<Subject>> getAllSubject() {
-        List<Subject> list = subjectService.getAllSubject();
-        return R.ok(list);
+    @GetMapping
+    public List<Subject> getAllSubject() {
+        return subjectService.getAllSubject();
     }
 
     /**
@@ -114,13 +106,11 @@ public class SubjectController {
      *
      * @return
      */
-    @PostMapping("/subjects/grade")
-    public R saveSubjectGrade(@RequestBody SubjectGradeDTO subjectGradeDTO) {
-        if (subjectGradeDTO.getGradeId() == null) {
-            return R.fail("保存失败，请重试！");
-        }
-        subjectService.saveSubjectGrade(subjectGradeDTO);
-        return R.ok();
+    @PostMapping("/grade")
+    public boolean saveSubjectGrade(@RequestBody SubjectGradeDTO subjectGradeDTO) {
+        return subjectService.saveSubjectGrade(subjectGradeDTO);
     }
+
+
 
 }

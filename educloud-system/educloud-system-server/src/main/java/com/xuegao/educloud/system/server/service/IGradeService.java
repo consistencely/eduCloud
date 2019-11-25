@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xuegao.educloud.system.client.entities.Grade;
+import com.xuegao.educloud.system.client.params.dto.GradeDTO;
 import com.xuegao.educloud.system.client.params.vo.GradeWithSubjectVO;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface IGradeService extends IService<Grade> {
      * @param param
      * @return
      */
-    boolean saveGrade(Grade param);
+    boolean saveGrade(GradeDTO param);
 
     /**
      * 修改年级
