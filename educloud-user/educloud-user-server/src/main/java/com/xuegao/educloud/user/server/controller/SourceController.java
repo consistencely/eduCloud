@@ -53,7 +53,7 @@ public class SourceController {
      * @return
      */
     @PutMapping("/{sourceId}")
-    public boolean updateSource(@PathVariable("sourceId") int sourceId,@Valid @RequestBody SourceDTO sourceDTO) {
+    public boolean updateSource(@PathVariable("sourceId") int sourceId, @Valid @RequestBody SourceDTO sourceDTO) {
 
         //参数校验
         Source sourceInfo = sourceService.getById(sourceId);
@@ -93,6 +93,10 @@ public class SourceController {
             throw new InvalidRequestException("生源ID不能为空");
         }
         for (Integer sourceId : sourceIds) {
+            Source source = sourceService.getSourceInfo(sourceId);
+            if (source == null) {
+                throw new ServiceException(ECUserExceptionEnum.SOURCE_NOT_FOUND);
+            }
             //判断是否存在已配置的生源地
             List<User> userList = userService.getUserBySourceId(sourceId);
             if (userList != null && userList.size() > 0) {
@@ -104,15 +108,16 @@ public class SourceController {
 
     /**
      * 分页查询生源
+     *
      * @param pageNum
      * @param pageSize
      * @param sourceDTO
      * @return
      */
     @GetMapping("/page")
-    public IPage<SourceDTO> sourceInfoPage(@RequestParam(value = "pageNum",defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
-                                              @RequestParam(value = "pageSize",defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize,
-                                              @ModelAttribute("sourceDTO") SourceDTO sourceDTO) {
+    public IPage<SourceDTO> sourceInfoPage(@RequestParam(value = "pageNum", defaultValue = CommonConstants.FIRST_PAGE) int pageNum,
+                                           @RequestParam(value = "pageSize", defaultValue = CommonConstants.DEFAULT_PAGE_SIZE) int pageSize,
+                                           @ModelAttribute("sourceDTO") SourceDTO sourceDTO) {
         Page<SourceDTO> page = new Page<SourceDTO>().setCurrent(pageNum).setSize(pageSize);
         return sourceService.getSourcePage(page, sourceDTO);
     }

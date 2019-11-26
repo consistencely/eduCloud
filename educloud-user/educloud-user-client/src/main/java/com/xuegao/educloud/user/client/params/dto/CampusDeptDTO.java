@@ -19,7 +19,6 @@ public class CampusDeptDTO {
     /**
      * 部门ID
      */
-    @TableId
     private Integer departmentId;
 
     /**

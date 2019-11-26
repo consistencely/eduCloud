@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @Auther: ZWei
  * @Date: 2019/11/18 15:04
@@ -16,12 +18,12 @@ public class CampusDTO {
     /**
      * 校区ID
      */
-    @TableId
     private Integer campusId;
 
     /**
      * 校区名称
      */
+    @NotBlank(message = "校区名称不能为空")
     private String campusName;
 
     /**

@@ -107,7 +107,11 @@ public class RoleController {
             throw new InvalidRequestException("角色ID不能为空");
         }
         for (Integer roleId : roleIds) {
-            if (roleId == UserConstants.USER_ROLE_ISDEFAULT) {
+            Role role = roleService.getById(roleId);
+            if (role == null) {
+                throw new ServiceException(ECUserExceptionEnum.ROLE_NOT_FOUND);
+            }
+            if (role.getIsDefault() == UserConstants.USER_ROLE_ISDEFAULT) {
                 throw new ServiceException(ECUserExceptionEnum.ROLE_ISDEFAULT_NOTDEL);
             }
             //判断是否存在拥有角色的用户
